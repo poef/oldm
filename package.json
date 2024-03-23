@@ -1,0 +1,44 @@
+{
+  "name": "@muze-nl/oldm",
+  "version": "0.1.0",
+  "description": "Object - Linked Data Mapper",
+  "type": "module",
+  "source": [
+    "src/oldm.mjs"
+  ],
+  "main": "dist/oldm.mjs",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tap test/*.mjs",
+    "tap": "tap",
+    "build": "parcel build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poef/oldm.git"
+  },
+  "author": "auke@muze.nl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/poef/oldm/issues"
+  },
+  "homepage": "https://github.com/poef/oldm/#readme",
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "tap": "^16.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@muze-nl/jsontag": "^0.9.4",
+    "n3": "^1.17.2"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ]
+}

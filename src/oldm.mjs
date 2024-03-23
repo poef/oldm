@@ -1,4 +1,5 @@
-import JSONTag from 'https://cdn.jsdelivr.net/npm/@muze-nl/jsontag@0.9.3/src/JSONTag.mjs'
+import JSONTag from '@muze-nl/jsontag'
+import N3 from 'n3'
 
 const xsdTypes = {
 	xsd$dateTime: '<datetime>',
@@ -34,17 +35,17 @@ class Parser {
 	index = new Map()
 	unresolved = new Map()
 	#n3 = null
-	constructor(prefixes, n3=null) {
+
+	constructor(prefixes) {
 		this.prefixes = prefixes
 		if (!this.prefixes['xsd']) {
 			this.prefixes['xsd'] = 'http://www.w3.org/2001/XMLSchema#'
 		}
-		this.#n3 = n3
 	}
 
 	parse(text, baseURI) {
 		const graph = this.graph(baseURI)
-		const parser = new this.#n3.Parser({ blankNodePrefix: '', baseIRI: baseURI})
+		const parser = new N3.Parser({ blankNodePrefix: '', baseIRI: baseURI})
 		const data = parser.parse(text)
 		for (let quad of data) {
       let subject
@@ -131,7 +132,7 @@ class Graph extends Array {
 		if (!this.parser.index.has(subjectID)) {
 			subject = new Subject(this, subjectID) // link back to its containing graph
       this.push(subject)
-      resolveLinks(subject, subjectID)
+      this.resolveLinks(subject, subjectID)
 		} else {
 			subject = this.parser.index.get(subjectID)
 			//TODO: check if subject is part of this graph, if not, move it to this graph
@@ -207,7 +208,7 @@ class Graph extends Array {
 
   addUnresolved(linkID, key, parentID) {
   	let unresolved = this.parser.unresolved
-		if (!unresolved.has(value.value)) {
+		if (!unresolved.has(linkID)) {
 			unresolved.set(linkID, {
 				parentID: [key]
 			})
@@ -299,10 +300,6 @@ class Subject {
 	}
 }
 
-
-const oldm = {
-	parser: function(prefixes=[], n3=null) {
-		return new Parser(prefixes, n3)
-	}
+export default function parser(prefixes=[], n3=null) {
+	return new Parser(prefixes, n3)
 }
-export default oldm
