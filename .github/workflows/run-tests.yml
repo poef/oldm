@@ -2,7 +2,6 @@
 name: Run tap tests
 
 on:
-  - push
   - pull_request
   # Allow manually triggering the workflow.
   - workflow_dispatch
