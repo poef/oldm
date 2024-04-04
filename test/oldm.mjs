@@ -74,7 +74,7 @@ tap.test('two graphs merging', t => {
 	t.end()
 })
 
-tap.test('seperator', t => {
+tap.test('separator', t => {
 	let turtle = `
 @prefix : <#>.
 @prefix schema: <http://schema.org/>.
@@ -88,7 +88,7 @@ tap.test('seperator', t => {
 			'schema':'https://schema.org/',
 			'vcard':'http://www.w3.org/2006/vcard/ns#'
 		},
-		seperator: ':'
+		separator: ':'
 	})
 	let data = oldmParser.parse(turtle, 'https://auke.solidcommunity.net/profile/card#me')
 	t.same(''+data['vcard:fn'], 'Auke van Slooten')
@@ -115,7 +115,7 @@ tap.test('xsdtypes', t => {
 			'schema':'https://schema.org/',
 			'vcard':'http://www.w3.org/2006/vcard/ns#'
 		},
-//		seperator: ':'
+//		separator: ':'
 	})
 	let data = oldmParser.parse(turtle, 'https://auke.solidcommunity.net/profile/card#me')
 	t.same(''+data.vcard$bday, '1972-09-20')
@@ -126,7 +126,7 @@ tap.test('xsdtypes', t => {
 			'schema':'https://schema.org/',
 			'vcard':'http://www.w3.org/2006/vcard/ns#'
 		},
-		seperator: ':'
+		separator: ':'
 	})
 	data = oldmParser.parse(turtle, 'https://auke.solidcommunity.net/profile/card#me')
 	t.same(''+data['vcard:bday'], '1972-09-20')
