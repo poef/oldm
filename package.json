@@ -38,6 +38,7 @@
     "n3": "^1.17.2"
   },
   "files": [
+    "dist/",
     "src/",
     "README.md",
     "LICENSE"
