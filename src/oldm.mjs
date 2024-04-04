@@ -27,6 +27,8 @@ const xsdTypes = {
 
 const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 
+const source = Symbol('source')
+
 //TODO: build a datamapper on top of this, that can hydrate specific
 //object types (classes) to specific javascript classes
 
@@ -34,19 +36,28 @@ class Parser {
 	prefixes = {}
 	index = new Map()
 	unresolved = new Map()
-	#n3 = null
+	types = {}
 
-	constructor(prefixes) {
-		this.prefixes = prefixes
+	constructor(options = {}) {
+		this.prefixes = options?.prefixes ?? {}
+		this.seperator = options?.seperator ?? '$' //TODO: do I really want to allow different seperators? least surprise etc.
 		if (!this.prefixes['xsd']) {
 			this.prefixes['xsd'] = 'http://www.w3.org/2001/XMLSchema#'
 		}
+		this.types = {}
+		Object.entries(xsdTypes).forEach(([t,v]) => {
+			const ts = t
+				.split('$')
+				.join(this.seperator)
+			this.types[ts] = v
+		})
 	}
 
 	parse(text, baseURI) {
 		const graph = this.graph(baseURI)
 		const parser = new N3.Parser({ blankNodePrefix: '', baseIRI: baseURI})
 		const data = parser.parse(text)
+		graph[source] = data
 		for (let quad of data) {
       let subject
       if (quad.subject.termType=='BlankNode') {
@@ -54,10 +65,39 @@ class Parser {
       } else {
         subject = graph.addSubject(quad.subject.id)
       }
-      subject.addPredicate(quad.predicate.id, quad.object)
+      subject.addPredicate(quad.predicate.id, quad.object, graph)
 		}
-		//TODO: check if baseURI is in the graph, if so return it instead of the graph? e.g. profile/card#me
+		if (this.index.has(baseURI)) {
+			return this.index.get(baseURI)
+		}
     return graph
+	}
+
+  
+	short(uri, baseURI) {
+		//TODO: why handle baseURI different from prefixes?
+		if (baseURI && uri.startsWith(baseURI)) {
+			return new JSONTag.Link(uri.substring(baseURI.length))
+		}
+		let prefixes = this.prefixes
+		for (let prefix in prefixes) {
+			if (uri.startsWith(prefixes[prefix])) {
+				return new JSONTag.Link(prefix+this.seperator+uri.substring(prefixes[prefix].length))
+			}
+		}
+		return uri
+	}
+
+	long(uri) {
+		if (uri instanceof JSONTag.Link) {
+			uri = uri.value
+			let [prefix,short] = uri.split(this.seperator)
+			if (this.prefixes[prefix]) {
+				uri = this.prefixes[prefix]+short
+			}
+			return uri
+		}
+		return uri
 	}
 
 	graph(baseURI) {
@@ -65,12 +105,16 @@ class Parser {
 	}
 }
 
+//TODO: add method/property to return the N3 source data of a specific graph
+//with all updates to the data
 class Graph extends Array {
  
   constructor(parser, baseURI) {
 		super()
+		let uri = new URL(baseURI)
+		uri.hash = ''
 		Object.defineProperty(this, 'baseURI', {
-			value: baseURI ?? '',
+			value: uri.href,
 			writable: true,
 			configurable: false,
 			enumerable: false
@@ -99,11 +143,14 @@ class Graph extends Array {
     }
 	}
 
+	static get [Symbol.species]() {
+		return Array
+	}
+
 	resolveLinks(subject, subjectID) {
     if (this.parser.unresolved.has(subjectID)) {
-	  	// TODO: test this by loading two graphs with the same parser and links between them
 	  	let u = this.parser.unresolved.get(subjectID)
-	  	let shortID = this.short(subjectID)
+	  	let shortID = this.parser.short(subjectID, this.baseURI)
 	  	for (let parentID in u) {
 	  		let parent = this.parser.index.get(parentID)
 	  		for (let key of u[parentID]) {
@@ -135,7 +182,9 @@ class Graph extends Array {
       this.resolveLinks(subject, subjectID)
 		} else {
 			subject = this.parser.index.get(subjectID)
-			//TODO: check if subject is part of this graph, if not, move it to this graph
+			if (!this.includes(subject)) {
+				this.push(subject)
+			}
 		}
 		return subject
 	}
@@ -150,31 +199,6 @@ class Graph extends Array {
     }
     return node
   }
-  
-	short(uri) {
-		if (this.baseURI && uri.startsWith(this.baseURI)) {
-			return new JSONTag.Link(uri.substring(this.baseURI.length))
-		}
-		let prefixes = this.parser.prefixes
-		for (let prefix in prefixes) {
-			if (uri.startsWith(prefixes[prefix])) {
-				return new JSONTag.Link(prefix+'$'+uri.substring(prefixes[prefix].length))
-			}
-		}
-		return uri
-	}
-
-	long(uri) {
-		if (uri instanceof JSONTag.Link) {
-			uri = uri.value
-			let [prefix,short] = uri.split('$')
-			if (this.parser.prefixes[prefix]) {
-				uri = this.parser.prefixes[prefix]+short
-			}
-			return uri
-		}
-		return uri
-	}
   
   setType(value, type) {
     let result
@@ -191,9 +215,9 @@ class Graph extends Array {
         throw new Error('missing type implementation for '+(typeof value))
       break
     }
-    let shortType = this.short(type)
-    if (shortType instanceof JSONTag.Link && xsdTypes[shortType.value]) {
-      this.#setTypeString(result, xsdTypes[shortType.value])    		
+    let shortType = this.parser.short(type, this.baseURI)
+    if (shortType instanceof JSONTag.Link && this.parser.types[shortType.value]) {
+      this.#setTypeString(result, this.parser.types[shortType.value])    		
   	} else {
       JSONTag.setAttribute(result, 'class', type)    
     }
@@ -224,17 +248,13 @@ class Graph extends Array {
 }
 
 class Subject {
-	#graph
+	#graphs
 	
   constructor(graph, id) {
-		this.#graph = graph
+		this.#graphs = [graph]
     if (id) {
-      let shortID = this.#graph.short(id)
-      if (shortID instanceof JSONTag.Link) {
-        shortID = shortID.value
-      }
-      JSONTag.setAttribute(this, 'id', shortID)
-      this.#graph.parser.index.set(id, this)
+      JSONTag.setAttribute(this, 'id', id)
+      graph.parser.index.set(id, this)
     }
 	}
 
@@ -242,17 +262,20 @@ class Subject {
 		return JSONTag.getAttribute(this, 'id')
 	}
 
-	addPredicate(predicateId, object) {
+	addPredicate(predicateId, object, graph) {
+		if (!this.#graphs.includes(graph)) {
+			this.#graphs.push(graph)
+		}
 		if (predicateId==rdfType) {
-			this.addType(this.#graph.short(object.id))
+			this.addType(graph.parser.short(object.id, graph.baseURI), graph)
 		} else {
-			let shortPred = this.#graph.short(predicateId)
+			let shortPred = graph.parser.short(predicateId, graph.baseURI)
 			if (shortPred instanceof JSONTag.Link) {
 				shortPred = shortPred.value
 			}
 			let value = this.#getValue(object)
 			if (value instanceof JSONTag.Link) {
-				this.#graph.addUnresolved(value.value, shortPred, this.id)
+				graph.addUnresolved(value.value, shortPred, this.id)
 			}
 			if (!this[shortPred]) {
 				this[shortPred] = value
@@ -261,6 +284,11 @@ class Subject {
 			} else {
 				this[shortPred] = [ this[shortPred], value]
 			}
+			//TODO: also update source when deleting properties
+			//FIXME: make this work:
+//			if (!graph[source].has(this.id, predicateId, object)) {
+//				graph[source].set(this.id, predicateId, object)
+//			}
 		}
 	}
 
@@ -283,17 +311,27 @@ class Subject {
 
 	#getValue(object) {
 		if (object.termType=='Literal') {
-      object = this.#graph.setType(object.value, object.datatype.id)
+			let graph = this.#graphs[this.#graphs.length-1]
+      object = graph.setType(object.value, object.datatype.id)
 		} else { // URI
-			let parser = this.#graph.parser
-			if (object.id.startsWith(this.#graph.baseURI)) {
-				object = this.#graph.addSubject(object.id)
-			} else if (parser.index.has(object.id)) {
-				object = parser.index.get(object.id)
-      } else if (this.#graph.blankNodes.has(object.id)) {
-        object = this.#graph.blankNodes.get(object.id)
-			} else {
-				object = this.#graph.short(object.id)
+			let parser, graph
+			let found = (() => {
+				for (graph of this.#graphs) {
+					parser = graph.parser
+					if (object.id.startsWith(graph.baseURI)) {
+						object = graph.addSubject(object.id)
+						return true
+					} else if (parser.index.has(object.id)) {
+						object = parser.index.get(object.id)
+						return true
+		      } else if (graph.blankNodes.has(object.id)) {
+		        object = graph.blankNodes.get(object.id)
+		        return true
+		      }
+				}
+			})()
+			if (!found) {
+				object = parser.short(object.id, graph.baseURI)
 			}
 		}
 		return object
