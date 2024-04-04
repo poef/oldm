@@ -207,7 +207,7 @@ class Graph extends Array {
         result = new String(value)
         JSONTag.setType(result, 'string')
       break
-      case 'Number':
+      case 'number':
         result = new Number(value)
         JSONTag.setType(result, 'number')
       break
