@@ -34,7 +34,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@muze-nl/jsontag": "^0.9.4",
+    "@muze-nl/jsontag": "^0.9.5",
     "n3": "^1.17.2"
   },
   "files": [
