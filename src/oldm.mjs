@@ -40,7 +40,7 @@ class Parser {
 
 	constructor(options = {}) {
 		this.prefixes = options?.prefixes ?? {}
-		this.seperator = options?.seperator ?? '$' //TODO: do I really want to allow different seperators? least surprise etc.
+		this.separator = options?.separator ?? '$' //TODO: do I really want to allow different separators? least surprise etc.
 		if (!this.prefixes['xsd']) {
 			this.prefixes['xsd'] = 'http://www.w3.org/2001/XMLSchema#'
 		}
@@ -48,7 +48,7 @@ class Parser {
 		Object.entries(xsdTypes).forEach(([t,v]) => {
 			const ts = t
 				.split('$')
-				.join(this.seperator)
+				.join(this.separator)
 			this.types[ts] = v
 		})
 	}
@@ -82,7 +82,7 @@ class Parser {
 		let prefixes = this.prefixes
 		for (let prefix in prefixes) {
 			if (uri.startsWith(prefixes[prefix])) {
-				return new JSONTag.Link(prefix+this.seperator+uri.substring(prefixes[prefix].length))
+				return new JSONTag.Link(prefix+this.separator+uri.substring(prefixes[prefix].length))
 			}
 		}
 		return uri
@@ -91,7 +91,7 @@ class Parser {
 	long(uri) {
 		if (uri instanceof JSONTag.Link) {
 			uri = uri.value
-			let [prefix,short] = uri.split(this.seperator)
+			let [prefix,short] = uri.split(this.separator)
 			if (this.prefixes[prefix]) {
 				uri = this.prefixes[prefix]+short
 			}
