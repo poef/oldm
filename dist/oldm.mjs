@@ -28,16 +28,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// node_modules/queue-microtask/index.js
-var require_queue_microtask = __commonJS({
-  "node_modules/queue-microtask/index.js"(exports, module) {
-    var promise;
-    module.exports = typeof queueMicrotask === "function" ? queueMicrotask.bind(typeof window !== "undefined" ? window : global) : (cb) => (promise || (promise = Promise.resolve())).then(cb).catch((err) => setTimeout(() => {
-      throw err;
-    }, 0));
-  }
-});
-
 // node_modules/base64-js/index.js
 var require_base64_js = __commonJS({
   "node_modules/base64-js/index.js"(exports) {
@@ -230,13 +220,13 @@ var require_buffer = __commonJS({
     var base64 = require_base64_js();
     var ieee754 = require_ieee754();
     var customInspectSymbol = typeof Symbol === "function" && typeof Symbol["for"] === "function" ? Symbol["for"]("nodejs.util.inspect.custom") : null;
-    exports.Buffer = Buffer2;
+    exports.Buffer = Buffer3;
     exports.SlowBuffer = SlowBuffer;
     exports.INSPECT_MAX_BYTES = 50;
     var K_MAX_LENGTH = 2147483647;
     exports.kMaxLength = K_MAX_LENGTH;
-    Buffer2.TYPED_ARRAY_SUPPORT = typedArraySupport();
-    if (!Buffer2.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
+    Buffer3.TYPED_ARRAY_SUPPORT = typedArraySupport();
+    if (!Buffer3.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
       console.error(
         "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x. Use `buffer` v4.x if you require old browser support."
       );
@@ -254,18 +244,18 @@ var require_buffer = __commonJS({
         return false;
       }
     }
-    Object.defineProperty(Buffer2.prototype, "parent", {
+    Object.defineProperty(Buffer3.prototype, "parent", {
       enumerable: true,
       get: function() {
-        if (!Buffer2.isBuffer(this))
+        if (!Buffer3.isBuffer(this))
           return void 0;
         return this.buffer;
       }
     });
-    Object.defineProperty(Buffer2.prototype, "offset", {
+    Object.defineProperty(Buffer3.prototype, "offset", {
       enumerable: true,
       get: function() {
-        if (!Buffer2.isBuffer(this))
+        if (!Buffer3.isBuffer(this))
           return void 0;
         return this.byteOffset;
       }
@@ -275,10 +265,10 @@ var require_buffer = __commonJS({
         throw new RangeError('The value "' + length + '" is invalid for option "size"');
       }
       const buf = new Uint8Array(length);
-      Object.setPrototypeOf(buf, Buffer2.prototype);
+      Object.setPrototypeOf(buf, Buffer3.prototype);
       return buf;
     }
-    function Buffer2(arg, encodingOrOffset, length) {
+    function Buffer3(arg, encodingOrOffset, length) {
       if (typeof arg === "number") {
         if (typeof encodingOrOffset === "string") {
           throw new TypeError(
@@ -289,7 +279,7 @@ var require_buffer = __commonJS({
       }
       return from(arg, encodingOrOffset, length);
     }
-    Buffer2.poolSize = 8192;
+    Buffer3.poolSize = 8192;
     function from(value, encodingOrOffset, length) {
       if (typeof value === "string") {
         return fromString(value, encodingOrOffset);
@@ -315,23 +305,23 @@ var require_buffer = __commonJS({
       }
       const valueOf = value.valueOf && value.valueOf();
       if (valueOf != null && valueOf !== value) {
-        return Buffer2.from(valueOf, encodingOrOffset, length);
+        return Buffer3.from(valueOf, encodingOrOffset, length);
       }
       const b = fromObject(value);
       if (b)
         return b;
       if (typeof Symbol !== "undefined" && Symbol.toPrimitive != null && typeof value[Symbol.toPrimitive] === "function") {
-        return Buffer2.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
+        return Buffer3.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
       }
       throw new TypeError(
         "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value
       );
     }
-    Buffer2.from = function(value, encodingOrOffset, length) {
+    Buffer3.from = function(value, encodingOrOffset, length) {
       return from(value, encodingOrOffset, length);
     };
-    Object.setPrototypeOf(Buffer2.prototype, Uint8Array.prototype);
-    Object.setPrototypeOf(Buffer2, Uint8Array);
+    Object.setPrototypeOf(Buffer3.prototype, Uint8Array.prototype);
+    Object.setPrototypeOf(Buffer3, Uint8Array);
     function assertSize(size) {
       if (typeof size !== "number") {
         throw new TypeError('"size" argument must be of type number');
@@ -349,24 +339,24 @@ var require_buffer = __commonJS({
       }
       return createBuffer(size);
     }
-    Buffer2.alloc = function(size, fill, encoding) {
+    Buffer3.alloc = function(size, fill, encoding) {
       return alloc(size, fill, encoding);
     };
     function allocUnsafe(size) {
       assertSize(size);
       return createBuffer(size < 0 ? 0 : checked(size) | 0);
     }
-    Buffer2.allocUnsafe = function(size) {
+    Buffer3.allocUnsafe = function(size) {
       return allocUnsafe(size);
     };
-    Buffer2.allocUnsafeSlow = function(size) {
+    Buffer3.allocUnsafeSlow = function(size) {
       return allocUnsafe(size);
     };
     function fromString(string, encoding) {
       if (typeof encoding !== "string" || encoding === "") {
         encoding = "utf8";
       }
-      if (!Buffer2.isEncoding(encoding)) {
+      if (!Buffer3.isEncoding(encoding)) {
         throw new TypeError("Unknown encoding: " + encoding);
       }
       const length = byteLength(string, encoding) | 0;
@@ -407,11 +397,11 @@ var require_buffer = __commonJS({
       } else {
         buf = new Uint8Array(array, byteOffset, length);
       }
-      Object.setPrototypeOf(buf, Buffer2.prototype);
+      Object.setPrototypeOf(buf, Buffer3.prototype);
       return buf;
     }
     function fromObject(obj) {
-      if (Buffer2.isBuffer(obj)) {
+      if (Buffer3.isBuffer(obj)) {
         const len = checked(obj.length) | 0;
         const buf = createBuffer(len);
         if (buf.length === 0) {
@@ -440,17 +430,17 @@ var require_buffer = __commonJS({
       if (+length != length) {
         length = 0;
       }
-      return Buffer2.alloc(+length);
+      return Buffer3.alloc(+length);
     }
-    Buffer2.isBuffer = function isBuffer(b) {
-      return b != null && b._isBuffer === true && b !== Buffer2.prototype;
+    Buffer3.isBuffer = function isBuffer(b) {
+      return b != null && b._isBuffer === true && b !== Buffer3.prototype;
     };
-    Buffer2.compare = function compare(a, b) {
+    Buffer3.compare = function compare(a, b) {
       if (isInstance(a, Uint8Array))
-        a = Buffer2.from(a, a.offset, a.byteLength);
+        a = Buffer3.from(a, a.offset, a.byteLength);
       if (isInstance(b, Uint8Array))
-        b = Buffer2.from(b, b.offset, b.byteLength);
-      if (!Buffer2.isBuffer(a) || !Buffer2.isBuffer(b)) {
+        b = Buffer3.from(b, b.offset, b.byteLength);
+      if (!Buffer3.isBuffer(a) || !Buffer3.isBuffer(b)) {
         throw new TypeError(
           'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array'
         );
@@ -472,7 +462,7 @@ var require_buffer = __commonJS({
         return 1;
       return 0;
     };
-    Buffer2.isEncoding = function isEncoding(encoding) {
+    Buffer3.isEncoding = function isEncoding(encoding) {
       switch (String(encoding).toLowerCase()) {
         case "hex":
         case "utf8":
@@ -490,12 +480,12 @@ var require_buffer = __commonJS({
           return false;
       }
     };
-    Buffer2.concat = function concat(list, length) {
+    Buffer3.concat = function concat(list, length) {
       if (!Array.isArray(list)) {
         throw new TypeError('"list" argument must be an Array of Buffers');
       }
       if (list.length === 0) {
-        return Buffer2.alloc(0);
+        return Buffer3.alloc(0);
       }
       let i;
       if (length === void 0) {
@@ -504,14 +494,14 @@ var require_buffer = __commonJS({
           length += list[i].length;
         }
       }
-      const buffer = Buffer2.allocUnsafe(length);
+      const buffer = Buffer3.allocUnsafe(length);
       let pos = 0;
       for (i = 0; i < list.length; ++i) {
         let buf = list[i];
         if (isInstance(buf, Uint8Array)) {
           if (pos + buf.length > buffer.length) {
-            if (!Buffer2.isBuffer(buf))
-              buf = Buffer2.from(buf);
+            if (!Buffer3.isBuffer(buf))
+              buf = Buffer3.from(buf);
             buf.copy(buffer, pos);
           } else {
             Uint8Array.prototype.set.call(
@@ -520,7 +510,7 @@ var require_buffer = __commonJS({
               pos
             );
           }
-        } else if (!Buffer2.isBuffer(buf)) {
+        } else if (!Buffer3.isBuffer(buf)) {
           throw new TypeError('"list" argument must be an Array of Buffers');
         } else {
           buf.copy(buffer, pos);
@@ -530,7 +520,7 @@ var require_buffer = __commonJS({
       return buffer;
     };
     function byteLength(string, encoding) {
-      if (Buffer2.isBuffer(string)) {
+      if (Buffer3.isBuffer(string)) {
         return string.length;
       }
       if (ArrayBuffer.isView(string) || isInstance(string, ArrayBuffer)) {
@@ -573,7 +563,7 @@ var require_buffer = __commonJS({
         }
       }
     }
-    Buffer2.byteLength = byteLength;
+    Buffer3.byteLength = byteLength;
     function slowToString(encoding, start, end) {
       let loweredCase = false;
       if (start === void 0 || start < 0) {
@@ -622,13 +612,13 @@ var require_buffer = __commonJS({
         }
       }
     }
-    Buffer2.prototype._isBuffer = true;
+    Buffer3.prototype._isBuffer = true;
     function swap(b, n, m) {
       const i = b[n];
       b[n] = b[m];
       b[m] = i;
     }
-    Buffer2.prototype.swap16 = function swap16() {
+    Buffer3.prototype.swap16 = function swap16() {
       const len = this.length;
       if (len % 2 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 16-bits");
@@ -638,7 +628,7 @@ var require_buffer = __commonJS({
       }
       return this;
     };
-    Buffer2.prototype.swap32 = function swap32() {
+    Buffer3.prototype.swap32 = function swap32() {
       const len = this.length;
       if (len % 4 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 32-bits");
@@ -649,7 +639,7 @@ var require_buffer = __commonJS({
       }
       return this;
     };
-    Buffer2.prototype.swap64 = function swap64() {
+    Buffer3.prototype.swap64 = function swap64() {
       const len = this.length;
       if (len % 8 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 64-bits");
@@ -662,7 +652,7 @@ var require_buffer = __commonJS({
       }
       return this;
     };
-    Buffer2.prototype.toString = function toString() {
+    Buffer3.prototype.toString = function toString() {
       const length = this.length;
       if (length === 0)
         return "";
@@ -670,15 +660,15 @@ var require_buffer = __commonJS({
         return utf8Slice(this, 0, length);
       return slowToString.apply(this, arguments);
     };
-    Buffer2.prototype.toLocaleString = Buffer2.prototype.toString;
-    Buffer2.prototype.equals = function equals(b) {
-      if (!Buffer2.isBuffer(b))
+    Buffer3.prototype.toLocaleString = Buffer3.prototype.toString;
+    Buffer3.prototype.equals = function equals(b) {
+      if (!Buffer3.isBuffer(b))
         throw new TypeError("Argument must be a Buffer");
       if (this === b)
         return true;
-      return Buffer2.compare(this, b) === 0;
+      return Buffer3.compare(this, b) === 0;
     };
-    Buffer2.prototype.inspect = function inspect() {
+    Buffer3.prototype.inspect = function inspect() {
       let str = "";
       const max = exports.INSPECT_MAX_BYTES;
       str = this.toString("hex", 0, max).replace(/(.{2})/g, "$1 ").trim();
@@ -687,13 +677,13 @@ var require_buffer = __commonJS({
       return "<Buffer " + str + ">";
     };
     if (customInspectSymbol) {
-      Buffer2.prototype[customInspectSymbol] = Buffer2.prototype.inspect;
+      Buffer3.prototype[customInspectSymbol] = Buffer3.prototype.inspect;
     }
-    Buffer2.prototype.compare = function compare(target, start, end, thisStart, thisEnd) {
+    Buffer3.prototype.compare = function compare(target, start, end, thisStart, thisEnd) {
       if (isInstance(target, Uint8Array)) {
-        target = Buffer2.from(target, target.offset, target.byteLength);
+        target = Buffer3.from(target, target.offset, target.byteLength);
       }
-      if (!Buffer2.isBuffer(target)) {
+      if (!Buffer3.isBuffer(target)) {
         throw new TypeError(
           'The "target" argument must be one of type Buffer or Uint8Array. Received type ' + typeof target
         );
@@ -775,9 +765,9 @@ var require_buffer = __commonJS({
           return -1;
       }
       if (typeof val === "string") {
-        val = Buffer2.from(val, encoding);
+        val = Buffer3.from(val, encoding);
       }
-      if (Buffer2.isBuffer(val)) {
+      if (Buffer3.isBuffer(val)) {
         if (val.length === 0) {
           return -1;
         }
@@ -850,13 +840,13 @@ var require_buffer = __commonJS({
       }
       return -1;
     }
-    Buffer2.prototype.includes = function includes(val, byteOffset, encoding) {
+    Buffer3.prototype.includes = function includes(val, byteOffset, encoding) {
       return this.indexOf(val, byteOffset, encoding) !== -1;
     };
-    Buffer2.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
+    Buffer3.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
       return bidirectionalIndexOf(this, val, byteOffset, encoding, true);
     };
-    Buffer2.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
+    Buffer3.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
       return bidirectionalIndexOf(this, val, byteOffset, encoding, false);
     };
     function hexWrite(buf, string, offset, length) {
@@ -895,7 +885,7 @@ var require_buffer = __commonJS({
     function ucs2Write(buf, string, offset, length) {
       return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length);
     }
-    Buffer2.prototype.write = function write(string, offset, length, encoding) {
+    Buffer3.prototype.write = function write(string, offset, length, encoding) {
       if (offset === void 0) {
         encoding = "utf8";
         length = this.length;
@@ -954,7 +944,7 @@ var require_buffer = __commonJS({
         }
       }
     };
-    Buffer2.prototype.toJSON = function toJSON() {
+    Buffer3.prototype.toJSON = function toJSON() {
       return {
         type: "Buffer",
         data: Array.prototype.slice.call(this._arr || this, 0)
@@ -1079,7 +1069,7 @@ var require_buffer = __commonJS({
       }
       return res;
     }
-    Buffer2.prototype.slice = function slice(start, end) {
+    Buffer3.prototype.slice = function slice(start, end) {
       const len = this.length;
       start = ~~start;
       end = end === void 0 ? len : ~~end;
@@ -1100,7 +1090,7 @@ var require_buffer = __commonJS({
       if (end < start)
         end = start;
       const newBuf = this.subarray(start, end);
-      Object.setPrototypeOf(newBuf, Buffer2.prototype);
+      Object.setPrototypeOf(newBuf, Buffer3.prototype);
       return newBuf;
     };
     function checkOffset(offset, ext, length) {
@@ -1109,7 +1099,7 @@ var require_buffer = __commonJS({
       if (offset + ext > length)
         throw new RangeError("Trying to access beyond buffer length");
     }
-    Buffer2.prototype.readUintLE = Buffer2.prototype.readUIntLE = function readUIntLE(offset, byteLength2, noAssert) {
+    Buffer3.prototype.readUintLE = Buffer3.prototype.readUIntLE = function readUIntLE(offset, byteLength2, noAssert) {
       offset = offset >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert)
@@ -1122,7 +1112,7 @@ var require_buffer = __commonJS({
       }
       return val;
     };
-    Buffer2.prototype.readUintBE = Buffer2.prototype.readUIntBE = function readUIntBE(offset, byteLength2, noAssert) {
+    Buffer3.prototype.readUintBE = Buffer3.prototype.readUIntBE = function readUIntBE(offset, byteLength2, noAssert) {
       offset = offset >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) {
@@ -1135,37 +1125,37 @@ var require_buffer = __commonJS({
       }
       return val;
     };
-    Buffer2.prototype.readUint8 = Buffer2.prototype.readUInt8 = function readUInt8(offset, noAssert) {
+    Buffer3.prototype.readUint8 = Buffer3.prototype.readUInt8 = function readUInt8(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 1, this.length);
       return this[offset];
     };
-    Buffer2.prototype.readUint16LE = Buffer2.prototype.readUInt16LE = function readUInt16LE(offset, noAssert) {
+    Buffer3.prototype.readUint16LE = Buffer3.prototype.readUInt16LE = function readUInt16LE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 2, this.length);
       return this[offset] | this[offset + 1] << 8;
     };
-    Buffer2.prototype.readUint16BE = Buffer2.prototype.readUInt16BE = function readUInt16BE(offset, noAssert) {
+    Buffer3.prototype.readUint16BE = Buffer3.prototype.readUInt16BE = function readUInt16BE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 2, this.length);
       return this[offset] << 8 | this[offset + 1];
     };
-    Buffer2.prototype.readUint32LE = Buffer2.prototype.readUInt32LE = function readUInt32LE(offset, noAssert) {
+    Buffer3.prototype.readUint32LE = Buffer3.prototype.readUInt32LE = function readUInt32LE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 4, this.length);
       return (this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16) + this[offset + 3] * 16777216;
     };
-    Buffer2.prototype.readUint32BE = Buffer2.prototype.readUInt32BE = function readUInt32BE(offset, noAssert) {
+    Buffer3.prototype.readUint32BE = Buffer3.prototype.readUInt32BE = function readUInt32BE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 4, this.length);
       return this[offset] * 16777216 + (this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3]);
     };
-    Buffer2.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset) {
+    Buffer3.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset) {
       offset = offset >>> 0;
       validateNumber(offset, "offset");
       const first = this[offset];
@@ -1177,7 +1167,7 @@ var require_buffer = __commonJS({
       const hi = this[++offset] + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + last * 2 ** 24;
       return BigInt(lo) + (BigInt(hi) << BigInt(32));
     });
-    Buffer2.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset) {
+    Buffer3.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset) {
       offset = offset >>> 0;
       validateNumber(offset, "offset");
       const first = this[offset];
@@ -1189,7 +1179,7 @@ var require_buffer = __commonJS({
       const lo = this[++offset] * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + last;
       return (BigInt(hi) << BigInt(32)) + BigInt(lo);
     });
-    Buffer2.prototype.readIntLE = function readIntLE(offset, byteLength2, noAssert) {
+    Buffer3.prototype.readIntLE = function readIntLE(offset, byteLength2, noAssert) {
       offset = offset >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert)
@@ -1205,7 +1195,7 @@ var require_buffer = __commonJS({
         val -= Math.pow(2, 8 * byteLength2);
       return val;
     };
-    Buffer2.prototype.readIntBE = function readIntBE(offset, byteLength2, noAssert) {
+    Buffer3.prototype.readIntBE = function readIntBE(offset, byteLength2, noAssert) {
       offset = offset >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert)
@@ -1221,7 +1211,7 @@ var require_buffer = __commonJS({
         val -= Math.pow(2, 8 * byteLength2);
       return val;
     };
-    Buffer2.prototype.readInt8 = function readInt8(offset, noAssert) {
+    Buffer3.prototype.readInt8 = function readInt8(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 1, this.length);
@@ -1229,33 +1219,33 @@ var require_buffer = __commonJS({
         return this[offset];
       return (255 - this[offset] + 1) * -1;
     };
-    Buffer2.prototype.readInt16LE = function readInt16LE(offset, noAssert) {
+    Buffer3.prototype.readInt16LE = function readInt16LE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 2, this.length);
       const val = this[offset] | this[offset + 1] << 8;
       return val & 32768 ? val | 4294901760 : val;
     };
-    Buffer2.prototype.readInt16BE = function readInt16BE(offset, noAssert) {
+    Buffer3.prototype.readInt16BE = function readInt16BE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 2, this.length);
       const val = this[offset + 1] | this[offset] << 8;
       return val & 32768 ? val | 4294901760 : val;
     };
-    Buffer2.prototype.readInt32LE = function readInt32LE(offset, noAssert) {
+    Buffer3.prototype.readInt32LE = function readInt32LE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 4, this.length);
       return this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16 | this[offset + 3] << 24;
     };
-    Buffer2.prototype.readInt32BE = function readInt32BE(offset, noAssert) {
+    Buffer3.prototype.readInt32BE = function readInt32BE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 4, this.length);
       return this[offset] << 24 | this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3];
     };
-    Buffer2.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset) {
+    Buffer3.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset) {
       offset = offset >>> 0;
       validateNumber(offset, "offset");
       const first = this[offset];
@@ -1266,7 +1256,7 @@ var require_buffer = __commonJS({
       const val = this[offset + 4] + this[offset + 5] * 2 ** 8 + this[offset + 6] * 2 ** 16 + (last << 24);
       return (BigInt(val) << BigInt(32)) + BigInt(first + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 24);
     });
-    Buffer2.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset) {
+    Buffer3.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset) {
       offset = offset >>> 0;
       validateNumber(offset, "offset");
       const first = this[offset];
@@ -1278,39 +1268,39 @@ var require_buffer = __commonJS({
       this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + this[++offset];
       return (BigInt(val) << BigInt(32)) + BigInt(this[++offset] * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + last);
     });
-    Buffer2.prototype.readFloatLE = function readFloatLE(offset, noAssert) {
+    Buffer3.prototype.readFloatLE = function readFloatLE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 4, this.length);
       return ieee754.read(this, offset, true, 23, 4);
     };
-    Buffer2.prototype.readFloatBE = function readFloatBE(offset, noAssert) {
+    Buffer3.prototype.readFloatBE = function readFloatBE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 4, this.length);
       return ieee754.read(this, offset, false, 23, 4);
     };
-    Buffer2.prototype.readDoubleLE = function readDoubleLE(offset, noAssert) {
+    Buffer3.prototype.readDoubleLE = function readDoubleLE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 8, this.length);
       return ieee754.read(this, offset, true, 52, 8);
     };
-    Buffer2.prototype.readDoubleBE = function readDoubleBE(offset, noAssert) {
+    Buffer3.prototype.readDoubleBE = function readDoubleBE(offset, noAssert) {
       offset = offset >>> 0;
       if (!noAssert)
         checkOffset(offset, 8, this.length);
       return ieee754.read(this, offset, false, 52, 8);
     };
     function checkInt(buf, value, offset, ext, max, min) {
-      if (!Buffer2.isBuffer(buf))
+      if (!Buffer3.isBuffer(buf))
         throw new TypeError('"buffer" argument must be a Buffer instance');
       if (value > max || value < min)
         throw new RangeError('"value" argument is out of bounds');
       if (offset + ext > buf.length)
         throw new RangeError("Index out of range");
     }
-    Buffer2.prototype.writeUintLE = Buffer2.prototype.writeUIntLE = function writeUIntLE(value, offset, byteLength2, noAssert) {
+    Buffer3.prototype.writeUintLE = Buffer3.prototype.writeUIntLE = function writeUIntLE(value, offset, byteLength2, noAssert) {
       value = +value;
       offset = offset >>> 0;
       byteLength2 = byteLength2 >>> 0;
@@ -1326,7 +1316,7 @@ var require_buffer = __commonJS({
       }
       return offset + byteLength2;
     };
-    Buffer2.prototype.writeUintBE = Buffer2.prototype.writeUIntBE = function writeUIntBE(value, offset, byteLength2, noAssert) {
+    Buffer3.prototype.writeUintBE = Buffer3.prototype.writeUIntBE = function writeUIntBE(value, offset, byteLength2, noAssert) {
       value = +value;
       offset = offset >>> 0;
       byteLength2 = byteLength2 >>> 0;
@@ -1342,7 +1332,7 @@ var require_buffer = __commonJS({
       }
       return offset + byteLength2;
     };
-    Buffer2.prototype.writeUint8 = Buffer2.prototype.writeUInt8 = function writeUInt8(value, offset, noAssert) {
+    Buffer3.prototype.writeUint8 = Buffer3.prototype.writeUInt8 = function writeUInt8(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1350,7 +1340,7 @@ var require_buffer = __commonJS({
       this[offset] = value & 255;
       return offset + 1;
     };
-    Buffer2.prototype.writeUint16LE = Buffer2.prototype.writeUInt16LE = function writeUInt16LE(value, offset, noAssert) {
+    Buffer3.prototype.writeUint16LE = Buffer3.prototype.writeUInt16LE = function writeUInt16LE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1359,7 +1349,7 @@ var require_buffer = __commonJS({
       this[offset + 1] = value >>> 8;
       return offset + 2;
     };
-    Buffer2.prototype.writeUint16BE = Buffer2.prototype.writeUInt16BE = function writeUInt16BE(value, offset, noAssert) {
+    Buffer3.prototype.writeUint16BE = Buffer3.prototype.writeUInt16BE = function writeUInt16BE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1368,7 +1358,7 @@ var require_buffer = __commonJS({
       this[offset + 1] = value & 255;
       return offset + 2;
     };
-    Buffer2.prototype.writeUint32LE = Buffer2.prototype.writeUInt32LE = function writeUInt32LE(value, offset, noAssert) {
+    Buffer3.prototype.writeUint32LE = Buffer3.prototype.writeUInt32LE = function writeUInt32LE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1379,7 +1369,7 @@ var require_buffer = __commonJS({
       this[offset] = value & 255;
       return offset + 4;
     };
-    Buffer2.prototype.writeUint32BE = Buffer2.prototype.writeUInt32BE = function writeUInt32BE(value, offset, noAssert) {
+    Buffer3.prototype.writeUint32BE = Buffer3.prototype.writeUInt32BE = function writeUInt32BE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1430,13 +1420,13 @@ var require_buffer = __commonJS({
       buf[offset] = hi;
       return offset + 8;
     }
-    Buffer2.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset = 0) {
+    Buffer3.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset = 0) {
       return wrtBigUInt64LE(this, value, offset, BigInt(0), BigInt("0xffffffffffffffff"));
     });
-    Buffer2.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset = 0) {
+    Buffer3.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset = 0) {
       return wrtBigUInt64BE(this, value, offset, BigInt(0), BigInt("0xffffffffffffffff"));
     });
-    Buffer2.prototype.writeIntLE = function writeIntLE(value, offset, byteLength2, noAssert) {
+    Buffer3.prototype.writeIntLE = function writeIntLE(value, offset, byteLength2, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert) {
@@ -1455,7 +1445,7 @@ var require_buffer = __commonJS({
       }
       return offset + byteLength2;
     };
-    Buffer2.prototype.writeIntBE = function writeIntBE(value, offset, byteLength2, noAssert) {
+    Buffer3.prototype.writeIntBE = function writeIntBE(value, offset, byteLength2, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert) {
@@ -1474,7 +1464,7 @@ var require_buffer = __commonJS({
       }
       return offset + byteLength2;
     };
-    Buffer2.prototype.writeInt8 = function writeInt8(value, offset, noAssert) {
+    Buffer3.prototype.writeInt8 = function writeInt8(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1484,7 +1474,7 @@ var require_buffer = __commonJS({
       this[offset] = value & 255;
       return offset + 1;
     };
-    Buffer2.prototype.writeInt16LE = function writeInt16LE(value, offset, noAssert) {
+    Buffer3.prototype.writeInt16LE = function writeInt16LE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1493,7 +1483,7 @@ var require_buffer = __commonJS({
       this[offset + 1] = value >>> 8;
       return offset + 2;
     };
-    Buffer2.prototype.writeInt16BE = function writeInt16BE(value, offset, noAssert) {
+    Buffer3.prototype.writeInt16BE = function writeInt16BE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1502,7 +1492,7 @@ var require_buffer = __commonJS({
       this[offset + 1] = value & 255;
       return offset + 2;
     };
-    Buffer2.prototype.writeInt32LE = function writeInt32LE(value, offset, noAssert) {
+    Buffer3.prototype.writeInt32LE = function writeInt32LE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1513,7 +1503,7 @@ var require_buffer = __commonJS({
       this[offset + 3] = value >>> 24;
       return offset + 4;
     };
-    Buffer2.prototype.writeInt32BE = function writeInt32BE(value, offset, noAssert) {
+    Buffer3.prototype.writeInt32BE = function writeInt32BE(value, offset, noAssert) {
       value = +value;
       offset = offset >>> 0;
       if (!noAssert)
@@ -1526,10 +1516,10 @@ var require_buffer = __commonJS({
       this[offset + 3] = value & 255;
       return offset + 4;
     };
-    Buffer2.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset = 0) {
+    Buffer3.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset = 0) {
       return wrtBigUInt64LE(this, value, offset, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
     });
-    Buffer2.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset = 0) {
+    Buffer3.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset = 0) {
       return wrtBigUInt64BE(this, value, offset, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
     });
     function checkIEEE754(buf, value, offset, ext, max, min) {
@@ -1547,10 +1537,10 @@ var require_buffer = __commonJS({
       ieee754.write(buf, value, offset, littleEndian, 23, 4);
       return offset + 4;
     }
-    Buffer2.prototype.writeFloatLE = function writeFloatLE(value, offset, noAssert) {
+    Buffer3.prototype.writeFloatLE = function writeFloatLE(value, offset, noAssert) {
       return writeFloat(this, value, offset, true, noAssert);
     };
-    Buffer2.prototype.writeFloatBE = function writeFloatBE(value, offset, noAssert) {
+    Buffer3.prototype.writeFloatBE = function writeFloatBE(value, offset, noAssert) {
       return writeFloat(this, value, offset, false, noAssert);
     };
     function writeDouble(buf, value, offset, littleEndian, noAssert) {
@@ -1562,14 +1552,14 @@ var require_buffer = __commonJS({
       ieee754.write(buf, value, offset, littleEndian, 52, 8);
       return offset + 8;
     }
-    Buffer2.prototype.writeDoubleLE = function writeDoubleLE(value, offset, noAssert) {
+    Buffer3.prototype.writeDoubleLE = function writeDoubleLE(value, offset, noAssert) {
       return writeDouble(this, value, offset, true, noAssert);
     };
-    Buffer2.prototype.writeDoubleBE = function writeDoubleBE(value, offset, noAssert) {
+    Buffer3.prototype.writeDoubleBE = function writeDoubleBE(value, offset, noAssert) {
       return writeDouble(this, value, offset, false, noAssert);
     };
-    Buffer2.prototype.copy = function copy(target, targetStart, start, end) {
-      if (!Buffer2.isBuffer(target))
+    Buffer3.prototype.copy = function copy(target, targetStart, start, end) {
+      if (!Buffer3.isBuffer(target))
         throw new TypeError("argument should be a Buffer");
       if (!start)
         start = 0;
@@ -1609,7 +1599,7 @@ var require_buffer = __commonJS({
       }
       return len;
     };
-    Buffer2.prototype.fill = function fill(val, start, end, encoding) {
+    Buffer3.prototype.fill = function fill(val, start, end, encoding) {
       if (typeof val === "string") {
         if (typeof start === "string") {
           encoding = start;
@@ -1622,7 +1612,7 @@ var require_buffer = __commonJS({
         if (encoding !== void 0 && typeof encoding !== "string") {
           throw new TypeError("encoding must be a string");
         }
-        if (typeof encoding === "string" && !Buffer2.isEncoding(encoding)) {
+        if (typeof encoding === "string" && !Buffer3.isEncoding(encoding)) {
           throw new TypeError("Unknown encoding: " + encoding);
         }
         if (val.length === 1) {
@@ -1652,7 +1642,7 @@ var require_buffer = __commonJS({
           this[i] = val;
         }
       } else {
-        const bytes = Buffer2.isBuffer(val) ? val : Buffer2.from(val, encoding);
+        const bytes = Buffer3.isBuffer(val) ? val : Buffer3.from(val, encoding);
         const len = bytes.length;
         if (len === 0) {
           throw new TypeError('The value "' + val + '" is invalid for argument "value"');
@@ -1918,11 +1908,37 @@ var require_buffer = __commonJS({
   }
 });
 
+// node_modules/queue-microtask/index.js
+var require_queue_microtask = __commonJS({
+  "node_modules/queue-microtask/index.js"(exports, module) {
+    var promise;
+    module.exports = typeof queueMicrotask === "function" ? queueMicrotask.bind(typeof window !== "undefined" ? window : global) : (cb) => (promise || (promise = Promise.resolve())).then(cb).catch((err) => setTimeout(() => {
+      throw err;
+    }, 0));
+  }
+});
+
 // node_modules/readable-stream/lib/ours/primordials.js
 var require_primordials = __commonJS({
   "node_modules/readable-stream/lib/ours/primordials.js"(exports, module) {
     "use strict";
+    var AggregateError = class extends Error {
+      constructor(errors) {
+        if (!Array.isArray(errors)) {
+          throw new TypeError(`Expected input to be an Array, got ${typeof errors}`);
+        }
+        let message = "";
+        for (let i = 0; i < errors.length; i++) {
+          message += `    ${errors[i].stack}
+`;
+        }
+        super(message);
+        this.name = "AggregateError";
+        this.errors = errors;
+      }
+    };
     module.exports = {
+      AggregateError,
       ArrayIsArray(self2) {
         return Array.isArray(self2);
       },
@@ -2019,6 +2035,375 @@ var require_primordials = __commonJS({
       },
       Boolean,
       Uint8Array
+    };
+  }
+});
+
+// node_modules/readable-stream/lib/ours/util/inspect.js
+var require_inspect = __commonJS({
+  "node_modules/readable-stream/lib/ours/util/inspect.js"(exports, module) {
+    "use strict";
+    module.exports = {
+      format(format, ...args) {
+        return format.replace(/%([sdifj])/g, function(...[_unused, type]) {
+          const replacement = args.shift();
+          if (type === "f") {
+            return replacement.toFixed(6);
+          } else if (type === "j") {
+            return JSON.stringify(replacement);
+          } else if (type === "s" && typeof replacement === "object") {
+            const ctor = replacement.constructor !== Object ? replacement.constructor.name : "";
+            return `${ctor} {}`.trim();
+          } else {
+            return replacement.toString();
+          }
+        });
+      },
+      inspect(value) {
+        switch (typeof value) {
+          case "string":
+            if (value.includes("'")) {
+              if (!value.includes('"')) {
+                return `"${value}"`;
+              } else if (!value.includes("`") && !value.includes("${")) {
+                return `\`${value}\``;
+              }
+            }
+            return `'${value}'`;
+          case "number":
+            if (isNaN(value)) {
+              return "NaN";
+            } else if (Object.is(value, -0)) {
+              return String(value);
+            }
+            return value;
+          case "bigint":
+            return `${String(value)}n`;
+          case "boolean":
+          case "undefined":
+            return String(value);
+          case "object":
+            return "{}";
+        }
+      }
+    };
+  }
+});
+
+// node_modules/readable-stream/lib/ours/errors.js
+var require_errors = __commonJS({
+  "node_modules/readable-stream/lib/ours/errors.js"(exports, module) {
+    "use strict";
+    var { format, inspect } = require_inspect();
+    var { AggregateError: CustomAggregateError } = require_primordials();
+    var AggregateError = globalThis.AggregateError || CustomAggregateError;
+    var kIsNodeError = Symbol("kIsNodeError");
+    var kTypes = [
+      "string",
+      "function",
+      "number",
+      "object",
+      // Accept 'Function' and 'Object' as alternative to the lower cased version.
+      "Function",
+      "Object",
+      "boolean",
+      "bigint",
+      "symbol"
+    ];
+    var classRegExp = /^([A-Z][a-z0-9]*)+$/;
+    var nodeInternalPrefix = "__node_internal_";
+    var codes = {};
+    function assert(value, message) {
+      if (!value) {
+        throw new codes.ERR_INTERNAL_ASSERTION(message);
+      }
+    }
+    function addNumericalSeparator(val) {
+      let res = "";
+      let i = val.length;
+      const start = val[0] === "-" ? 1 : 0;
+      for (; i >= start + 4; i -= 3) {
+        res = `_${val.slice(i - 3, i)}${res}`;
+      }
+      return `${val.slice(0, i)}${res}`;
+    }
+    function getMessage(key, msg, args) {
+      if (typeof msg === "function") {
+        assert(
+          msg.length <= args.length,
+          // Default options do not count.
+          `Code: ${key}; The provided arguments length (${args.length}) does not match the required ones (${msg.length}).`
+        );
+        return msg(...args);
+      }
+      const expectedLength = (msg.match(/%[dfijoOs]/g) || []).length;
+      assert(
+        expectedLength === args.length,
+        `Code: ${key}; The provided arguments length (${args.length}) does not match the required ones (${expectedLength}).`
+      );
+      if (args.length === 0) {
+        return msg;
+      }
+      return format(msg, ...args);
+    }
+    function E(code, message, Base) {
+      if (!Base) {
+        Base = Error;
+      }
+      class NodeError extends Base {
+        constructor(...args) {
+          super(getMessage(code, message, args));
+        }
+        toString() {
+          return `${this.name} [${code}]: ${this.message}`;
+        }
+      }
+      Object.defineProperties(NodeError.prototype, {
+        name: {
+          value: Base.name,
+          writable: true,
+          enumerable: false,
+          configurable: true
+        },
+        toString: {
+          value() {
+            return `${this.name} [${code}]: ${this.message}`;
+          },
+          writable: true,
+          enumerable: false,
+          configurable: true
+        }
+      });
+      NodeError.prototype.code = code;
+      NodeError.prototype[kIsNodeError] = true;
+      codes[code] = NodeError;
+    }
+    function hideStackFrames(fn) {
+      const hidden = nodeInternalPrefix + fn.name;
+      Object.defineProperty(fn, "name", {
+        value: hidden
+      });
+      return fn;
+    }
+    function aggregateTwoErrors(innerError, outerError) {
+      if (innerError && outerError && innerError !== outerError) {
+        if (Array.isArray(outerError.errors)) {
+          outerError.errors.push(innerError);
+          return outerError;
+        }
+        const err = new AggregateError([outerError, innerError], outerError.message);
+        err.code = outerError.code;
+        return err;
+      }
+      return innerError || outerError;
+    }
+    var AbortError = class extends Error {
+      constructor(message = "The operation was aborted", options = void 0) {
+        if (options !== void 0 && typeof options !== "object") {
+          throw new codes.ERR_INVALID_ARG_TYPE("options", "Object", options);
+        }
+        super(message, options);
+        this.code = "ABORT_ERR";
+        this.name = "AbortError";
+      }
+    };
+    E("ERR_ASSERTION", "%s", Error);
+    E(
+      "ERR_INVALID_ARG_TYPE",
+      (name, expected, actual) => {
+        assert(typeof name === "string", "'name' must be a string");
+        if (!Array.isArray(expected)) {
+          expected = [expected];
+        }
+        let msg = "The ";
+        if (name.endsWith(" argument")) {
+          msg += `${name} `;
+        } else {
+          msg += `"${name}" ${name.includes(".") ? "property" : "argument"} `;
+        }
+        msg += "must be ";
+        const types = [];
+        const instances = [];
+        const other = [];
+        for (const value of expected) {
+          assert(typeof value === "string", "All expected entries have to be of type string");
+          if (kTypes.includes(value)) {
+            types.push(value.toLowerCase());
+          } else if (classRegExp.test(value)) {
+            instances.push(value);
+          } else {
+            assert(value !== "object", 'The value "object" should be written as "Object"');
+            other.push(value);
+          }
+        }
+        if (instances.length > 0) {
+          const pos = types.indexOf("object");
+          if (pos !== -1) {
+            types.splice(types, pos, 1);
+            instances.push("Object");
+          }
+        }
+        if (types.length > 0) {
+          switch (types.length) {
+            case 1:
+              msg += `of type ${types[0]}`;
+              break;
+            case 2:
+              msg += `one of type ${types[0]} or ${types[1]}`;
+              break;
+            default: {
+              const last = types.pop();
+              msg += `one of type ${types.join(", ")}, or ${last}`;
+            }
+          }
+          if (instances.length > 0 || other.length > 0) {
+            msg += " or ";
+          }
+        }
+        if (instances.length > 0) {
+          switch (instances.length) {
+            case 1:
+              msg += `an instance of ${instances[0]}`;
+              break;
+            case 2:
+              msg += `an instance of ${instances[0]} or ${instances[1]}`;
+              break;
+            default: {
+              const last = instances.pop();
+              msg += `an instance of ${instances.join(", ")}, or ${last}`;
+            }
+          }
+          if (other.length > 0) {
+            msg += " or ";
+          }
+        }
+        switch (other.length) {
+          case 0:
+            break;
+          case 1:
+            if (other[0].toLowerCase() !== other[0]) {
+              msg += "an ";
+            }
+            msg += `${other[0]}`;
+            break;
+          case 2:
+            msg += `one of ${other[0]} or ${other[1]}`;
+            break;
+          default: {
+            const last = other.pop();
+            msg += `one of ${other.join(", ")}, or ${last}`;
+          }
+        }
+        if (actual == null) {
+          msg += `. Received ${actual}`;
+        } else if (typeof actual === "function" && actual.name) {
+          msg += `. Received function ${actual.name}`;
+        } else if (typeof actual === "object") {
+          var _actual$constructor;
+          if ((_actual$constructor = actual.constructor) !== null && _actual$constructor !== void 0 && _actual$constructor.name) {
+            msg += `. Received an instance of ${actual.constructor.name}`;
+          } else {
+            const inspected = inspect(actual, {
+              depth: -1
+            });
+            msg += `. Received ${inspected}`;
+          }
+        } else {
+          let inspected = inspect(actual, {
+            colors: false
+          });
+          if (inspected.length > 25) {
+            inspected = `${inspected.slice(0, 25)}...`;
+          }
+          msg += `. Received type ${typeof actual} (${inspected})`;
+        }
+        return msg;
+      },
+      TypeError
+    );
+    E(
+      "ERR_INVALID_ARG_VALUE",
+      (name, value, reason = "is invalid") => {
+        let inspected = inspect(value);
+        if (inspected.length > 128) {
+          inspected = inspected.slice(0, 128) + "...";
+        }
+        const type = name.includes(".") ? "property" : "argument";
+        return `The ${type} '${name}' ${reason}. Received ${inspected}`;
+      },
+      TypeError
+    );
+    E(
+      "ERR_INVALID_RETURN_VALUE",
+      (input, name, value) => {
+        var _value$constructor;
+        const type = value !== null && value !== void 0 && (_value$constructor = value.constructor) !== null && _value$constructor !== void 0 && _value$constructor.name ? `instance of ${value.constructor.name}` : `type ${typeof value}`;
+        return `Expected ${input} to be returned from the "${name}" function but got ${type}.`;
+      },
+      TypeError
+    );
+    E(
+      "ERR_MISSING_ARGS",
+      (...args) => {
+        assert(args.length > 0, "At least one arg needs to be specified");
+        let msg;
+        const len = args.length;
+        args = (Array.isArray(args) ? args : [args]).map((a) => `"${a}"`).join(" or ");
+        switch (len) {
+          case 1:
+            msg += `The ${args[0]} argument`;
+            break;
+          case 2:
+            msg += `The ${args[0]} and ${args[1]} arguments`;
+            break;
+          default:
+            {
+              const last = args.pop();
+              msg += `The ${args.join(", ")}, and ${last} arguments`;
+            }
+            break;
+        }
+        return `${msg} must be specified`;
+      },
+      TypeError
+    );
+    E(
+      "ERR_OUT_OF_RANGE",
+      (str, range, input) => {
+        assert(range, 'Missing "range" argument');
+        let received;
+        if (Number.isInteger(input) && Math.abs(input) > 2 ** 32) {
+          received = addNumericalSeparator(String(input));
+        } else if (typeof input === "bigint") {
+          received = String(input);
+          const limit = BigInt(2) ** BigInt(32);
+          if (input > limit || input < -limit) {
+            received = addNumericalSeparator(received);
+          }
+          received += "n";
+        } else {
+          received = inspect(input);
+        }
+        return `The value of "${str}" is out of range. It must be ${range}. Received ${received}`;
+      },
+      RangeError
+    );
+    E("ERR_MULTIPLE_CALLBACK", "Callback called multiple times", Error);
+    E("ERR_METHOD_NOT_IMPLEMENTED", "The %s method is not implemented", Error);
+    E("ERR_STREAM_ALREADY_FINISHED", "Cannot call %s after a stream was finished", Error);
+    E("ERR_STREAM_CANNOT_PIPE", "Cannot pipe, not readable", Error);
+    E("ERR_STREAM_DESTROYED", "Cannot call %s after a stream was destroyed", Error);
+    E("ERR_STREAM_NULL_VALUES", "May not write null values to stream", TypeError);
+    E("ERR_STREAM_PREMATURE_CLOSE", "Premature close", Error);
+    E("ERR_STREAM_PUSH_AFTER_EOF", "stream.push() after EOF", Error);
+    E("ERR_STREAM_UNSHIFT_AFTER_END_EVENT", "stream.unshift() after end event", Error);
+    E("ERR_STREAM_WRITE_AFTER_END", "write after end", Error);
+    E("ERR_UNKNOWN_ENCODING", "Unknown encoding: %s", TypeError);
+    module.exports = {
+      AbortError,
+      aggregateTwoErrors: hideStackFrames(aggregateTwoErrors),
+      hideStackFrames,
+      codes
     };
   }
 });
@@ -2414,7 +2799,11 @@ var require_util = __commonJS({
   "node_modules/readable-stream/lib/ours/util.js"(exports, module) {
     "use strict";
     var bufferModule = require_buffer();
-    var { kResistStopPropagation, SymbolDispose } = require_primordials();
+    var { format, inspect } = require_inspect();
+    var {
+      codes: { ERR_INVALID_ARG_TYPE }
+    } = require_errors();
+    var { kResistStopPropagation, AggregateError, SymbolDispose } = require_primordials();
     var AbortSignal = globalThis.AbortSignal || require_browser().AbortSignal;
     var AbortController = globalThis.AbortController || require_browser().AbortController;
     var AsyncFunction = Object.getPrototypeOf(async function() {
@@ -2431,22 +2820,8 @@ var require_util = __commonJS({
       }
     };
     var validateFunction = (value, name) => {
-      if (typeof value !== "function")
+      if (typeof value !== "function") {
         throw new ERR_INVALID_ARG_TYPE(name, "Function", value);
-    };
-    var AggregateError = class extends Error {
-      constructor(errors) {
-        if (!Array.isArray(errors)) {
-          throw new TypeError(`Expected input to be an Array, got ${typeof errors}`);
-        }
-        let message = "";
-        for (let i = 0; i < errors.length; i++) {
-          message += `    ${errors[i].stack}
-`;
-        }
-        super(message);
-        this.name = "AggregateError";
-        this.errors = errors;
       }
     };
     module.exports = {
@@ -2489,48 +2864,8 @@ var require_util = __commonJS({
         return function() {
         };
       },
-      format(format, ...args) {
-        return format.replace(/%([sdifj])/g, function(...[_unused, type]) {
-          const replacement = args.shift();
-          if (type === "f") {
-            return replacement.toFixed(6);
-          } else if (type === "j") {
-            return JSON.stringify(replacement);
-          } else if (type === "s" && typeof replacement === "object") {
-            const ctor = replacement.constructor !== Object ? replacement.constructor.name : "";
-            return `${ctor} {}`.trim();
-          } else {
-            return replacement.toString();
-          }
-        });
-      },
-      inspect(value) {
-        switch (typeof value) {
-          case "string":
-            if (value.includes("'")) {
-              if (!value.includes('"')) {
-                return `"${value}"`;
-              } else if (!value.includes("`") && !value.includes("${")) {
-                return `\`${value}\``;
-              }
-            }
-            return `'${value}'`;
-          case "number":
-            if (isNaN(value)) {
-              return "NaN";
-            } else if (Object.is(value, -0)) {
-              return String(value);
-            }
-            return value;
-          case "bigint":
-            return `${String(value)}n`;
-          case "boolean":
-          case "undefined":
-            return String(value);
-          case "object":
-            return "{}";
-        }
-      },
+      format,
+      inspect,
       types: {
         isAsyncFunction(fn) {
           return fn instanceof AsyncFunction;
@@ -2598,322 +2933,6 @@ var require_util = __commonJS({
   }
 });
 
-// node_modules/readable-stream/lib/ours/errors.js
-var require_errors = __commonJS({
-  "node_modules/readable-stream/lib/ours/errors.js"(exports, module) {
-    "use strict";
-    var { format, inspect, AggregateError: CustomAggregateError } = require_util();
-    var AggregateError = globalThis.AggregateError || CustomAggregateError;
-    var kIsNodeError = Symbol("kIsNodeError");
-    var kTypes = [
-      "string",
-      "function",
-      "number",
-      "object",
-      // Accept 'Function' and 'Object' as alternative to the lower cased version.
-      "Function",
-      "Object",
-      "boolean",
-      "bigint",
-      "symbol"
-    ];
-    var classRegExp = /^([A-Z][a-z0-9]*)+$/;
-    var nodeInternalPrefix = "__node_internal_";
-    var codes = {};
-    function assert(value, message) {
-      if (!value) {
-        throw new codes.ERR_INTERNAL_ASSERTION(message);
-      }
-    }
-    function addNumericalSeparator(val) {
-      let res = "";
-      let i = val.length;
-      const start = val[0] === "-" ? 1 : 0;
-      for (; i >= start + 4; i -= 3) {
-        res = `_${val.slice(i - 3, i)}${res}`;
-      }
-      return `${val.slice(0, i)}${res}`;
-    }
-    function getMessage(key, msg, args) {
-      if (typeof msg === "function") {
-        assert(
-          msg.length <= args.length,
-          // Default options do not count.
-          `Code: ${key}; The provided arguments length (${args.length}) does not match the required ones (${msg.length}).`
-        );
-        return msg(...args);
-      }
-      const expectedLength = (msg.match(/%[dfijoOs]/g) || []).length;
-      assert(
-        expectedLength === args.length,
-        `Code: ${key}; The provided arguments length (${args.length}) does not match the required ones (${expectedLength}).`
-      );
-      if (args.length === 0) {
-        return msg;
-      }
-      return format(msg, ...args);
-    }
-    function E(code, message, Base) {
-      if (!Base) {
-        Base = Error;
-      }
-      class NodeError extends Base {
-        constructor(...args) {
-          super(getMessage(code, message, args));
-        }
-        toString() {
-          return `${this.name} [${code}]: ${this.message}`;
-        }
-      }
-      Object.defineProperties(NodeError.prototype, {
-        name: {
-          value: Base.name,
-          writable: true,
-          enumerable: false,
-          configurable: true
-        },
-        toString: {
-          value() {
-            return `${this.name} [${code}]: ${this.message}`;
-          },
-          writable: true,
-          enumerable: false,
-          configurable: true
-        }
-      });
-      NodeError.prototype.code = code;
-      NodeError.prototype[kIsNodeError] = true;
-      codes[code] = NodeError;
-    }
-    function hideStackFrames(fn) {
-      const hidden = nodeInternalPrefix + fn.name;
-      Object.defineProperty(fn, "name", {
-        value: hidden
-      });
-      return fn;
-    }
-    function aggregateTwoErrors(innerError, outerError) {
-      if (innerError && outerError && innerError !== outerError) {
-        if (Array.isArray(outerError.errors)) {
-          outerError.errors.push(innerError);
-          return outerError;
-        }
-        const err = new AggregateError([outerError, innerError], outerError.message);
-        err.code = outerError.code;
-        return err;
-      }
-      return innerError || outerError;
-    }
-    var AbortError = class extends Error {
-      constructor(message = "The operation was aborted", options = void 0) {
-        if (options !== void 0 && typeof options !== "object") {
-          throw new codes.ERR_INVALID_ARG_TYPE("options", "Object", options);
-        }
-        super(message, options);
-        this.code = "ABORT_ERR";
-        this.name = "AbortError";
-      }
-    };
-    E("ERR_ASSERTION", "%s", Error);
-    E(
-      "ERR_INVALID_ARG_TYPE",
-      (name, expected, actual) => {
-        assert(typeof name === "string", "'name' must be a string");
-        if (!Array.isArray(expected)) {
-          expected = [expected];
-        }
-        let msg = "The ";
-        if (name.endsWith(" argument")) {
-          msg += `${name} `;
-        } else {
-          msg += `"${name}" ${name.includes(".") ? "property" : "argument"} `;
-        }
-        msg += "must be ";
-        const types2 = [];
-        const instances = [];
-        const other = [];
-        for (const value of expected) {
-          assert(typeof value === "string", "All expected entries have to be of type string");
-          if (kTypes.includes(value)) {
-            types2.push(value.toLowerCase());
-          } else if (classRegExp.test(value)) {
-            instances.push(value);
-          } else {
-            assert(value !== "object", 'The value "object" should be written as "Object"');
-            other.push(value);
-          }
-        }
-        if (instances.length > 0) {
-          const pos = types2.indexOf("object");
-          if (pos !== -1) {
-            types2.splice(types2, pos, 1);
-            instances.push("Object");
-          }
-        }
-        if (types2.length > 0) {
-          switch (types2.length) {
-            case 1:
-              msg += `of type ${types2[0]}`;
-              break;
-            case 2:
-              msg += `one of type ${types2[0]} or ${types2[1]}`;
-              break;
-            default: {
-              const last = types2.pop();
-              msg += `one of type ${types2.join(", ")}, or ${last}`;
-            }
-          }
-          if (instances.length > 0 || other.length > 0) {
-            msg += " or ";
-          }
-        }
-        if (instances.length > 0) {
-          switch (instances.length) {
-            case 1:
-              msg += `an instance of ${instances[0]}`;
-              break;
-            case 2:
-              msg += `an instance of ${instances[0]} or ${instances[1]}`;
-              break;
-            default: {
-              const last = instances.pop();
-              msg += `an instance of ${instances.join(", ")}, or ${last}`;
-            }
-          }
-          if (other.length > 0) {
-            msg += " or ";
-          }
-        }
-        switch (other.length) {
-          case 0:
-            break;
-          case 1:
-            if (other[0].toLowerCase() !== other[0]) {
-              msg += "an ";
-            }
-            msg += `${other[0]}`;
-            break;
-          case 2:
-            msg += `one of ${other[0]} or ${other[1]}`;
-            break;
-          default: {
-            const last = other.pop();
-            msg += `one of ${other.join(", ")}, or ${last}`;
-          }
-        }
-        if (actual == null) {
-          msg += `. Received ${actual}`;
-        } else if (typeof actual === "function" && actual.name) {
-          msg += `. Received function ${actual.name}`;
-        } else if (typeof actual === "object") {
-          var _actual$constructor;
-          if ((_actual$constructor = actual.constructor) !== null && _actual$constructor !== void 0 && _actual$constructor.name) {
-            msg += `. Received an instance of ${actual.constructor.name}`;
-          } else {
-            const inspected = inspect(actual, {
-              depth: -1
-            });
-            msg += `. Received ${inspected}`;
-          }
-        } else {
-          let inspected = inspect(actual, {
-            colors: false
-          });
-          if (inspected.length > 25) {
-            inspected = `${inspected.slice(0, 25)}...`;
-          }
-          msg += `. Received type ${typeof actual} (${inspected})`;
-        }
-        return msg;
-      },
-      TypeError
-    );
-    E(
-      "ERR_INVALID_ARG_VALUE",
-      (name, value, reason = "is invalid") => {
-        let inspected = inspect(value);
-        if (inspected.length > 128) {
-          inspected = inspected.slice(0, 128) + "...";
-        }
-        const type = name.includes(".") ? "property" : "argument";
-        return `The ${type} '${name}' ${reason}. Received ${inspected}`;
-      },
-      TypeError
-    );
-    E(
-      "ERR_INVALID_RETURN_VALUE",
-      (input, name, value) => {
-        var _value$constructor;
-        const type = value !== null && value !== void 0 && (_value$constructor = value.constructor) !== null && _value$constructor !== void 0 && _value$constructor.name ? `instance of ${value.constructor.name}` : `type ${typeof value}`;
-        return `Expected ${input} to be returned from the "${name}" function but got ${type}.`;
-      },
-      TypeError
-    );
-    E(
-      "ERR_MISSING_ARGS",
-      (...args) => {
-        assert(args.length > 0, "At least one arg needs to be specified");
-        let msg;
-        const len = args.length;
-        args = (Array.isArray(args) ? args : [args]).map((a) => `"${a}"`).join(" or ");
-        switch (len) {
-          case 1:
-            msg += `The ${args[0]} argument`;
-            break;
-          case 2:
-            msg += `The ${args[0]} and ${args[1]} arguments`;
-            break;
-          default:
-            {
-              const last = args.pop();
-              msg += `The ${args.join(", ")}, and ${last} arguments`;
-            }
-            break;
-        }
-        return `${msg} must be specified`;
-      },
-      TypeError
-    );
-    E(
-      "ERR_OUT_OF_RANGE",
-      (str, range, input) => {
-        assert(range, 'Missing "range" argument');
-        let received;
-        if (Number.isInteger(input) && Math.abs(input) > 2 ** 32) {
-          received = addNumericalSeparator(String(input));
-        } else if (typeof input === "bigint") {
-          received = String(input);
-          if (input > 2n ** 32n || input < -(2n ** 32n)) {
-            received = addNumericalSeparator(received);
-          }
-          received += "n";
-        } else {
-          received = inspect(input);
-        }
-        return `The value of "${str}" is out of range. It must be ${range}. Received ${received}`;
-      },
-      RangeError
-    );
-    E("ERR_MULTIPLE_CALLBACK", "Callback called multiple times", Error);
-    E("ERR_METHOD_NOT_IMPLEMENTED", "The %s method is not implemented", Error);
-    E("ERR_STREAM_ALREADY_FINISHED", "Cannot call %s after a stream was finished", Error);
-    E("ERR_STREAM_CANNOT_PIPE", "Cannot pipe, not readable", Error);
-    E("ERR_STREAM_DESTROYED", "Cannot call %s after a stream was destroyed", Error);
-    E("ERR_STREAM_NULL_VALUES", "May not write null values to stream", TypeError);
-    E("ERR_STREAM_PREMATURE_CLOSE", "Premature close", Error);
-    E("ERR_STREAM_PUSH_AFTER_EOF", "stream.push() after EOF", Error);
-    E("ERR_STREAM_UNSHIFT_AFTER_END_EVENT", "stream.unshift() after end event", Error);
-    E("ERR_STREAM_WRITE_AFTER_END", "write after end", Error);
-    E("ERR_UNKNOWN_ENCODING", "Unknown encoding: %s", TypeError);
-    module.exports = {
-      AbortError,
-      aggregateTwoErrors: hideStackFrames(aggregateTwoErrors),
-      hideStackFrames,
-      codes
-    };
-  }
-});
-
 // node_modules/readable-stream/lib/internal/validators.js
 var require_validators = __commonJS({
   "node_modules/readable-stream/lib/internal/validators.js"(exports, module) {
@@ -2936,7 +2955,7 @@ var require_validators = __commonJS({
     } = require_primordials();
     var {
       hideStackFrames,
-      codes: { ERR_SOCKET_BAD_PORT, ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2, ERR_INVALID_ARG_VALUE, ERR_OUT_OF_RANGE, ERR_UNKNOWN_SIGNAL }
+      codes: { ERR_SOCKET_BAD_PORT, ERR_INVALID_ARG_TYPE, ERR_INVALID_ARG_VALUE, ERR_OUT_OF_RANGE, ERR_UNKNOWN_SIGNAL }
     } = require_errors();
     var { normalizeEncoding } = require_util();
     var { isAsyncFunction, isArrayBufferView } = require_util().types;
@@ -2964,7 +2983,7 @@ var require_validators = __commonJS({
     }
     var validateInteger = hideStackFrames((value, name, min = NumberMIN_SAFE_INTEGER, max = NumberMAX_SAFE_INTEGER) => {
       if (typeof value !== "number")
-        throw new ERR_INVALID_ARG_TYPE2(name, "number", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "number", value);
       if (!NumberIsInteger(value))
         throw new ERR_OUT_OF_RANGE(name, "an integer", value);
       if (value < min || value > max)
@@ -2972,7 +2991,7 @@ var require_validators = __commonJS({
     });
     var validateInt32 = hideStackFrames((value, name, min = -2147483648, max = 2147483647) => {
       if (typeof value !== "number") {
-        throw new ERR_INVALID_ARG_TYPE2(name, "number", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "number", value);
       }
       if (!NumberIsInteger(value)) {
         throw new ERR_OUT_OF_RANGE(name, "an integer", value);
@@ -2983,7 +3002,7 @@ var require_validators = __commonJS({
     });
     var validateUint32 = hideStackFrames((value, name, positive = false) => {
       if (typeof value !== "number") {
-        throw new ERR_INVALID_ARG_TYPE2(name, "number", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "number", value);
       }
       if (!NumberIsInteger(value)) {
         throw new ERR_OUT_OF_RANGE(name, "an integer", value);
@@ -2996,11 +3015,11 @@ var require_validators = __commonJS({
     });
     function validateString(value, name) {
       if (typeof value !== "string")
-        throw new ERR_INVALID_ARG_TYPE2(name, "string", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "string", value);
     }
     function validateNumber(value, name, min = void 0, max) {
       if (typeof value !== "number")
-        throw new ERR_INVALID_ARG_TYPE2(name, "number", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "number", value);
       if (min != null && value < min || max != null && value > max || (min != null || max != null) && NumberIsNaN(value)) {
         throw new ERR_OUT_OF_RANGE(
           name,
@@ -3021,7 +3040,7 @@ var require_validators = __commonJS({
     });
     function validateBoolean(value, name) {
       if (typeof value !== "boolean")
-        throw new ERR_INVALID_ARG_TYPE2(name, "boolean", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "boolean", value);
     }
     function getOwnPropertyValueOrDefault(options, key, defaultValue) {
       return options == null || !ObjectPrototypeHasOwnProperty(options, key) ? defaultValue : options[key];
@@ -3031,17 +3050,17 @@ var require_validators = __commonJS({
       const allowFunction = getOwnPropertyValueOrDefault(options, "allowFunction", false);
       const nullable = getOwnPropertyValueOrDefault(options, "nullable", false);
       if (!nullable && value === null || !allowArray && ArrayIsArray(value) || typeof value !== "object" && (!allowFunction || typeof value !== "function")) {
-        throw new ERR_INVALID_ARG_TYPE2(name, "Object", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "Object", value);
       }
     });
     var validateDictionary = hideStackFrames((value, name) => {
       if (value != null && typeof value !== "object" && typeof value !== "function") {
-        throw new ERR_INVALID_ARG_TYPE2(name, "a dictionary", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "a dictionary", value);
       }
     });
     var validateArray = hideStackFrames((value, name, minLength = 0) => {
       if (!ArrayIsArray(value)) {
-        throw new ERR_INVALID_ARG_TYPE2(name, "Array", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "Array", value);
       }
       if (value.length < minLength) {
         const reason = `must be longer than ${minLength}`;
@@ -3066,7 +3085,7 @@ var require_validators = __commonJS({
         const signal = value[i];
         const indexedName = `${name}[${i}]`;
         if (signal == null) {
-          throw new ERR_INVALID_ARG_TYPE2(indexedName, "AbortSignal", signal);
+          throw new ERR_INVALID_ARG_TYPE(indexedName, "AbortSignal", signal);
         }
         validateAbortSignal(signal, indexedName);
       }
@@ -3082,7 +3101,7 @@ var require_validators = __commonJS({
     }
     var validateBuffer = hideStackFrames((buffer, name = "buffer") => {
       if (!isArrayBufferView(buffer)) {
-        throw new ERR_INVALID_ARG_TYPE2(name, ["Buffer", "TypedArray", "DataView"], buffer);
+        throw new ERR_INVALID_ARG_TYPE(name, ["Buffer", "TypedArray", "DataView"], buffer);
       }
     });
     function validateEncoding(data, encoding) {
@@ -3100,24 +3119,24 @@ var require_validators = __commonJS({
     }
     var validateAbortSignal = hideStackFrames((signal, name) => {
       if (signal !== void 0 && (signal === null || typeof signal !== "object" || !("aborted" in signal))) {
-        throw new ERR_INVALID_ARG_TYPE2(name, "AbortSignal", signal);
+        throw new ERR_INVALID_ARG_TYPE(name, "AbortSignal", signal);
       }
     });
     var validateFunction = hideStackFrames((value, name) => {
       if (typeof value !== "function")
-        throw new ERR_INVALID_ARG_TYPE2(name, "Function", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "Function", value);
     });
     var validatePlainFunction = hideStackFrames((value, name) => {
       if (typeof value !== "function" || isAsyncFunction(value))
-        throw new ERR_INVALID_ARG_TYPE2(name, "Function", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "Function", value);
     });
     var validateUndefined = hideStackFrames((value, name) => {
       if (value !== void 0)
-        throw new ERR_INVALID_ARG_TYPE2(name, "undefined", value);
+        throw new ERR_INVALID_ARG_TYPE(name, "undefined", value);
     });
     function validateUnion(value, name, union) {
       if (!ArrayPrototypeIncludes(union, value)) {
-        throw new ERR_INVALID_ARG_TYPE2(name, `('${ArrayPrototypeJoin(union, "|")}')`, value);
+        throw new ERR_INVALID_ARG_TYPE(name, `('${ArrayPrototypeJoin(union, "|")}')`, value);
       }
     }
     var linkValueRegExp = /^(?:<[^>]*>)(?:\s*;\s*[^;"\s]+(?:=(")?[^;"\s]*\1)?)*$/;
@@ -3136,19 +3155,19 @@ var require_validators = __commonJS({
         return hints;
       } else if (ArrayIsArray(hints)) {
         const hintsLength = hints.length;
-        let result = "";
+        let result2 = "";
         if (hintsLength === 0) {
-          return result;
+          return result2;
         }
         for (let i = 0; i < hintsLength; i++) {
           const link = hints[i];
           validateLinkHeaderFormat(link, "hints");
-          result += link;
+          result2 += link;
           if (i !== hintsLength - 1) {
-            result += ", ";
+            result2 += ", ";
           }
         }
-        return result;
+        return result2;
       }
       throw new ERR_INVALID_ARG_VALUE(
         "hints",
@@ -3587,9 +3606,10 @@ var require_utils = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/end-of-stream.js
 var require_end_of_stream = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/end-of-stream.js"(exports, module) {
+    "use strict";
     var process = require_browser2();
     var { AbortError, codes } = require_errors();
-    var { ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2, ERR_STREAM_PREMATURE_CLOSE } = codes;
+    var { ERR_INVALID_ARG_TYPE, ERR_STREAM_PREMATURE_CLOSE } = codes;
     var { kEmptyObject, once } = require_util();
     var { validateAbortSignal, validateFunction, validateObject, validateBoolean } = require_validators();
     var { Promise: Promise2, PromisePrototypeThen, SymbolDispose } = require_primordials();
@@ -3632,7 +3652,7 @@ var require_end_of_stream = __commonJS({
         return eosWeb(stream, options, callback);
       }
       if (!isNodeStream(stream)) {
-        throw new ERR_INVALID_ARG_TYPE2("stream", ["ReadableStream", "WritableStream", "Stream"], stream);
+        throw new ERR_INVALID_ARG_TYPE("stream", ["ReadableStream", "WritableStream", "Stream"], stream);
       }
       const readable = (_options$readable = options.readable) !== null && _options$readable !== void 0 ? _options$readable : isReadableNodeStream(stream);
       const writable = (_options$writable = options.writable) !== null && _options$writable !== void 0 ? _options$writable : isWritableNodeStream(stream);
@@ -4115,22 +4135,22 @@ var require_legacy = __commonJS({
     ObjectSetPrototypeOf(Stream.prototype, EE.prototype);
     ObjectSetPrototypeOf(Stream, EE);
     Stream.prototype.pipe = function(dest, options) {
-      const source2 = this;
+      const source = this;
       function ondata(chunk) {
-        if (dest.writable && dest.write(chunk) === false && source2.pause) {
-          source2.pause();
+        if (dest.writable && dest.write(chunk) === false && source.pause) {
+          source.pause();
         }
       }
-      source2.on("data", ondata);
+      source.on("data", ondata);
       function ondrain() {
-        if (source2.readable && source2.resume) {
-          source2.resume();
+        if (source.readable && source.resume) {
+          source.resume();
         }
       }
       dest.on("drain", ondrain);
       if (!dest._isStdio && (!options || options.end !== false)) {
-        source2.on("end", onend);
-        source2.on("close", onclose);
+        source.on("end", onend);
+        source.on("close", onclose);
       }
       let didOnEnd = false;
       function onend() {
@@ -4152,23 +4172,23 @@ var require_legacy = __commonJS({
           this.emit("error", er);
         }
       }
-      prependListener(source2, "error", onerror);
+      prependListener(source, "error", onerror);
       prependListener(dest, "error", onerror);
       function cleanup() {
-        source2.removeListener("data", ondata);
+        source.removeListener("data", ondata);
         dest.removeListener("drain", ondrain);
-        source2.removeListener("end", onend);
-        source2.removeListener("close", onclose);
-        source2.removeListener("error", onerror);
+        source.removeListener("end", onend);
+        source.removeListener("close", onclose);
+        source.removeListener("error", onerror);
         dest.removeListener("error", onerror);
-        source2.removeListener("end", cleanup);
-        source2.removeListener("close", cleanup);
+        source.removeListener("end", cleanup);
+        source.removeListener("close", cleanup);
         dest.removeListener("close", cleanup);
       }
-      source2.on("end", cleanup);
-      source2.on("close", cleanup);
+      source.on("end", cleanup);
+      source.on("close", cleanup);
       dest.on("close", cleanup);
-      dest.emit("pipe", source2);
+      dest.emit("pipe", source);
       return dest;
     };
     function prependListener(emitter, event, fn) {
@@ -4196,17 +4216,17 @@ var require_add_abort_signal = __commonJS({
     var { AbortError, codes } = require_errors();
     var { isNodeStream, isWebStream, kControllerErrorFunction } = require_utils();
     var eos = require_end_of_stream();
-    var { ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2 } = codes;
+    var { ERR_INVALID_ARG_TYPE } = codes;
     var addAbortListener;
     var validateAbortSignal = (signal, name) => {
       if (typeof signal !== "object" || !("aborted" in signal)) {
-        throw new ERR_INVALID_ARG_TYPE2(name, "AbortSignal", signal);
+        throw new ERR_INVALID_ARG_TYPE(name, "AbortSignal", signal);
       }
     };
     module.exports.addAbortSignal = function addAbortSignal(signal, stream) {
       validateAbortSignal(signal, "signal");
       if (!isNodeStream(stream) && !isWebStream(stream)) {
-        throw new ERR_INVALID_ARG_TYPE2("stream", ["ReadableStream", "WritableStream", "Stream"], stream);
+        throw new ERR_INVALID_ARG_TYPE("stream", ["ReadableStream", "WritableStream", "Stream"], stream);
       }
       return module.exports.addAbortSignalNoValidate(signal, stream);
     };
@@ -4244,7 +4264,7 @@ var require_buffer_list = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/buffer_list.js"(exports, module) {
     "use strict";
     var { StringPrototypeSlice, SymbolIterator, TypedArrayPrototypeSet, Uint8Array: Uint8Array2 } = require_primordials();
-    var { Buffer: Buffer2 } = require_buffer();
+    var { Buffer: Buffer3 } = require_buffer();
     var { inspect } = require_util();
     module.exports = class BufferList {
       constructor() {
@@ -4300,8 +4320,8 @@ var require_buffer_list = __commonJS({
       }
       concat(n) {
         if (this.length === 0)
-          return Buffer2.alloc(0);
-        const ret = Buffer2.allocUnsafe(n >>> 0);
+          return Buffer3.alloc(0);
+        const ret = Buffer3.allocUnsafe(n >>> 0);
         let p = this.head;
         let i = 0;
         while (p) {
@@ -4364,7 +4384,7 @@ var require_buffer_list = __commonJS({
       }
       // Consumes a specified amount of bytes from the buffered data.
       _getBuffer(n) {
-        const ret = Buffer2.allocUnsafe(n);
+        const ret = Buffer3.allocUnsafe(n);
         const retLen = n;
         let p = this.head;
         let c = 0;
@@ -4453,34 +4473,34 @@ var require_state = __commonJS({
 var require_safe_buffer = __commonJS({
   "node_modules/safe-buffer/index.js"(exports, module) {
     var buffer = require_buffer();
-    var Buffer2 = buffer.Buffer;
+    var Buffer3 = buffer.Buffer;
     function copyProps(src, dst) {
       for (var key in src) {
         dst[key] = src[key];
       }
     }
-    if (Buffer2.from && Buffer2.alloc && Buffer2.allocUnsafe && Buffer2.allocUnsafeSlow) {
+    if (Buffer3.from && Buffer3.alloc && Buffer3.allocUnsafe && Buffer3.allocUnsafeSlow) {
       module.exports = buffer;
     } else {
       copyProps(buffer, exports);
       exports.Buffer = SafeBuffer;
     }
     function SafeBuffer(arg, encodingOrOffset, length) {
-      return Buffer2(arg, encodingOrOffset, length);
+      return Buffer3(arg, encodingOrOffset, length);
     }
-    SafeBuffer.prototype = Object.create(Buffer2.prototype);
-    copyProps(Buffer2, SafeBuffer);
+    SafeBuffer.prototype = Object.create(Buffer3.prototype);
+    copyProps(Buffer3, SafeBuffer);
     SafeBuffer.from = function(arg, encodingOrOffset, length) {
       if (typeof arg === "number") {
         throw new TypeError("Argument must not be a number");
       }
-      return Buffer2(arg, encodingOrOffset, length);
+      return Buffer3(arg, encodingOrOffset, length);
     };
     SafeBuffer.alloc = function(size, fill, encoding) {
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      var buf = Buffer2(size);
+      var buf = Buffer3(size);
       if (fill !== void 0) {
         if (typeof encoding === "string") {
           buf.fill(fill, encoding);
@@ -4496,7 +4516,7 @@ var require_safe_buffer = __commonJS({
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      return Buffer2(size);
+      return Buffer3(size);
     };
     SafeBuffer.allocUnsafeSlow = function(size) {
       if (typeof size !== "number") {
@@ -4511,8 +4531,8 @@ var require_safe_buffer = __commonJS({
 var require_string_decoder = __commonJS({
   "node_modules/string_decoder/lib/string_decoder.js"(exports) {
     "use strict";
-    var Buffer2 = require_safe_buffer().Buffer;
-    var isEncoding = Buffer2.isEncoding || function(encoding) {
+    var Buffer3 = require_safe_buffer().Buffer;
+    var isEncoding = Buffer3.isEncoding || function(encoding) {
       encoding = "" + encoding;
       switch (encoding && encoding.toLowerCase()) {
         case "hex":
@@ -4562,7 +4582,7 @@ var require_string_decoder = __commonJS({
     }
     function normalizeEncoding(enc) {
       var nenc = _normalizeEncoding(enc);
-      if (typeof nenc !== "string" && (Buffer2.isEncoding === isEncoding || !isEncoding(enc)))
+      if (typeof nenc !== "string" && (Buffer3.isEncoding === isEncoding || !isEncoding(enc)))
         throw new Error("Unknown encoding: " + enc);
       return nenc || enc;
     }
@@ -4592,7 +4612,7 @@ var require_string_decoder = __commonJS({
       }
       this.lastNeed = 0;
       this.lastTotal = 0;
-      this.lastChar = Buffer2.allocUnsafe(nb);
+      this.lastChar = Buffer3.allocUnsafe(nb);
     }
     StringDecoder.prototype.write = function(buf) {
       if (buf.length === 0)
@@ -4773,11 +4793,11 @@ var require_from = __commonJS({
     "use strict";
     var process = require_browser2();
     var { PromisePrototypeThen, SymbolAsyncIterator, SymbolIterator } = require_primordials();
-    var { Buffer: Buffer2 } = require_buffer();
-    var { ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2, ERR_STREAM_NULL_VALUES } = require_errors().codes;
+    var { Buffer: Buffer3 } = require_buffer();
+    var { ERR_INVALID_ARG_TYPE, ERR_STREAM_NULL_VALUES } = require_errors().codes;
     function from(Readable2, iterable, opts) {
       let iterator;
-      if (typeof iterable === "string" || iterable instanceof Buffer2) {
+      if (typeof iterable === "string" || iterable instanceof Buffer3) {
         return new Readable2({
           objectMode: true,
           ...opts,
@@ -4795,7 +4815,7 @@ var require_from = __commonJS({
         isAsync = false;
         iterator = iterable[SymbolIterator]();
       } else {
-        throw new ERR_INVALID_ARG_TYPE2("iterable", ["Iterable"], iterable);
+        throw new ERR_INVALID_ARG_TYPE("iterable", ["Iterable"], iterable);
       }
       const readable = new Readable2({
         objectMode: true,
@@ -4865,6 +4885,7 @@ var require_from = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/readable.js
 var require_readable = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/readable.js"(exports, module) {
+    "use strict";
     var process = require_browser2();
     var {
       ArrayPrototypeIndexOf,
@@ -4884,7 +4905,7 @@ var require_readable = __commonJS({
     Readable2.ReadableState = ReadableState;
     var { EventEmitter: EE } = require_events();
     var { Stream, prependListener } = require_legacy();
-    var { Buffer: Buffer2 } = require_buffer();
+    var { Buffer: Buffer3 } = require_buffer();
     var { addAbortSignal } = require_add_abort_signal();
     var eos = require_end_of_stream();
     var debug = require_util().debuglog("stream", (fn) => {
@@ -4896,7 +4917,7 @@ var require_readable = __commonJS({
     var {
       aggregateTwoErrors,
       codes: {
-        ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2,
+        ERR_INVALID_ARG_TYPE,
         ERR_METHOD_NOT_IMPLEMENTED,
         ERR_OUT_OF_RANGE,
         ERR_STREAM_PUSH_AFTER_EOF,
@@ -5064,19 +5085,19 @@ var require_readable = __commonJS({
           encoding = encoding || state.defaultEncoding;
           if (state.encoding !== encoding) {
             if (addToFront && state.encoding) {
-              chunk = Buffer2.from(chunk, encoding).toString(state.encoding);
+              chunk = Buffer3.from(chunk, encoding).toString(state.encoding);
             } else {
-              chunk = Buffer2.from(chunk, encoding);
+              chunk = Buffer3.from(chunk, encoding);
               encoding = "";
             }
           }
-        } else if (chunk instanceof Buffer2) {
+        } else if (chunk instanceof Buffer3) {
           encoding = "";
         } else if (Stream._isUint8Array(chunk)) {
           chunk = Stream._uint8ArrayToBuffer(chunk);
           encoding = "";
         } else if (chunk != null) {
-          err = new ERR_INVALID_ARG_TYPE2("chunk", ["string", "Buffer", "Uint8Array"], chunk);
+          err = new ERR_INVALID_ARG_TYPE("chunk", ["string", "Buffer", "Uint8Array"], chunk);
         }
       }
       if (err) {
@@ -5882,6 +5903,7 @@ var require_readable = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/writable.js
 var require_writable = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/writable.js"(exports, module) {
+    "use strict";
     var process = require_browser2();
     var {
       ArrayPrototypeSlice,
@@ -5898,12 +5920,12 @@ var require_writable = __commonJS({
     Writable.WritableState = WritableState;
     var { EventEmitter: EE } = require_events();
     var Stream = require_legacy().Stream;
-    var { Buffer: Buffer2 } = require_buffer();
+    var { Buffer: Buffer3 } = require_buffer();
     var destroyImpl = require_destroy();
     var { addAbortSignal } = require_add_abort_signal();
     var { getHighWaterMark, getDefaultHighWaterMark } = require_state();
     var {
-      ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2,
+      ERR_INVALID_ARG_TYPE,
       ERR_METHOD_NOT_IMPLEMENTED,
       ERR_MULTIPLE_CALLBACK,
       ERR_STREAM_CANNOT_PIPE,
@@ -6020,7 +6042,7 @@ var require_writable = __commonJS({
       } else {
         if (!encoding)
           encoding = state.defaultEncoding;
-        else if (encoding !== "buffer" && !Buffer2.isEncoding(encoding))
+        else if (encoding !== "buffer" && !Buffer3.isEncoding(encoding))
           throw new ERR_UNKNOWN_ENCODING(encoding);
         if (typeof cb !== "function")
           cb = nop;
@@ -6030,16 +6052,16 @@ var require_writable = __commonJS({
       } else if (!state.objectMode) {
         if (typeof chunk === "string") {
           if (state.decodeStrings !== false) {
-            chunk = Buffer2.from(chunk, encoding);
+            chunk = Buffer3.from(chunk, encoding);
             encoding = "buffer";
           }
-        } else if (chunk instanceof Buffer2) {
+        } else if (chunk instanceof Buffer3) {
           encoding = "buffer";
         } else if (Stream._isUint8Array(chunk)) {
           chunk = Stream._uint8ArrayToBuffer(chunk);
           encoding = "buffer";
         } else {
-          throw new ERR_INVALID_ARG_TYPE2("chunk", ["string", "Buffer", "Uint8Array"], chunk);
+          throw new ERR_INVALID_ARG_TYPE("chunk", ["string", "Buffer", "Uint8Array"], chunk);
         }
       }
       let err;
@@ -6073,7 +6095,7 @@ var require_writable = __commonJS({
     Writable.prototype.setDefaultEncoding = function setDefaultEncoding(encoding) {
       if (typeof encoding === "string")
         encoding = StringPrototypeToLowerCase(encoding);
-      if (!Buffer2.isEncoding(encoding))
+      if (!Buffer3.isEncoding(encoding))
         throw new ERR_UNKNOWN_ENCODING(encoding);
       this._writableState.defaultEncoding = encoding;
       return this;
@@ -6541,7 +6563,7 @@ var require_duplexify = __commonJS({
     var eos = require_end_of_stream();
     var {
       AbortError,
-      codes: { ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2, ERR_INVALID_RETURN_VALUE }
+      codes: { ERR_INVALID_ARG_TYPE, ERR_INVALID_RETURN_VALUE }
     } = require_errors();
     var { destroyer } = require_destroy();
     var Duplex = require_duplex();
@@ -6693,7 +6715,7 @@ var require_duplexify = __commonJS({
           }
         });
       }
-      throw new ERR_INVALID_ARG_TYPE2(
+      throw new ERR_INVALID_ARG_TYPE(
         name,
         [
           "Blob",
@@ -7127,7 +7149,7 @@ var require_pipeline = __commonJS({
     var {
       aggregateTwoErrors,
       codes: {
-        ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2,
+        ERR_INVALID_ARG_TYPE,
         ERR_INVALID_RETURN_VALUE,
         ERR_MISSING_ARGS,
         ERR_STREAM_DESTROYED,
@@ -7185,7 +7207,7 @@ var require_pipeline = __commonJS({
       } else if (isReadableNodeStream(val)) {
         return fromReadable(val);
       }
-      throw new ERR_INVALID_ARG_TYPE2("val", ["Readable", "Iterable", "AsyncIterable"], val);
+      throw new ERR_INVALID_ARG_TYPE("val", ["Readable", "Iterable", "AsyncIterable"], val);
     }
     async function* fromReadable(val) {
       if (!Readable2) {
@@ -7449,7 +7471,7 @@ var require_pipeline = __commonJS({
               end
             });
           } else {
-            throw new ERR_INVALID_ARG_TYPE2(
+            throw new ERR_INVALID_ARG_TYPE(
               "val",
               ["Readable", "Iterable", "AsyncIterable", "ReadableStream", "TransformStream"],
               ret
@@ -7473,7 +7495,7 @@ var require_pipeline = __commonJS({
               end
             });
           } else {
-            throw new ERR_INVALID_ARG_TYPE2(
+            throw new ERR_INVALID_ARG_TYPE(
               "val",
               ["Readable", "Iterable", "AsyncIterable", "ReadableStream", "TransformStream"],
               ret
@@ -7743,7 +7765,7 @@ var require_operators = __commonJS({
     "use strict";
     var AbortController = globalThis.AbortController || require_browser().AbortController;
     var {
-      codes: { ERR_INVALID_ARG_VALUE, ERR_INVALID_ARG_TYPE: ERR_INVALID_ARG_TYPE2, ERR_MISSING_ARGS, ERR_OUT_OF_RANGE },
+      codes: { ERR_INVALID_ARG_VALUE, ERR_INVALID_ARG_TYPE, ERR_MISSING_ARGS, ERR_OUT_OF_RANGE },
       AbortError
     } = require_errors();
     var { validateAbortSignal, validateInteger, validateObject } = require_validators();
@@ -7786,7 +7808,7 @@ var require_operators = __commonJS({
     }
     function map(fn, options) {
       if (typeof fn !== "function") {
-        throw new ERR_INVALID_ARG_TYPE2("fn", ["Function", "AsyncFunction"], fn);
+        throw new ERR_INVALID_ARG_TYPE("fn", ["Function", "AsyncFunction"], fn);
       }
       if (options != null) {
         validateObject(options, "options");
@@ -7934,7 +7956,7 @@ var require_operators = __commonJS({
     }
     async function every(fn, options = void 0) {
       if (typeof fn !== "function") {
-        throw new ERR_INVALID_ARG_TYPE2("fn", ["Function", "AsyncFunction"], fn);
+        throw new ERR_INVALID_ARG_TYPE("fn", ["Function", "AsyncFunction"], fn);
       }
       return !await some.call(
         this,
@@ -7945,14 +7967,14 @@ var require_operators = __commonJS({
       );
     }
     async function find(fn, options) {
-      for await (const result of filter.call(this, fn, options)) {
-        return result;
+      for await (const result2 of filter.call(this, fn, options)) {
+        return result2;
       }
       return void 0;
     }
     async function forEach(fn, options) {
       if (typeof fn !== "function") {
-        throw new ERR_INVALID_ARG_TYPE2("fn", ["Function", "AsyncFunction"], fn);
+        throw new ERR_INVALID_ARG_TYPE("fn", ["Function", "AsyncFunction"], fn);
       }
       async function forEachFn(value, options2) {
         await fn(value, options2);
@@ -7963,7 +7985,7 @@ var require_operators = __commonJS({
     }
     function filter(fn, options) {
       if (typeof fn !== "function") {
-        throw new ERR_INVALID_ARG_TYPE2("fn", ["Function", "AsyncFunction"], fn);
+        throw new ERR_INVALID_ARG_TYPE("fn", ["Function", "AsyncFunction"], fn);
       }
       async function filterFn(value, options2) {
         if (await fn(value, options2)) {
@@ -7982,7 +8004,7 @@ var require_operators = __commonJS({
     async function reduce(reducer, initialValue, options) {
       var _options$signal2;
       if (typeof reducer !== "function") {
-        throw new ERR_INVALID_ARG_TYPE2("reducer", ["Function", "AsyncFunction"], reducer);
+        throw new ERR_INVALID_ARG_TYPE("reducer", ["Function", "AsyncFunction"], reducer);
       }
       if (options != null) {
         validateObject(options, "options");
@@ -8042,7 +8064,7 @@ var require_operators = __commonJS({
       if ((options === null || options === void 0 ? void 0 : options.signal) != null) {
         validateAbortSignal(options.signal, "options.signal");
       }
-      const result = [];
+      const result2 = [];
       for await (const val of this) {
         var _options$signal4;
         if (options !== null && options !== void 0 && (_options$signal4 = options.signal) !== null && _options$signal4 !== void 0 && _options$signal4.aborted) {
@@ -8050,9 +8072,9 @@ var require_operators = __commonJS({
             cause: options.signal.reason
           });
         }
-        ArrayPrototypePush(result, val);
+        ArrayPrototypePush(result2, val);
       }
-      return result;
+      return result2;
     }
     function flatMap(fn, options) {
       const values = map.call(this, fn, options);
@@ -8188,7 +8210,8 @@ var require_promises = __commonJS({
 // node_modules/readable-stream/lib/stream.js
 var require_stream = __commonJS({
   "node_modules/readable-stream/lib/stream.js"(exports, module) {
-    var { Buffer: Buffer2 } = require_buffer();
+    "use strict";
+    var { Buffer: Buffer3 } = require_buffer();
     var { ObjectDefineProperty, ObjectKeys, ReflectApply } = require_primordials();
     var {
       promisify: { custom: customPromisify }
@@ -8212,57 +8235,53 @@ var require_stream = __commonJS({
     Stream.isWritable = utils.isWritable;
     Stream.Readable = require_readable();
     for (const key of ObjectKeys(streamReturningOperators)) {
-      let fn2 = function(...args) {
+      let fn = function(...args) {
         if (new.target) {
           throw ERR_ILLEGAL_CONSTRUCTOR();
         }
         return Stream.Readable.from(ReflectApply(op, this, args));
       };
-      fn = fn2;
       const op = streamReturningOperators[key];
-      ObjectDefineProperty(fn2, "name", {
+      ObjectDefineProperty(fn, "name", {
         __proto__: null,
         value: op.name
       });
-      ObjectDefineProperty(fn2, "length", {
+      ObjectDefineProperty(fn, "length", {
         __proto__: null,
         value: op.length
       });
       ObjectDefineProperty(Stream.Readable.prototype, key, {
         __proto__: null,
-        value: fn2,
+        value: fn,
         enumerable: false,
         configurable: true,
         writable: true
       });
     }
-    var fn;
     for (const key of ObjectKeys(promiseReturningOperators)) {
-      let fn2 = function(...args) {
+      let fn = function(...args) {
         if (new.target) {
           throw ERR_ILLEGAL_CONSTRUCTOR();
         }
         return ReflectApply(op, this, args);
       };
-      fn = fn2;
       const op = promiseReturningOperators[key];
-      ObjectDefineProperty(fn2, "name", {
+      ObjectDefineProperty(fn, "name", {
         __proto__: null,
         value: op.name
       });
-      ObjectDefineProperty(fn2, "length", {
+      ObjectDefineProperty(fn, "length", {
         __proto__: null,
         value: op.length
       });
       ObjectDefineProperty(Stream.Readable.prototype, key, {
         __proto__: null,
-        value: fn2,
+        value: fn,
         enumerable: false,
         configurable: true,
         writable: true
       });
     }
-    var fn;
     Stream.Writable = require_writable();
     Stream.Duplex = require_duplex();
     Stream.Transform = require_transform();
@@ -8302,7 +8321,7 @@ var require_stream = __commonJS({
       return value instanceof Uint8Array;
     };
     Stream._uint8ArrayToBuffer = function _uint8ArrayToBuffer(chunk) {
-      return Buffer2.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
+      return Buffer3.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
     };
   }
 });
@@ -8343,1097 +8362,216 @@ var require_browser3 = __commonJS({
   }
 });
 
-// node_modules/@muze-nl/jsontag/src/lib/functions.mjs
-var jsonStringify = JSON.stringify;
-var stringify = (value, replacer = null, space = "") => {
-  let references = /* @__PURE__ */ new WeakMap();
-  let indent = "";
-  let gap = "";
-  if (typeof space === "number") {
-    indent += " ".repeat(space);
-  } else if (typeof space === "string") {
-    indent = space;
-  }
-  if (replacer && typeof replacer !== "function" && (typeof replacer !== "object" || typeof replacer.length !== "number")) {
-    throw new Error("JSONTag.stringify");
-  }
-  const encodeProperties = (obj) => {
-    let mind = gap;
-    gap += indent;
-    let gapstart = "";
-    let gapend = "";
-    let keys = Object.keys(obj);
-    if (Array.isArray(replacer)) {
-      keys = keys.filter((key) => replacer.indexOf(key) !== -1);
-    }
-    if (gap) {
-      gapstart = "\n" + gap;
-      gapend = "\n" + mind;
-    }
-    let result = gapstart + keys.map((prop) => {
-      return '"' + prop + '":' + str(prop, obj);
-    }).join("," + gapstart) + gapend;
-    gap = mind;
-    return result;
-  };
-  const encodeEntries = (arr) => {
-    let mind = gap;
-    gap += indent;
-    let gapstart = "";
-    let gapend = "";
-    if (gap) {
-      gapstart = "\n" + gap;
-      gapend = "\n" + mind;
-    }
-    let result = gapstart + arr.map((value2, index) => {
-      return str(index, arr);
-    }).join("," + gapstart) + gapend;
-    gap = mind;
-    return result;
-  };
-  const str = (key, holder) => {
-    let value2 = holder[key];
-    if (typeof replacer === "function" && key !== "") {
-      value2 = replacer.call(holder, key, value2);
-    }
-    if (typeof value2 === "object" && references.has(value2)) {
-      let id = getAttribute(value2, "id");
-      if (!id) {
-        id = createId(value2);
-      }
-      return '<link>"' + id + '"';
-    }
-    if (typeof value2 === "undefined" || value2 === null) {
-      return "null";
-    }
-    if (typeof value2 === "object") {
-      references.set(value2, true);
-    }
-    if (typeof value2.toJSONTag == "function") {
-      return value2.toJSONTag(references, replacer, space);
-    } else if (Array.isArray(value2)) {
-      return getTypeString(value2) + "[" + encodeEntries(value2) + "]";
-    } else if (value2 instanceof Object) {
-      switch (getType(value2)) {
-        case "string":
-        case "decimal":
-        case "money":
-        case "link":
-        case "text":
-        case "blob":
-        case "color":
-        case "email":
-        case "hash":
-        case "duration":
-        case "phone":
-        case "url":
-        case "uuid":
-        case "date":
-        case "time":
-        case "datetime":
-          return getTypeString(value2) + jsonStringify("" + value2, replacer, space);
-          break;
-        case "int":
-        case "uint":
-        case "int8":
-        case "uint8":
-        case "int16":
-        case "uint16":
-        case "int32":
-        case "uint32":
-        case "int64":
-        case "uint64":
-        case "float":
-        case "float32":
-        case "float64":
-        case "timestamp":
-        case "number":
-        case "boolean":
-          return getTypeString(value2) + jsonStringify(value2, replacer, space);
-          break;
-        case "array":
-          let entries = encodeEntries(value2);
-          return getTypeString(value2) + "[" + entries + "}";
-          break;
-        case "object":
-          if (value2 === null) {
-            return "null";
-          }
-          let props = encodeProperties(value2);
-          return getTypeString(value2) + "{" + props + "}";
-          break;
-        default:
-          throw new Error(getType(value2) + " type not yet implemented");
-          break;
-      }
-    } else {
-      return jsonStringify(value2, replacer, space);
-    }
-  };
-  return str("", { "": value });
-};
-function createId(value) {
-  if (typeof crypto === "undefined") {
-    console.error("JSONTag: cannot generate uuid, crypto support is disabled.");
-    throw new Error("Cannot create links to resolve references, crypto support is disabled");
-  }
-  if (typeof crypto.randomUUID === "function") {
-    var id = crypto.randomUUID();
-  } else {
-    var id = ("10000000-1000-4000-8000" + -1e11).replace(
-      /[018]/g,
-      (c) => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
-  }
-  setAttribute(value, "id", id);
-  return id;
+// src/oldm.mjs
+function oldm(options) {
+  return new Context(options);
 }
-var isNull = (v) => {
-  let result = v === null || typeof v.isNull !== "undefined" && v.isNull;
-  return result;
+var rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+var prefixes = {
+  solid: "http://www.w3.org/ns/solid/terms#",
+  schema: "http://schema.org/",
+  vcard: "http://www.w3.org/2006/vcard/ns#"
 };
-if (!globalThis.JSONTagTypeInfo) {
-  globalThis.JSONTagTypeInfo = /* @__PURE__ */ new WeakMap();
-}
-var typeInfo = globalThis.JSONTagTypeInfo;
-var getType = (obj) => {
-  if (typeInfo.has(obj)) {
-    let info = typeInfo.get(obj);
-    if (info.type) {
-      return info.type;
+var Context = class {
+  constructor(options) {
+    this.prefixes = { ...prefixes, ...options?.prefixes };
+    if (!this.prefixes["xsd"]) {
+      this.prefixes["xsd"] = "http://www.w3.org/2001/XMLSchema#";
     }
+    this.parser = options?.parser;
+    this.writer = options?.writer;
+    this.sources = /* @__PURE__ */ Object.create(null);
+    this.separator = options?.separator ?? "$";
   }
-  if (Array.isArray(obj)) {
-    return "array";
-  }
-  return typeof obj;
-};
-var types = [
-  "object",
-  "array",
-  "string",
-  "number",
-  "boolean",
-  // JSON
-  "decimal",
-  "money",
-  "uuid",
-  "url",
-  "link",
-  "date",
-  "time",
-  "datetime",
-  "duration",
-  "timestamp",
-  "text",
-  "blob",
-  "color",
-  "email",
-  "hash",
-  "phone",
-  "int",
-  "int8",
-  "int16",
-  "int32",
-  "int64",
-  "uint",
-  "uint8",
-  "uint16",
-  "uint32",
-  "uint64",
-  "float",
-  "float32",
-  "float64"
-];
-var setType = (obj, type) => {
-  if (typeof obj !== "object") {
-    throw new TypeError("JSONTag can only add attributes to objects, convert literals to objects first");
-  }
-  let info = {};
-  if (typeInfo.has(obj)) {
-    info = typeInfo.get(obj);
-  }
-  if (!types.includes(type)) {
-    throw new TypeError("unknown type " + type);
-  }
-  info.type = type;
-  if (typeof info.attributes === "undefined") {
-    info.attributes = {};
-  }
-  typeInfo.set(obj, info);
-};
-var setAttribute = (obj, attr, value) => {
-  if (typeof obj !== "object") {
-    throw new TypeError("JSONTag can only add attributes to objects, convert literals to objects first");
-  }
-  if (Array.isArray(value)) {
-    value = value.join(" ");
-  }
-  if (typeof value !== "string") {
-    throw new TypeError("attribute values must be a string or an array of strings");
-  }
-  if (value.indexOf('"') !== -1) {
-    throw new TypeError('attribute values must not contain " character');
-  }
-  if (value.indexOf(" ") !== -1) {
-    value = value.split(" ");
-  }
-  let info = typeInfo.get(obj) || { attributes: {} };
-  info.attributes[attr] = value;
-  typeInfo.set(obj, info);
-};
-var setAttributes = (obj, attributes) => {
-  if (typeof obj !== "object") {
-    throw new TypeError("JSONTag can only add attributes to objects, convert literals to objects first");
-  }
-  if (typeof attributes !== "object") {
-    throw new TypeError("attributes param must be an object");
-  }
-  Object.keys(attributes).forEach((key) => {
-    setAttribute(obj, key, attributes[key]);
-  });
-};
-var getAttribute = (obj, attr) => {
-  let info = typeInfo.get(obj) || { attributes: {} };
-  return info.attributes[attr];
-};
-var addAttribute = (obj, attr, value) => {
-  if (typeof value !== "string") {
-    throw new TypeError("attribute values must be a string");
-  }
-  if (value.indexOf('"') !== -1) {
-    throw new TypeError('attribute values must not contain " characters');
-  }
-  let info = typeInfo.get(obj) || { attributes: {} };
-  if (typeof info.attributes[attr] === "undefined") {
-    setAttribute(obj, attr, value);
-  } else {
-    if (!Array.isArray(info.attributes[attr])) {
-      info.attributes[attr] = [info.attributes[attr]];
-    }
-    if (value.indexOf(" ") !== -1) {
-      value = value.split(" ");
-    } else {
-      value = [value];
-    }
-    info.attributes[attr] = info.attributes[attr].concat(value);
-    typeInfo.set(obj, info);
-  }
-};
-var removeAttribute = (obj, attr) => {
-  let info = typeInfo.get(obj) || { attributes: {} };
-  if (typeof info.attributes[attr] !== "undefined") {
-    delete info.attributes[attr];
-    typeInfo.set(obj, info);
-  }
-};
-var getAttributes = (obj) => {
-  let info = typeInfo.get(obj) || { attributes: {} };
-  return Object.assign({}, info.attributes);
-};
-var getAttributesString = (obj) => {
-  return Object.entries(getAttributes(obj)).map(([attr, attrValue]) => {
-    if (Array.isArray(attrValue)) {
-      attrValue = attrValue.join(" ");
-    }
-    return attr + '="' + attrValue + '"';
-  }).join(" ");
-};
-var getTypeString = (obj) => {
-  let type = getType(obj);
-  let attributes = getAttributes(obj);
-  let attributesString = Object.entries(attributes).map(([attr, attrValue]) => {
-    if (Array.isArray(attrValue)) {
-      attrValue = attrValue.join(" ");
-    }
-    return attr + '="' + attrValue + '"';
-  }).join(" ");
-  if (!attributesString) {
-    if (["object", "array", "string", "number", "boolean"].indexOf(type) !== -1) {
-      type = "";
-    }
-  }
-  if (type || attributesString) {
-    return "<" + [type, attributesString].filter(Boolean).join(" ") + ">";
-  } else {
-    return "";
-  }
-};
-function shallowClone(o) {
-  if (o instanceof Number) {
-    return new Number(o);
-  }
-  if (o instanceof Boolean) {
-    return new Boolean(o);
-  }
-  if (o instanceof String) {
-    return new String(o);
-  }
-  if (Array.isArray(o)) {
-    return [...o];
-  }
-  return { ...o };
-}
-var clone = (obj) => {
-  let typeString = getTypeString(obj);
-  let type = getType(obj);
-  let attributes = getAttributes(obj);
-  let clone2 = shallowClone(obj);
-  if (typeString) {
-    setType(clone2, type);
-    if (attributes) {
-      setAttributes(clone2, attributes);
-    }
-  }
-  return clone2;
-};
-
-// node_modules/@muze-nl/jsontag/src/lib/Link.mjs
-var Link = class _Link {
-  #url;
-  constructor(url) {
-    if (typeof url !== "string") {
-      throw new Error("not a url:", url);
-    }
-    this.#url = "" + url;
-    setType(this, "link");
-  }
-  static from(url) {
-    if (url instanceof _Link) {
-      return url;
-    }
-    if (typeof url !== "string") {
-      throw new Error("not a url:", url);
-    }
-    return new _Link(url);
-  }
-  get value() {
-    return this.#url;
-  }
-  toString() {
-    return this.#url;
-  }
-  toJSON() {
-    return '"' + this.#url + '"';
-  }
-  toJSONTag() {
-    let attributes = getAttributesString(this);
-    return "<link" + (attributes ? " " + attributes : "") + ">" + this.toJSON();
-  }
-};
-
-// node_modules/@muze-nl/jsontag/src/lib/Null.mjs
-var ExtendableProxy = class {
-  constructor() {
-    return new Proxy(this, {
-      get: (target, name) => {
-        if (typeof target[name] !== "undefined") {
-          return target[name];
-        }
-        if (name == "then") {
-          return void 0;
-        }
-        console.error("Attempting to get from Null", name, typeof name, JSON.stringify(name));
-        throw new Error("Attempting to get " + name + " from Null");
-      },
-      set: (target, name, newValue) => {
-        console.error("Attempting to set " + name + " in Null to", newValue);
-        throw new Error("Attempting to set " + name + " in Null");
-      }
-    });
-  }
-};
-var Null = class extends ExtendableProxy {
-  isNull = true;
-  toString() {
-    return "";
-  }
-  toJSON() {
-    return "null";
-  }
-  toJSONTag() {
-    let type = getTypeString(this);
-    return type + this.toJSON();
-  }
-};
-
-// node_modules/@muze-nl/jsontag/src/lib/fast-parse.mjs
-function parse(input, reviver, meta) {
-  if (!meta) {
-    meta = {};
-  }
-  if (!meta.index) {
-    meta.index = {};
-  }
-  if (!meta.index.id) {
-    meta.index.id = /* @__PURE__ */ new Map();
-  }
-  if (!meta.unresolved) {
-    meta.unresolved = /* @__PURE__ */ new Map();
-  }
-  if (!meta.baseURL) {
-    meta.baseURL = "http://localhost/";
-  }
-  let at, ch, value, result;
-  let escapee = {
-    '"': '"',
-    "\\": "\\",
-    "/": "/",
-    b: "\b",
-    f: "\f",
-    n: "\n",
-    r: "\r",
-    t: "	"
-  };
-  let error = function(m) {
-    let context = input.substring(at - 100, at + 100);
-    throw {
-      name: "SyntaxError",
-      message: m,
-      at,
-      input: context
-    };
-  };
-  let next = function(c) {
-    if (c && c !== ch) {
-      error("Expected '" + c + "' instead of '" + ch + "'");
-    }
-    ch = input.charAt(at);
-    at += 1;
-    return ch;
-  };
-  let number = function(tagName) {
-    let numString = "";
-    if (ch === "-") {
-      numString = "-";
-      next("-");
-    }
-    while (ch >= "0" && ch <= "9") {
-      numString += ch;
-      next();
-    }
-    if (ch === ".") {
-      numString += ".";
-      while (next() && ch >= "0" && ch <= "9") {
-        numString += ch;
-      }
-    }
-    if (ch === "e" || ch === "E") {
-      numString += ch;
-      next();
-      if (ch === "-" || ch === "+") {
-        numString += ch;
-        next();
-      }
-      while (ch >= "0" && ch <= "9") {
-        numString += ch;
-        next();
-      }
-    }
-    let result2 = new Number(numString).valueOf();
-    if (tagName) {
-      switch (tagName) {
-        case "int":
-          isInt(numString);
-          break;
-        case "uint":
-          isInt(numString, [0, Infinity]);
-          break;
-        case "int8":
-          isInt(numString, [-128, 127]);
-          break;
-        case "uint8":
-          isInt(numString, [0, 255]);
-          break;
-        case "int16":
-          isInt(numString, [-32768, 32767]);
-          break;
-        case "uint16":
-          isInt(numString, [0, 65535]);
-          break;
-        case "int32":
-          isInt(numString, [-2147483648, 2147483647]);
-          break;
-        case "uint32":
-          isInt(numString, [0, 4294967295]);
-          break;
-        case "timestamp":
-        case "int64":
-          isInt(numString, [-9223372036854776e3, 9223372036854776e3]);
-          break;
-        case "uint64":
-          isInt(numString, [0, 18446744073709552e3]);
-          break;
-        case "float":
-          isFloat(numString);
-          break;
-        case "float32":
-          isFloat(numString, [-34e37, 34e37]);
-          break;
-        case "float64":
-          isFloat(numString, [-17e307, 17e307]);
-          break;
-        case "number":
-          break;
-        default:
-          isTypeError(tagName, numString);
-          break;
-      }
-    }
-    return result2;
-  };
-  let isTypeError = function(type, value2) {
-    error("Syntax error, expected " + type + ", got: " + value2);
-  };
-  const regexes = {
-    color: /^(rgb|hsl)a?\((\d+%?(deg|rad|grad|turn)?[,\s]+){2,3}[\s\/]*[\d\.]+%?\)$/i,
-    email: /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/,
-    uuid: /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/,
-    decimal: /^\d*\.?\d*$/,
-    money: /^[A-Z]+\$\d*\.?\d*$/,
-    duration: /^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$/,
-    phone: /^[+]?(?:\(\d+(?:\.\d+)?\)|\d+(?:\.\d+)?)(?:[ -]?(?:\(\d+(?:\.\d+)?\)|\d+(?:\.\d+)?))*(?:[ ]?(?:x|ext)\.?[ ]?\d{1,5})?$/,
-    time: /^(\d{2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?$/,
-    date: /^-?[1-9][0-9]{3,}-([0][1-9]|[1][0-2])-([1-2][0-9]|[0][1-9]|[3][0-1])$/,
-    datetime: /^(\d{4,})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?Z?$/,
-    range: /^\[-?(\d+\.)?\d+\,-?(\d+\.)?\d+\]$/
-  };
-  let isFloat = function(float, range) {
-    let test = new Number(parseFloat(float));
-    let str = test.toString();
-    if (float !== str) {
-      error("Syntax Error: expected float value");
-    }
-    if (range) {
-      if (typeof range[0] === "number") {
-        if (test < range[0]) {
-          error("Syntax Error: float value out of range");
-        }
-      }
-      if (typeof range[1] === "number") {
-        if (test > range[1]) {
-          error("Syntax Error: float value out of range");
+  parse(input, url, type) {
+    const { quads, prefixes: prefixes3, factory } = this.parser(input, url, type);
+    if (prefixes3) {
+      for (let prefix2 in prefixes3) {
+        let prefixURL = new URL(prefixes3[prefix2], url).href;
+        if (!this.prefixes[prefix2]) {
+          this.prefixes[prefix2] = prefixURL;
         }
       }
     }
-  };
-  let isInt = function(int, range) {
-    let test = new Number(parseInt(int));
-    let str = test.toString();
-    if (int !== str) {
-      error("Syntax Error: expected integer value");
+    this.sources[url] = new Graph(quads, url, type, prefixes3, this);
+    return this.sources[url];
+  }
+  setType(literal2, shortType) {
+    if (!shortType) {
+      return literal2;
     }
-    if (range) {
-      if (typeof range[0] === "number") {
-        if (test < range[0]) {
-          error("Syntax Error: integer value out of range");
-        }
-      }
-      if (typeof range[1] === "number") {
-        if (test > range[1]) {
-          error("Syntax Error: integer value out of range");
-        }
-      }
+    if (typeof literal2 == "string") {
+      literal2 = new String(literal2);
+    } else if (typeof result == "number") {
+      literal2 = new Number(literal2);
     }
-  };
-  let isColor = function(color) {
-    let result2 = false;
-    if (color.charAt(0) === "#") {
-      color = color.substring(1);
-      result2 = [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16));
-      if (result2.toString(16) !== color) {
-        isTypeError("color", color);
-      }
-    } else {
-      result2 = regexes.color.test(color);
+    if (typeof literal2 !== "object") {
+      throw new Error("cannot set type on ", literal2, shortType);
     }
-    if (!result2) {
-      isTypeError("color", color);
+    literal2.type = shortType;
+    return literal2;
+  }
+  getType(object) {
+    if (object && typeof object == "object") {
+      return object.type;
     }
-    return true;
-  };
-  let isEmail = function(email) {
-    let result2 = regexes.email.test(email);
-    if (!result2) {
-      isTypeError("email", email);
-    }
-    return true;
-  };
-  let isUuid = function(uuid) {
-    let result2 = regexes.uuid.test(uuid);
-    if (!result2) {
-      isTypeError("uuid", uuid);
-    }
-    return true;
-  };
-  let isDecimal = function(decimal) {
-    let result2 = regexes.decimal.test(decimal);
-    if (!result2) {
-      isTypeError("decimal", decimal);
-    }
-    return true;
-  };
-  let isMoney = function(money) {
-    let result2 = regexes.money.test(money);
-    if (!result2) {
-      isTypeError("money", money);
-    }
-    return true;
-  };
-  let isUrl = function(url) {
-    try {
-      return Boolean(new URL(url, meta.baseURL));
-    } catch (e) {
-      console.log(e);
-      isTypeError("url", url);
-    }
-  };
-  let isDuration = function(duration) {
-    let result2 = regexes.duration.test(duration);
-    if (!result2) {
-      isTypeError("duration", duration);
-    }
-    return true;
-  };
-  let isPhone = function(phone) {
-    let result2 = regexes.phone.test(phone);
-    if (!result2) {
-      isTypeError("phone", phone);
-    }
-    return true;
-  };
-  let isRange = function(range) {
-    let result2 = regexes.range.test(range);
-    if (!result2) {
-      isTypeError("range", range);
-    }
-    return true;
-  };
-  let isTime = function(time) {
-    let result2 = regexes.time.test(time);
-    if (!result2) {
-      isTypeError("time", time);
-    }
-    return true;
-  };
-  let isDate = function(date) {
-    let result2 = regexes.date.test(date);
-    if (!result2) {
-      isTypeError("date", date);
-    }
-    return true;
-  };
-  let isDatetime = function(datetime) {
-    let result2 = regexes.datetime.test(datetime);
-    if (!result2) {
-      isTypeError("datetime", datetime);
-    }
-    return true;
-  };
-  let checkStringType = function(tagName, value2) {
-    if (!tagName) {
-      return;
-    }
-    switch (tagName) {
-      case "object":
-      case "array":
-      case "int8":
-      case "uint8":
-      case "int16":
-      case "uint16":
-      case "int32":
-      case "uint32":
-      case "int64":
-      case "uint64":
-      case "int":
-      case "uint":
-      case "float32":
-      case "float64":
-      case "float":
-      case "timestamp":
-        isTypeError(tagName, value2);
-        break;
-      case "uuid":
-        return isUuid(value2);
-      case "decimal":
-        return isDecimal(value2);
-      case "money":
-        return isMoney(value2);
-      case "url":
-        return isUrl(value2);
-      case "link":
-      case "string":
-      case "text":
-      case "blob":
-      case "hash":
-        return true;
-      case "color":
-        return isColor(value2);
-      case "email":
-        return isEmail(value2);
-      case "duration":
-        return isDuration(value2);
-      case "phone":
-        return isPhone(value2);
-      case "range":
-        return isRange(value2);
-      case "time":
-        return isTime(value2);
-      case "date":
-        return isDate(value2);
-      case "datetime":
-        return isDatetime(value2);
-    }
-    error("Syntax error: unknown tagName " + tagName);
-  };
-  let string = function(tagName) {
-    let value2 = "", hex, i, uffff;
-    if (ch !== '"') {
-      error("Syntax Error");
-    }
-    next('"');
-    while (ch) {
-      if (ch === '"') {
-        next();
-        checkStringType(tagName, value2);
-        return value2;
-      }
-      if (ch === "\\") {
-        next();
-        if (ch === "u") {
-          uffff = 0;
-          for (i = 0; i < 4; i++) {
-            hex = parseInt(next(), 16);
-            if (!isFinite(hex)) {
-              break;
-            }
-            uffff = uffff * 16 + hex;
-          }
-          value2 += String.fromCharCode(uffff);
-          next();
-        } else if (typeof escapee[ch] === "string") {
-          value2 += escapee[ch];
-          next();
-        } else {
-          break;
-        }
+    console.error("getType: not an object", object);
+    return null;
+  }
+};
+var Graph = class {
+  #blankNodes = /* @__PURE__ */ Object.create(null);
+  constructor(quads, url, type, prefixes3, context) {
+    this.type = type;
+    this.url = url;
+    this.prefixes = prefixes3;
+    this.context = context;
+    this.subjects = /* @__PURE__ */ Object.create(null);
+    for (let quad2 of quads) {
+      let subject;
+      if (quad2.subject.termType == "BlankNode") {
+        subject = this.addBlankNode(quad2.subject.id);
       } else {
-        value2 += ch;
-        next();
+        subject = this.addSubject(quad2.subject.id);
       }
+      subject.addPredicate(quad2.predicate.id, quad2.object);
     }
-    error("Syntax error: incomplete string");
-  };
-  let tag = function() {
-    let key, val, tagOb = {
-      attributes: {}
-    };
-    if (ch !== "<") {
-      error("Syntax Error");
-    }
-    next("<");
-    key = word();
-    if (!key) {
-      error("Syntax Error: expected tag name");
-    }
-    tagOb.tagName = key;
-    whitespace();
-    while (ch) {
-      if (ch === ">") {
-        next(">");
-        return tagOb;
-      }
-      key = word();
-      if (!key) {
-        error("Syntax Error: expected attribute name");
-      }
-      whitespace();
-      next("=");
-      whitespace();
-      val = string();
-      tagOb.attributes[key] = val;
-      whitespace();
-    }
-    error("Syntax Error: unexpected end of input");
-  };
-  let whitespace = function() {
-    while (ch) {
-      switch (ch) {
-        case " ":
-        case "	":
-        case "\r":
-        case "\n":
-          next();
-          break;
-        default:
-          return;
-          break;
-      }
-    }
-  };
-  let word = function() {
-    let val = "";
-    if (ch >= "a" && ch <= "z" || ch >= "A" && ch <= "Z") {
-      val += ch;
-      next();
+    if (this.subjects[url]) {
+      this.primary = this.subjects[url];
     } else {
-      error("Syntax Error: expected word");
+      this.primary = null;
     }
-    while (ch >= "a" && ch <= "z" || ch >= "A" && ch <= "Z" || ch >= "0" && ch <= "9" || ch == "_") {
-      val += ch;
-      next();
-    }
-    return val;
-  };
-  let boolOrNull = function(tagName) {
-    let w = word();
-    if (!w || typeof w !== "string") {
-      error('Syntax error: expected boolean or null, got "' + w + '"');
-    }
-    switch (w.toLowerCase()) {
-      case "true":
-        if (tagName && tagName !== "boolean") {
-          isTypeError(tagName, w);
-        }
-        return true;
-        break;
-      case "false":
-        if (tagName && tagName !== "boolean") {
-          isTypeError(tagName, w);
-        }
-        return false;
-        break;
-      case "null":
-        return null;
-        break;
-      default:
-        error('Syntax error: expected boolean or null, got "' + w + '"');
-        break;
-    }
-  };
-  let checkUnresolved = function(item, object2, key) {
-    if (getType(item) === "link") {
-      let link = "" + item;
-      let links = meta.unresolved.get(link);
-      if (typeof links === "undefined") {
-        meta.unresolved.set(link, []);
-        links = meta.unresolved.get(link);
+    Object.defineProperty(this, "data", {
+      get() {
+        return Object.values(this.subjects);
       }
-      let count = links.push({
-        src: new WeakRef(object2),
-        key
-      });
+    });
+  }
+  addSubject(url) {
+    let absURI = new URL(url, this.url).href;
+    if (!this.subjects[absURI]) {
+      this.subjects[absURI] = new Subject(absURI, this);
     }
-  };
-  let array = function() {
-    let item, array2 = [];
-    if (ch !== "[") {
-      error("Syntax error");
+    return this.subjects[absURI];
+  }
+  addBlankNode(id) {
+    if (!this.#blankNodes[id]) {
+      this.#blankNodes[id] = new Subject(id, this);
     }
-    next("[");
-    whitespace();
-    if (ch === "]") {
-      next("]");
-      return array2;
+    return this.#blankNodes[id];
+  }
+  write() {
+    return this.context.writer(this);
+  }
+  get(shortID) {
+    return this.subjects[this.fullURI(shortID)];
+  }
+  fullURI(shortURI) {
+    const [prefix2, path] = shortURI.split(this.context.separator);
+    if (path) {
+      return this.prefixes[prefix2] + path;
     }
-    while (ch) {
-      item = value();
-      checkUnresolved(item, array2, array2.length);
-      array2.push(item);
-      whitespace();
-      if (ch === "]") {
-        next("]");
-        return array2;
+    return shortURI;
+  }
+  shortURI(fullURI, separator = null) {
+    if (!separator) {
+      separator = this.context.separator;
+    }
+    for (let prefix2 in this.context.prefixes) {
+      if (fullURI.startsWith(this.context.prefixes[prefix2])) {
+        return prefix2 + separator + fullURI.substring(this.context.prefixes[prefix2].length);
       }
-      next(",");
-      whitespace();
     }
-    error("Input stopped early");
-  };
-  let object = function() {
-    let key, val, object2 = {};
-    if (ch !== "{") {
-      error("Syntax Error");
+    if (this.url && fullURI.startsWith(this.url)) {
+      return fullURI.substring(this.url.length);
     }
-    next("{");
-    whitespace();
-    if (ch === "}") {
-      next("}");
-      return object2;
+    return fullURI;
+  }
+  /**
+   * This sets the type of a literal, usually one of the xsd types
+   */
+  setType(literal2, type) {
+    const shortType = this.shortURI(type);
+    return this.context.setType(literal2, shortType);
+  }
+  /**
+   * This returns the type of a literal, or null
+   */
+  getType(literal2) {
+    return this.context.getType(literal2);
+  }
+};
+var Subject = class {
+  constructor(uri, graph) {
+    Object.defineProperty(this, "graph", {
+      value: graph,
+      writable: false,
+      enumerable: false
+    });
+    Object.defineProperty(this, "id", {
+      value: uri,
+      writable: false,
+      enumerable: false
+    });
+    Object.defineProperty(this, "type", {
+      writable: true,
+      enumerable: false
+    });
+  }
+  addPredicate(predicate, object) {
+    if (predicate.id) {
+      predicate = predicate.id;
     }
-    while (ch) {
-      key = string();
-      if (key === "__proto__") {
-        error("Attempt at prototype pollution");
+    if (predicate == rdfType) {
+      let type = this.graph.shortURI(object.id);
+      this.addType(type);
+    } else {
+      const value = this.getValue(object);
+      predicate = this.graph.shortURI(predicate);
+      if (!this[predicate]) {
+        this[predicate] = value;
+      } else if (Array.isArray(this[predicate])) {
+        this[predicate].push(value);
+      } else {
+        this[predicate] = [this[predicate], value];
       }
-      whitespace();
-      next(":");
-      val = value();
-      object2[key] = val;
-      checkUnresolved(val, object2, key);
-      whitespace();
-      if (ch === "}") {
-        next("}");
-        return object2;
-      }
-      next(",");
-      whitespace();
     }
-    error("Input stopped early");
-  };
-  value = function() {
-    let tagOb, result2, tagName;
-    whitespace();
-    if (ch === "<") {
-      tagOb = tag();
-      tagName = tagOb.tagName;
-      whitespace();
+  }
+  /**
+   * Adds a rdfType value, stored in this.type
+   * Subjects can have more than one type (or class), unlike literals
+   * The type value can be any URI, xsdTypes are unexpected here
+   */
+  addType(extraType) {
+    let type = this.type;
+    if (!type) {
+      this.type = extraType;
+    } else {
+      if (!Array.isArray(this.type)) {
+        this.type = [this.type];
+      }
+      this.type.push(extraType);
     }
-    switch (ch) {
-      case "{":
-        if (tagName && tagName !== "object") {
-          isTypeError(tagName, ch);
-        }
-        result2 = object();
-        break;
-      case "[":
-        if (tagName && tagName !== "array") {
-          isTypeError(tagName, ch);
-        }
-        result2 = array();
-        break;
-      case '"':
-        result2 = string(tagName);
-        break;
-      case "-":
-        result2 = number(tagName);
-        break;
-      default:
-        if (ch >= "0" && ch <= "9") {
-          result2 = number(tagName);
-        } else {
-          result2 = boolOrNull(tagName);
-        }
-        break;
-    }
-    if (tagOb) {
-      if (result2 === null) {
-        result2 = new Null();
+  }
+  getValue(object) {
+    let result2;
+    if (object.termType == "Literal") {
+      result2 = object.value;
+      let datatype = object.datatype?.id;
+      if (datatype) {
+        result2 = this.graph.setType(result2, datatype);
       }
-      if (typeof result2 !== "object") {
-        switch (typeof result2) {
-          case "string":
-            result2 = new String(result2);
-            break;
-          case "number":
-            result2 = new Number(result2);
-            break;
-          default:
-            error("Syntax Error: unexpected type " + typeof result2);
-            break;
-        }
-      }
-      if (tagOb.tagName) {
-        setType(result2, tagOb.tagName);
-      }
-      if (tagOb.attributes) {
-        setAttributes(result2, tagOb.attributes);
-        if (tagOb.attributes?.id) {
-          meta.index.id.set(tagOb.attributes.id, new WeakRef(result2));
-        }
-      }
+    } else if (object.termType == "BlankNode") {
+      result2 = this.graph.addBlankNode(object.id);
+    } else {
+      result2 = this.graph.addSubject(object.id);
     }
     return result2;
-  };
-  at = 0;
-  ch = " ";
-  result = value();
-  whitespace();
-  if (ch) {
-    error("Syntax error");
-  }
-  if (typeof reviver === "function") {
-    let walk = function(holder, key) {
-      var k;
-      var v;
-      var value2 = holder[key];
-      if (value2 !== null && typeof value2 === "object" && !(value2 instanceof String || value2 instanceof Number || value2 instanceof Boolean)) {
-        for (k in value2) {
-          if (Object.prototype.hasOwnProperty.call(value2, k)) {
-            v = walk(value2, k);
-            if (v !== void 0 && (typeof value2[k] === "undefined" || value2[k] !== v)) {
-              value2[k] = v;
-              if (getType(v) === "link") {
-                checkUnresolved(v, value2, k);
-              }
-            } else if (v === void 0) {
-              delete value2[k];
-            }
-          }
-        }
-      }
-      return reviver.call(holder, key, value2, meta);
-    };
-    walk({ "": result }, "");
-  }
-  let replaceLink = function(u, value2) {
-    if (typeof value2 !== "undefined") {
-      let src = u.src.deref();
-      if (typeof src !== "undefined" && getType(src[u.key]) === "link") {
-        src[u.key] = value2;
-        return true;
-      }
-    }
-  };
-  if (meta.index.id.size > meta.unresolved.size) {
-    meta.unresolved.forEach((links, id) => {
-      let value2 = meta.index.id.get(id)?.deref();
-      if (value2 !== void 0) {
-        links.forEach((u, i) => {
-          if (replaceLink(u, value2)) {
-            delete links[i];
-          }
-        });
-      }
-    });
-  } else {
-    meta.index.id.forEach((ref, id) => {
-      let value2 = ref.deref();
-      let links = meta.unresolved.get(id);
-      if (value2 !== void 0 && typeof links !== "undefined") {
-        links.forEach((u, i) => {
-          replaceLink(u, value2);
-        });
-        meta.unresolved.delete(id);
-      }
-    });
-  }
-  return result;
-}
-
-// node_modules/@muze-nl/jsontag/src/JSONTag.mjs
-var JSONTag = class _JSONTag {
-  static {
-    _JSONTag.stringify = stringify;
-    _JSONTag.parse = parse;
-    _JSONTag.getType = getType;
-    _JSONTag.setType = setType;
-    _JSONTag.getTypeString = getTypeString;
-    _JSONTag.setAttribute = setAttribute;
-    _JSONTag.getAttribute = getAttribute;
-    _JSONTag.addAttribute = addAttribute;
-    _JSONTag.removeAttribute = removeAttribute;
-    _JSONTag.getAttributes = getAttributes;
-    _JSONTag.setAttributes = setAttributes;
-    _JSONTag.getAttributesString = getAttributesString;
-    _JSONTag.isNull = isNull;
-    _JSONTag.clone = clone;
-    _JSONTag.Link = Link;
-    _JSONTag.Null = Null;
   }
 };
 
 // node_modules/n3/src/N3Lexer.js
+var import_buffer = __toESM(require_buffer());
 var import_queue_microtask = __toESM(require_queue_microtask());
 
 // node_modules/n3/src/IRIs.js
@@ -9542,7 +8680,7 @@ var N3Lexer = class {
     } else {
       this._n3Mode = options.n3 !== false;
     }
-    this._comments = !!options.comments;
+    this.comments = !!options.comments;
     this._literalClosingPos = 0;
   }
   // ## Private methods
@@ -9553,7 +8691,7 @@ var N3Lexer = class {
     while (true) {
       let whiteSpaceMatch, comment;
       while (whiteSpaceMatch = this._newline.exec(input)) {
-        if (this._comments && (comment = this._comment.exec(whiteSpaceMatch[0])))
+        if (this.comments && (comment = this._comment.exec(whiteSpaceMatch[0])))
           emitToken("comment", comment[1], "", this._line, whiteSpaceMatch[0].length);
         input = input.substr(whiteSpaceMatch[0].length, input.length);
         currentLineLength = input.length;
@@ -9563,7 +8701,7 @@ var N3Lexer = class {
         input = input.substr(whiteSpaceMatch[0].length, input.length);
       if (this._endOfFile.test(input)) {
         if (inputFinished) {
-          if (this._comments && (comment = this._comment.exec(input)))
+          if (this.comments && (comment = this._comment.exec(input)))
             emitToken("comment", comment[1], "", this._line, input.length);
           input = null;
           emitToken("eof", "", "", this._line, 0);
@@ -9857,7 +8995,7 @@ var N3Lexer = class {
       input.on("data", (data) => {
         if (this._input !== null && data.length !== 0) {
           if (this._pendingBuffer) {
-            data = Buffer.concat([this._pendingBuffer, data]);
+            data = import_buffer.Buffer.concat([this._pendingBuffer, data]);
             this._pendingBuffer = null;
           }
           if (data[data.length - 1] & 128) {
@@ -9891,7 +9029,9 @@ var DataFactory = {
   literal,
   defaultGraph,
   quad,
-  triple: quad
+  triple: quad,
+  fromTerm,
+  fromQuad
 };
 var N3DataFactory_default = DataFactory;
 var Term = class _Term {
@@ -10150,6 +9290,33 @@ function defaultGraph() {
 function quad(subject, predicate, object, graph) {
   return new Quad(subject, predicate, object, graph);
 }
+function fromTerm(term) {
+  if (term instanceof Term)
+    return term;
+  switch (term.termType) {
+    case "NamedNode":
+      return namedNode(term.value);
+    case "BlankNode":
+      return blankNode(term.value);
+    case "Variable":
+      return variable(term.value);
+    case "DefaultGraph":
+      return DEFAULTGRAPH;
+    case "Literal":
+      return literal(term.value, term.language || term.datatype);
+    case "Quad":
+      return fromQuad(term);
+    default:
+      throw new Error(`Unexpected termType: ${term.termType}`);
+  }
+}
+function fromQuad(inQuad) {
+  if (inQuad instanceof Quad)
+    return inQuad;
+  if (inQuad.termType !== "Quad")
+    throw new Error(`Unexpected termType: ${inQuad.termType}`);
+  return quad(fromTerm(inQuad.subject), fromTerm(inQuad.predicate), fromTerm(inQuad.object), fromTerm(inQuad.graph));
+}
 
 // node_modules/n3/src/N3Parser.js
 var blankNodePrefix = 0;
@@ -10269,20 +9436,20 @@ var N3Parser = class {
         const iri = this._resolveIRI(token.value);
         if (iri === null)
           return this._error("Invalid IRI", token);
-        value = this._namedNode(iri);
+        value = this._factory.namedNode(iri);
         break;
       case "type":
       case "prefixed":
         const prefix2 = this._prefixes[token.prefix];
         if (prefix2 === void 0)
           return this._error(`Undefined prefix "${token.prefix}:"`, token);
-        value = this._namedNode(prefix2 + token.value);
+        value = this._factory.namedNode(prefix2 + token.value);
         break;
       case "blank":
-        value = this._blankNode(this._prefixes[token.prefix] + token.value);
+        value = this._factory.blankNode(this._prefixes[token.prefix] + token.value);
         break;
       case "var":
-        value = this._variable(token.value.substr(1));
+        value = this._factory.variable(token.value.substr(1));
         break;
       default:
         return this._error(`Expected entity but got ${token.type}`, token);
@@ -10299,7 +9466,7 @@ var N3Parser = class {
         this._saveContext(
           "blank",
           this._graph,
-          this._subject = this._blankNode(),
+          this._subject = this._factory.blankNode(),
           null,
           null
         );
@@ -10314,7 +9481,7 @@ var N3Parser = class {
         this._saveContext(
           "formula",
           this._graph,
-          this._graph = this._blankNode(),
+          this._graph = this._factory.blankNode(),
           null,
           null
         );
@@ -10326,14 +9493,14 @@ var N3Parser = class {
           return this._error('Unexpected "@forSome"', token);
         this._subject = null;
         this._predicate = this.N3_FORSOME;
-        this._quantifier = this._blankNode;
+        this._quantifier = "blankNode";
         return this._readQuantifierList;
       case "@forAll":
         if (!this._n3Mode)
           return this._error('Unexpected "@forAll"', token);
         this._subject = null;
         this._predicate = this.N3_FORALL;
-        this._quantifier = this._variable;
+        this._quantifier = "variable";
         return this._readQuantifierList;
       case "literal":
         if (!this._n3Mode)
@@ -10342,11 +9509,11 @@ var N3Parser = class {
           this._literalValue = token.value;
           return this._completeSubjectLiteral;
         } else
-          this._subject = this._literal(token.value, this._namedNode(token.prefix));
+          this._subject = this._factory.literal(token.value, this._factory.namedNode(token.prefix));
         break;
       case "<<":
         if (!this._supportsRDFStar)
-          return this._error("Unexpected RDF* syntax", token);
+          return this._error("Unexpected RDF-star syntax", token);
         this._saveContext("<<", this._graph, null, null, null);
         this._graph = null;
         return this._readSubject;
@@ -10382,7 +9549,7 @@ var N3Parser = class {
             "blank",
             this._graph,
             this._subject,
-            this._subject = this._blankNode(),
+            this._subject = this._factory.blankNode(),
             null
           );
           return this._readBlankNodeHead;
@@ -10404,7 +9571,7 @@ var N3Parser = class {
           this._literalValue = token.value;
           return this._readDataTypeOrLang;
         } else
-          this._object = this._literal(token.value, this._namedNode(token.prefix));
+          this._object = this._factory.literal(token.value, this._factory.namedNode(token.prefix));
         break;
       case "[":
         this._saveContext(
@@ -10412,7 +9579,7 @@ var N3Parser = class {
           this._graph,
           this._subject,
           this._predicate,
-          this._subject = this._blankNode()
+          this._subject = this._factory.blankNode()
         );
         return this._readBlankNodeHead;
       case "(":
@@ -10427,12 +9594,12 @@ var N3Parser = class {
           this._graph,
           this._subject,
           this._predicate,
-          this._graph = this._blankNode()
+          this._graph = this._factory.blankNode()
         );
         return this._readSubject;
       case "<<":
         if (!this._supportsRDFStar)
-          return this._error("Unexpected RDF* syntax", token);
+          return this._error("Unexpected RDF-star syntax", token);
         this._saveContext("<<", this._graph, this._subject, this._predicate, null);
         this._graph = null;
         return this._readSubject;
@@ -10500,9 +9667,9 @@ var N3Parser = class {
         this._saveContext(
           "blank",
           this._graph,
-          list = this._blankNode(),
+          list = this._factory.blankNode(),
           this.RDF_FIRST,
-          this._subject = item = this._blankNode()
+          this._subject = item = this._factory.blankNode()
         );
         next = this._readBlankNodeHead;
         break;
@@ -10510,7 +9677,7 @@ var N3Parser = class {
         this._saveContext(
           "list",
           this._graph,
-          list = this._blankNode(),
+          list = this._factory.blankNode(),
           this.RDF_FIRST,
           this.RDF_NIL
         );
@@ -10536,7 +9703,7 @@ var N3Parser = class {
           this._literalValue = token.value;
           next = this._readListItemDataTypeOrLang;
         } else {
-          item = this._literal(token.value, this._namedNode(token.prefix));
+          item = this._factory.literal(token.value, this._factory.namedNode(token.prefix));
           next = this._getContextEndReader();
         }
         break;
@@ -10548,7 +9715,7 @@ var N3Parser = class {
           this._graph,
           this._subject,
           this._predicate,
-          this._graph = this._blankNode()
+          this._graph = this._factory.blankNode()
         );
         return this._readSubject;
       default:
@@ -10556,7 +9723,7 @@ var N3Parser = class {
           return;
     }
     if (list === null)
-      this._subject = list = this._blankNode();
+      this._subject = list = this._factory.blankNode();
     if (previousList === null) {
       if (parent.predicate === null)
         parent.subject = list;
@@ -10585,18 +9752,18 @@ var N3Parser = class {
   }
   // ### `_completeLiteral` completes a literal with an optional datatype or language
   _completeLiteral(token) {
-    let literal2 = this._literal(this._literalValue);
+    let literal2 = this._factory.literal(this._literalValue);
     switch (token.type) {
       case "type":
       case "typeIRI":
         const datatype = this._readEntity(token);
         if (datatype === void 0)
           return;
-        literal2 = this._literal(this._literalValue, datatype);
+        literal2 = this._factory.literal(this._literalValue, datatype);
         token = null;
         break;
       case "langcode":
-        literal2 = this._literal(this._literalValue, token.value);
+        literal2 = this._factory.literal(this._literalValue, token.value);
         token = null;
         break;
     }
@@ -10656,9 +9823,9 @@ var N3Parser = class {
         break;
       case "{|":
         if (!this._supportsRDFStar)
-          return this._error("Unexpected RDF* syntax", token);
+          return this._error("Unexpected RDF-star syntax", token);
         const predicate = this._predicate, object = this._object;
-        this._subject = this._quad(subject, predicate, object, this.DEFAULTGRAPH);
+        this._subject = this._factory.quad(subject, predicate, object, this.DEFAULTGRAPH);
         next = this._readPredicate;
         break;
       case "|}":
@@ -10746,7 +9913,7 @@ var N3Parser = class {
   _readNamedGraphBlankLabel(token) {
     if (token.type !== "]")
       return this._error("Invalid graph label", token);
-    this._subject = this._blankNode();
+    this._subject = this._factory.blankNode();
     return this._readGraph;
   }
   // ### `_readDeclarationPunctuation` reads the punctuation of a declaration
@@ -10771,20 +9938,20 @@ var N3Parser = class {
         return this._error(`Unexpected ${token.type}`, token);
     }
     if (!this._explicitQuantifiers)
-      this._quantified[entity.id] = this._quantifier(this._blankNode().value);
+      this._quantified[entity.id] = this._factory[this._quantifier](this._factory.blankNode().value);
     else {
       if (this._subject === null)
         this._emit(
           this._graph || this.DEFAULTGRAPH,
           this._predicate,
-          this._subject = this._blankNode(),
+          this._subject = this._factory.blankNode(),
           this.QUANTIFIERS_GRAPH
         );
       else
         this._emit(
           this._subject,
           this.RDF_REST,
-          this._subject = this._blankNode(),
+          this._subject = this._factory.blankNode(),
           this.QUANTIFIERS_GRAPH
         );
       this._emit(this._subject, this.RDF_FIRST, entity, this.QUANTIFIERS_GRAPH);
@@ -10829,7 +9996,7 @@ var N3Parser = class {
   // ### `_readForwardPath` reads a '!' path
   _readForwardPath(token) {
     let subject, predicate;
-    const object = this._blankNode();
+    const object = this._factory.blankNode();
     if ((predicate = this._readEntity(token)) === void 0)
       return;
     if (this._predicate === null)
@@ -10841,7 +10008,7 @@ var N3Parser = class {
   }
   // ### `_readBackwardPath` reads a '^' path
   _readBackwardPath(token) {
-    const subject = this._blankNode();
+    const subject = this._factory.blankNode();
     let predicate, object;
     if ((predicate = this._readEntity(token)) === void 0)
       return;
@@ -10852,7 +10019,7 @@ var N3Parser = class {
     this._emit(subject, predicate, object, this._graph);
     return this._readPath;
   }
-  // ### `_readRDFStarTailOrGraph` reads the graph of a nested RDF* quad or the end of a nested RDF* triple
+  // ### `_readRDFStarTailOrGraph` reads the graph of a nested RDF-star quad or the end of a nested RDF-star triple
   _readRDFStarTailOrGraph(token) {
     if (token.type !== ">>") {
       if (this._supportsQuads && this._graph === null && (this._graph = this._readEntity(token)) !== void 0)
@@ -10861,11 +10028,11 @@ var N3Parser = class {
     }
     return this._readRDFStarTail(token);
   }
-  // ### `_readRDFStarTail` reads the end of a nested RDF* triple
+  // ### `_readRDFStarTail` reads the end of a nested RDF-star triple
   _readRDFStarTail(token) {
     if (token.type !== ">>")
       return this._error(`Expected >> but got ${token.type}`, token);
-    const quad2 = this._quad(
+    const quad2 = this._factory.quad(
       this._subject,
       this._predicate,
       this._object,
@@ -10898,7 +10065,7 @@ var N3Parser = class {
   }
   // ### `_emit` sends a quad through the callback
   _emit(subject, predicate, object, graph) {
-    this._callback(null, this._quad(subject, predicate, object, graph || this.DEFAULTGRAPH));
+    this._callback(null, this._factory.quad(subject, predicate, object, graph || this.DEFAULTGRAPH));
   }
   // ### `_error` emits an error message through the callback
   _error(message, token) {
@@ -10936,7 +10103,7 @@ var N3Parser = class {
     if (!/(^|\/)\.\.?($|[/#?])/.test(iri))
       return iri;
     const length = iri.length;
-    let result = "", i = -1, pathStart = -1, segmentStart = 0, next = "/";
+    let result2 = "", i = -1, pathStart = -1, segmentStart = 0, next = "/";
     while (i < length) {
       switch (next) {
         case ":":
@@ -10955,21 +10122,21 @@ var N3Parser = class {
             next = iri[++i + 1];
             switch (next) {
               case "/":
-                result += iri.substring(segmentStart, i - 1);
+                result2 += iri.substring(segmentStart, i - 1);
                 segmentStart = i + 1;
                 break;
               case void 0:
               case "?":
               case "#":
-                return result + iri.substring(segmentStart, i) + iri.substr(i + 1);
+                return result2 + iri.substring(segmentStart, i) + iri.substr(i + 1);
               case ".":
                 next = iri[++i + 1];
                 if (next === void 0 || next === "/" || next === "?" || next === "#") {
-                  result += iri.substring(segmentStart, i - 2);
-                  if ((segmentStart = result.lastIndexOf("/")) >= pathStart)
-                    result = result.substr(0, segmentStart);
+                  result2 += iri.substring(segmentStart, i - 2);
+                  if ((segmentStart = result2.lastIndexOf("/")) >= pathStart)
+                    result2 = result2.substr(0, segmentStart);
                   if (next !== "/")
-                    return `${result}/${iri.substr(i + 1)}`;
+                    return `${result2}/${iri.substr(i + 1)}`;
                   segmentStart = i + 1;
                 }
             }
@@ -10977,19 +10144,28 @@ var N3Parser = class {
       }
       next = iri[++i];
     }
-    return result + iri.substring(segmentStart);
+    return result2 + iri.substring(segmentStart);
   }
   // ## Public methods
-  // ### `parse` parses the N3 input and emits each parsed quad through the callback
+  // ### `parse` parses the N3 input and emits each parsed quad through the onQuad callback.
   parse(input, quadCallback, prefixCallback) {
+    let onQuad, onPrefix, onComment;
+    if (quadCallback && (quadCallback.onQuad || quadCallback.onPrefix || quadCallback.onComment)) {
+      onQuad = quadCallback.onQuad;
+      onPrefix = quadCallback.onPrefix;
+      onComment = quadCallback.onComment;
+    } else {
+      onQuad = quadCallback;
+      onPrefix = prefixCallback;
+    }
     this._readCallback = this._readInTopContext;
     this._sparqlStyle = false;
     this._prefixes = /* @__PURE__ */ Object.create(null);
     this._prefixes._ = this._blankNodePrefix ? this._blankNodePrefix.substr(2) : `b${blankNodePrefix++}_`;
-    this._prefixCallback = prefixCallback || noop;
+    this._prefixCallback = onPrefix || noop;
     this._inversePredicate = false;
     this._quantified = /* @__PURE__ */ Object.create(null);
-    if (!quadCallback) {
+    if (!onQuad) {
       const quads = [];
       let error;
       this._callback = (e, t) => {
@@ -11002,36 +10178,45 @@ var N3Parser = class {
         throw error;
       return quads;
     }
-    this._callback = quadCallback;
-    this._lexer.tokenize(input, (error, token) => {
+    let processNextToken = (error, token) => {
       if (error !== null)
         this._callback(error), this._callback = noop;
       else if (this._readCallback)
         this._readCallback = this._readCallback(token);
-    });
+    };
+    if (onComment) {
+      this._lexer.comments = true;
+      processNextToken = (error, token) => {
+        if (error !== null)
+          this._callback(error), this._callback = noop;
+        else if (this._readCallback) {
+          if (token.type === "comment")
+            onComment(token.value);
+          else
+            this._readCallback = this._readCallback(token);
+        }
+      };
+    }
+    this._callback = onQuad;
+    this._lexer.tokenize(input, processNextToken);
   }
 };
 function noop() {
 }
-function initDataFactory(parser2, factory) {
-  const namedNode2 = factory.namedNode;
-  parser2._namedNode = namedNode2;
-  parser2._blankNode = factory.blankNode;
-  parser2._literal = factory.literal;
-  parser2._variable = factory.variable;
-  parser2._quad = factory.quad;
-  parser2.DEFAULTGRAPH = factory.defaultGraph();
-  parser2.RDF_FIRST = namedNode2(IRIs_default.rdf.first);
-  parser2.RDF_REST = namedNode2(IRIs_default.rdf.rest);
-  parser2.RDF_NIL = namedNode2(IRIs_default.rdf.nil);
-  parser2.N3_FORALL = namedNode2(IRIs_default.r.forAll);
-  parser2.N3_FORSOME = namedNode2(IRIs_default.r.forSome);
-  parser2.ABBREVIATIONS = {
-    "a": namedNode2(IRIs_default.rdf.type),
-    "=": namedNode2(IRIs_default.owl.sameAs),
-    ">": namedNode2(IRIs_default.log.implies)
+function initDataFactory(parser, factory) {
+  parser._factory = factory;
+  parser.DEFAULTGRAPH = factory.defaultGraph();
+  parser.RDF_FIRST = factory.namedNode(IRIs_default.rdf.first);
+  parser.RDF_REST = factory.namedNode(IRIs_default.rdf.rest);
+  parser.RDF_NIL = factory.namedNode(IRIs_default.rdf.nil);
+  parser.N3_FORALL = factory.namedNode(IRIs_default.r.forAll);
+  parser.N3_FORSOME = factory.namedNode(IRIs_default.r.forSome);
+  parser.ABBREVIATIONS = {
+    "a": factory.namedNode(IRIs_default.rdf.type),
+    "=": factory.namedNode(IRIs_default.owl.sameAs),
+    ">": factory.namedNode(IRIs_default.log.implies)
   };
-  parser2.QUANTIFIERS_GRAPH = namedNode2("urn:n3:quantifiers");
+  parser.QUANTIFIERS_GRAPH = factory.namedNode("urn:n3:quantifiers");
 }
 initDataFactory(N3Parser.prototype, N3DataFactory_default);
 
@@ -11045,7 +10230,7 @@ __export(N3Util_exports, {
   isNamedNode: () => isNamedNode,
   isVariable: () => isVariable,
   prefix: () => prefix,
-  prefixes: () => prefixes
+  prefixes: () => prefixes2
 });
 function isNamedNode(term) {
   return !!term && term.termType === "NamedNode";
@@ -11066,23 +10251,23 @@ function inDefaultGraph(quad2) {
   return isDefaultGraph(quad2.graph);
 }
 function prefix(iri, factory) {
-  return prefixes({ "": iri.value || iri }, factory)("");
+  return prefixes2({ "": iri.value || iri }, factory)("");
 }
-function prefixes(defaultPrefixes, factory) {
-  const prefixes2 = /* @__PURE__ */ Object.create(null);
+function prefixes2(defaultPrefixes, factory) {
+  const prefixes3 = /* @__PURE__ */ Object.create(null);
   for (const prefix2 in defaultPrefixes)
     processPrefix(prefix2, defaultPrefixes[prefix2]);
   factory = factory || N3DataFactory_default;
   function processPrefix(prefix2, iri) {
     if (typeof iri === "string") {
       const cache = /* @__PURE__ */ Object.create(null);
-      prefixes2[prefix2] = (local) => {
+      prefixes3[prefix2] = (local) => {
         return cache[local] || (cache[local] = factory.namedNode(iri + local));
       };
-    } else if (!(prefix2 in prefixes2)) {
+    } else if (!(prefix2 in prefixes3)) {
       throw new Error(`Unknown prefix: ${prefix2}`);
     }
-    return prefixes2[prefix2];
+    return prefixes3[prefix2];
   }
   return processPrefix;
 }
@@ -11188,9 +10373,10 @@ var N3Writer = class {
   }
   // ### `quadsToString` serializes an array of quads as a string
   quadsToString(quads) {
-    return quads.map((t) => {
-      return this.quadToString(t.subject, t.predicate, t.object, t.graph);
-    }).join("");
+    let quadsString = "";
+    for (const quad2 of quads)
+      quadsString += this.quadToString(quad2.subject, quad2.predicate, quad2.object, quad2.graph);
+    return quadsString;
   }
   // ### `_encodeSubject` represents a subject
   _encodeSubject(entity) {
@@ -11260,7 +10446,7 @@ var N3Writer = class {
         return this._encodeIriOrBlank(object);
     }
   }
-  // ### `_encodeQuad` encodes an RDF* quad
+  // ### `_encodeQuad` encodes an RDF-star quad
   _encodeQuad({ subject, predicate, object, graph }) {
     return `<<${this._encodeSubject(subject)} ${this._encodePredicate(predicate)} ${this._encodeObject(object)}${isDefaultGraph(graph) ? "" : ` ${this._encodeIriOrBlank(graph)}`}>>`;
   }
@@ -11284,17 +10470,17 @@ var N3Writer = class {
   }
   // ### `addPrefix` adds the prefix to the output stream
   addPrefix(prefix2, iri, done) {
-    const prefixes2 = {};
-    prefixes2[prefix2] = iri;
-    this.addPrefixes(prefixes2, done);
+    const prefixes3 = {};
+    prefixes3[prefix2] = iri;
+    this.addPrefixes(prefixes3, done);
   }
   // ### `addPrefixes` adds the prefixes to the output stream
-  addPrefixes(prefixes2, done) {
+  addPrefixes(prefixes3, done) {
     if (!this._prefixIRIs)
       return done && done();
     let hasPrefixes = false;
-    for (let prefix2 in prefixes2) {
-      let iri = prefixes2[prefix2];
+    for (let prefix2 in prefixes3) {
+      let iri = prefixes3[prefix2];
       if (typeof iri !== "string")
         iri = iri.value;
       hasPrefixes = true;
@@ -11313,7 +10499,7 @@ var N3Writer = class {
         prefixList += (prefixList ? "|" : "") + this._prefixIRIs[prefixIRI];
       }
       IRIlist = escapeRegex(IRIlist, /[\]\/\(\)\*\+\?\.\\\$]/g, "\\$&");
-      this._prefixRegex = new RegExp(`^(?:${prefixList})[^/]*$|^(${IRIlist})([_a-zA-Z][\\-_a-zA-Z0-9]*)$`);
+      this._prefixRegex = new RegExp(`^(?:${prefixList})[^/]*$|^(${IRIlist})([_a-zA-Z0-9][\\-_a-zA-Z0-9]*)$`);
     }
     this._write(hasPrefixes ? "\n" : "", done);
   }
@@ -11362,8 +10548,8 @@ var N3Writer = class {
       this._subject = null;
     }
     this._write = this._blockedWrite;
-    let singleDone = done && ((error, result) => {
-      singleDone = null, done(error, result);
+    let singleDone = done && ((error, result2) => {
+      singleDone = null, done(error, result2);
     });
     if (this._endStream) {
       try {
@@ -11375,17 +10561,17 @@ var N3Writer = class {
   }
 };
 function characterReplacer(character) {
-  let result = escapedCharacters[character];
-  if (result === void 0) {
+  let result2 = escapedCharacters[character];
+  if (result2 === void 0) {
     if (character.length === 1) {
-      result = character.charCodeAt(0).toString(16);
-      result = "\\u0000".substr(0, 6 - result.length) + result;
+      result2 = character.charCodeAt(0).toString(16);
+      result2 = "\\u0000".substr(0, 6 - result2.length) + result2;
     } else {
-      result = ((character.charCodeAt(0) - 55296) * 1024 + character.charCodeAt(1) + 9216).toString(16);
-      result = "\\U00000000".substr(0, 10 - result.length) + result;
+      result2 = ((character.charCodeAt(0) - 55296) * 1024 + character.charCodeAt(1) + 9216).toString(16);
+      result2 = "\\U00000000".substr(0, 10 - result2.length) + result2;
     }
   }
-  return result;
+  return result2;
 }
 function escapeRegex(regex) {
   return regex.replace(/[\]\/\(\)\*\+\?\.\\\$]/g, "\\$&");
@@ -11393,22 +10579,58 @@ function escapeRegex(regex) {
 
 // node_modules/n3/src/N3Store.js
 var import_readable_stream = __toESM(require_browser3());
-var N3Store = class {
-  constructor(quads, options) {
-    this._size = 0;
-    this._graphs = /* @__PURE__ */ Object.create(null);
-    this._id = 0;
-    this._ids = /* @__PURE__ */ Object.create(null);
-    this._entities = /* @__PURE__ */ Object.create(null);
-    this._blankNodeIndex = 0;
-    if (!options && quads && !quads[0])
-      options = quads, quads = null;
-    options = options || {};
-    this._factory = options.factory || N3DataFactory_default;
-    if (quads)
-      this.addQuads(quads);
+var ITERATOR = Symbol("iter");
+function merge(target, source, depth = 4) {
+  if (depth === 0)
+    return Object.assign(target, source);
+  for (const key in source)
+    target[key] = merge(target[key] || /* @__PURE__ */ Object.create(null), source[key], depth - 1);
+  return target;
+}
+function intersect(s1, s2, depth = 4) {
+  let target = false;
+  for (const key in s1) {
+    if (key in s2) {
+      const intersection = depth === 0 ? null : intersect(s1[key], s2[key], depth - 1);
+      if (intersection !== false) {
+        target = target || /* @__PURE__ */ Object.create(null);
+        target[key] = intersection;
+      } else if (depth === 3) {
+        return false;
+      }
+    }
   }
-  _termFromId(id, factory) {
+  return target;
+}
+function difference(s1, s2, depth = 4) {
+  let target = false;
+  for (const key in s1) {
+    if (!(key in s2)) {
+      target = target || /* @__PURE__ */ Object.create(null);
+      target[key] = depth === 0 ? null : merge({}, s1[key], depth - 1);
+    } else if (depth !== 0) {
+      const diff = difference(s1[key], s2[key], depth - 1);
+      if (diff !== false) {
+        target = target || /* @__PURE__ */ Object.create(null);
+        target[key] = diff;
+      } else if (depth === 3) {
+        return false;
+      }
+    }
+  }
+  return target;
+}
+var N3EntityIndex = class {
+  constructor(options = {}) {
+    this._id = 1;
+    this._ids = /* @__PURE__ */ Object.create(null);
+    this._ids[""] = 1;
+    this._entities = /* @__PURE__ */ Object.create(null);
+    this._entities[1] = "";
+    this._blankNodeIndex = 0;
+    this._factory = options.factory || N3DataFactory_default;
+  }
+  _termFromId(id) {
     if (id[0] === ".") {
       const entities = this._entities;
       const terms = id.split(".");
@@ -11420,7 +10642,7 @@ var N3Store = class {
       );
       return q;
     }
-    return termFromId(id, factory);
+    return termFromId(id, this._factory);
   }
   _termToNumericId(term) {
     if (term.termType === "Quad") {
@@ -11433,6 +10655,38 @@ var N3Store = class {
   _termToNewNumericId(term) {
     const str = term && term.termType === "Quad" ? `.${this._termToNewNumericId(term.subject)}.${this._termToNewNumericId(term.predicate)}.${this._termToNewNumericId(term.object)}${isDefaultGraph(term.graph) ? "" : `.${this._termToNewNumericId(term.graph)}`}` : termToId(term);
     return this._ids[str] || (this._ids[this._entities[++this._id] = str] = this._id);
+  }
+  createBlankNode(suggestedName) {
+    let name, index;
+    if (suggestedName) {
+      name = suggestedName = `_:${suggestedName}`, index = 1;
+      while (this._ids[name])
+        name = suggestedName + index++;
+    } else {
+      do {
+        name = `_:b${this._blankNodeIndex++}`;
+      } while (this._ids[name]);
+    }
+    this._ids[name] = ++this._id;
+    this._entities[this._id] = name;
+    return this._factory.blankNode(name.substr(2));
+  }
+};
+var N3Store = class _N3Store {
+  constructor(quads, options) {
+    this._size = 0;
+    this._graphs = /* @__PURE__ */ Object.create(null);
+    if (!options && quads && !quads[0])
+      options = quads, quads = null;
+    options = options || {};
+    this._factory = options.factory || N3DataFactory_default;
+    this._entityIndex = options.entityIndex || new N3EntityIndex({ factory: this._factory });
+    this._entities = this._entityIndex._entities;
+    this._termFromId = this._entityIndex._termFromId.bind(this._entityIndex);
+    this._termToNumericId = this._entityIndex._termToNumericId.bind(this._entityIndex);
+    this._termToNewNumericId = this._entityIndex._termToNewNumericId.bind(this._entityIndex);
+    if (quads)
+      this.addQuads(quads);
   }
   // ## Public properties
   // ### `size` returns the number of quads in the store
@@ -11481,21 +10735,21 @@ var N3Store = class {
   *_findInIndex(index0, key0, key1, key2, name0, name1, name2, graphId) {
     let tmp, index1, index2;
     const entityKeys = this._entities;
-    const graph = this._termFromId(graphId, this._factory);
+    const graph = this._termFromId(entityKeys[graphId]);
     const parts = { subject: null, predicate: null, object: null };
     if (key0)
       (tmp = index0, index0 = {})[key0] = tmp[key0];
     for (const value0 in index0) {
       if (index1 = index0[value0]) {
-        parts[name0] = this._termFromId(entityKeys[value0], this._factory);
+        parts[name0] = this._termFromId(entityKeys[value0]);
         if (key1)
           (tmp = index1, index1 = {})[key1] = tmp[key1];
         for (const value1 in index1) {
           if (index2 = index1[value1]) {
-            parts[name1] = this._termFromId(entityKeys[value1], this._factory);
+            parts[name1] = this._termFromId(entityKeys[value1]);
             const values = key2 ? key2 in index2 ? [key2] : [] : Object.keys(index2);
             for (let l = 0; l < values.length; l++) {
-              parts[name2] = this._termFromId(entityKeys[values[l]], this._factory);
+              parts[name2] = this._termFromId(entityKeys[values[l]]);
               yield this._factory.quad(parts.subject, parts.predicate, parts.object, graph);
             }
           }
@@ -11559,11 +10813,8 @@ var N3Store = class {
   // ### `_getGraphs` returns an array with the given graph,
   // or all graphs if the argument is null or undefined.
   _getGraphs(graph) {
-    if (!isString(graph))
-      return this._graphs;
-    const graphs = {};
-    graphs[graph] = this._graphs[graph];
-    return graphs;
+    graph = graph === "" ? 1 : graph && (this._termToNumericId(graph) || -1);
+    return typeof graph !== "number" ? this._graphs : { [graph]: this._graphs[graph] };
   }
   // ### `_uniqueEntities` returns a function that accepts an entity ID
   // and passes the corresponding entity to callback if it hasn't occurred before.
@@ -11589,7 +10840,7 @@ var N3Store = class {
   addQuad(subject, predicate, object, graph) {
     if (!predicate)
       graph = subject.graph, object = subject.object, predicate = subject.predicate, subject = subject.subject;
-    graph = termToId(graph);
+    graph = graph ? this._termToNewNumericId(graph) : 1;
     let graphItem = this._graphs[graph];
     if (!graphItem) {
       graphItem = this._graphs[graph] = { subjects: {}, predicates: {}, objects: {} };
@@ -11598,11 +10849,12 @@ var N3Store = class {
     subject = this._termToNewNumericId(subject);
     predicate = this._termToNewNumericId(predicate);
     object = this._termToNewNumericId(object);
-    const changed = this._addToIndex(graphItem.subjects, subject, predicate, object);
+    if (!this._addToIndex(graphItem.subjects, subject, predicate, object))
+      return false;
     this._addToIndex(graphItem.predicates, predicate, object, subject);
     this._addToIndex(graphItem.objects, object, subject, predicate);
     this._size = null;
-    return changed;
+    return true;
   }
   // ### `addQuads` adds multiple quads to the store
   addQuads(quads) {
@@ -11631,8 +10883,8 @@ var N3Store = class {
   // ### `removeQuad` removes a quad from the store if it exists
   removeQuad(subject, predicate, object, graph) {
     if (!predicate)
-      graph = subject.graph, object = subject.object, predicate = subject.predicate, subject = subject.subject;
-    graph = termToId(graph);
+      ({ subject, predicate, object, graph } = subject);
+    graph = graph ? this._termToNumericId(graph) : 1;
     const graphs = this._graphs;
     let graphItem, subjects, predicates;
     if (!(subject = subject && this._termToNumericId(subject)) || !(predicate = predicate && this._termToNumericId(predicate)) || !(object = object && this._termToNumericId(object)) || !(graphItem = graphs[graph]) || !(subjects = graphItem.subjects[subject]) || !(predicates = subjects[predicate]) || !(object in predicates))
@@ -11663,10 +10915,16 @@ var N3Store = class {
   // Setting any field to `undefined` or `null` indicates a wildcard.
   removeMatches(subject, predicate, object, graph) {
     const stream = new import_readable_stream.Readable({ objectMode: true });
-    stream._read = () => {
-      for (const quad2 of this.readQuads(subject, predicate, object, graph))
-        stream.push(quad2);
-      stream.push(null);
+    const iterable = this.readQuads(subject, predicate, object, graph);
+    stream._read = (size) => {
+      while (--size >= 0) {
+        const { done, value } = iterable.next();
+        if (done) {
+          stream.push(null);
+          return;
+        }
+        stream.push(value);
+      }
     };
     return this.remove(stream);
   }
@@ -11679,10 +10937,12 @@ var N3Store = class {
   getQuads(subject, predicate, object, graph) {
     return [...this.readQuads(subject, predicate, object, graph)];
   }
-  // ### `readQuads` returns an generator of quads matching a pattern.
-  // Setting any field to `undefined` or `null` indicates a wildcard.
+  /**
+   * `readQuads` returns a generator of quads matching a pattern.
+   * Setting any field to `undefined` or `null` indicates a wildcard.
+   * @deprecated Use `match` instead.
+   */
   *readQuads(subject, predicate, object, graph) {
-    graph = graph && termToId(graph);
     const graphs = this._getGraphs(graph);
     let content, subjectId, predicateId, objectId;
     if (subject && !(subjectId = this._termToNumericId(subject)) || predicate && !(predicateId = this._termToNumericId(predicate)) || object && !(objectId = this._termToNumericId(object)))
@@ -11755,12 +11015,11 @@ var N3Store = class {
   // Setting any field to `undefined` or `null` indicates a wildcard.
   // For backwards compatibility, the object return also implements the Readable stream interface.
   match(subject, predicate, object, graph) {
-    return new DatasetCoreAndReadableStream(this, subject, predicate, object, graph);
+    return new DatasetCoreAndReadableStream(this, subject, predicate, object, graph, { entityIndex: this._entityIndex });
   }
   // ### `countQuads` returns the number of quads matching a pattern.
   // Setting any field to `undefined` or `null` indicates a wildcard.
   countQuads(subject, predicate, object, graph) {
-    graph = graph && termToId(graph);
     const graphs = this._getGraphs(graph);
     let count = 0, content, subjectId, predicateId, objectId;
     if (subject && !(subjectId = this._termToNumericId(subject)) || predicate && !(predicateId = this._termToNumericId(predicate)) || object && !(objectId = this._termToNumericId(object)))
@@ -11785,7 +11044,7 @@ var N3Store = class {
   // Setting any field to `undefined` or `null` indicates a wildcard.
   forEach(callback, subject, predicate, object, graph) {
     this.some((quad2) => {
-      callback(quad2);
+      callback(quad2, this);
       return false;
     }, subject, predicate, object, graph);
   }
@@ -11793,12 +11052,7 @@ var N3Store = class {
   // and returns `true` if it returns truthy for all them.
   // Setting any field to `undefined` or `null` indicates a wildcard.
   every(callback, subject, predicate, object, graph) {
-    let some = false;
-    const every = !this.some((quad2) => {
-      some = true;
-      return !callback(quad2);
-    }, subject, predicate, object, graph);
-    return some && every;
+    return !this.some((quad2) => !callback(quad2, this), subject, predicate, object, graph);
   }
   // ### `some` executes the callback on all quads,
   // and returns `true` if it returns truthy for any of them.
@@ -11821,7 +11075,6 @@ var N3Store = class {
   // ### `forSubjects` executes the callback on all subjects that match the pattern.
   // Setting any field to `undefined` or `null` indicates a wildcard.
   forSubjects(callback, predicate, object, graph) {
-    graph = graph && termToId(graph);
     const graphs = this._getGraphs(graph);
     let content, predicateId, objectId;
     callback = this._uniqueEntities(callback);
@@ -11853,7 +11106,6 @@ var N3Store = class {
   // ### `forPredicates` executes the callback on all predicates that match the pattern.
   // Setting any field to `undefined` or `null` indicates a wildcard.
   forPredicates(callback, subject, object, graph) {
-    graph = graph && termToId(graph);
     const graphs = this._getGraphs(graph);
     let content, subjectId, objectId;
     callback = this._uniqueEntities(callback);
@@ -11885,7 +11137,6 @@ var N3Store = class {
   // ### `forObjects` executes the callback on all objects that match the pattern.
   // Setting any field to `undefined` or `null` indicates a wildcard.
   forObjects(callback, subject, predicate, graph) {
-    graph = graph && termToId(graph);
     const graphs = this._getGraphs(graph);
     let content, subjectId, predicateId;
     callback = this._uniqueEntities(callback);
@@ -11921,24 +11172,12 @@ var N3Store = class {
       this.some((quad2) => {
         callback(quad2.graph);
         return true;
-      }, subject, predicate, object, graph);
+      }, subject, predicate, object, this._termFromId(this._entities[graph]));
     }
   }
   // ### `createBlankNode` creates a new blank node, returning its name
   createBlankNode(suggestedName) {
-    let name, index;
-    if (suggestedName) {
-      name = suggestedName = `_:${suggestedName}`, index = 1;
-      while (this._ids[name])
-        name = suggestedName + index++;
-    } else {
-      do {
-        name = `_:b${this._blankNodeIndex++}`;
-      } while (this._ids[name]);
-    }
-    this._ids[name] = ++this._id;
-    this._entities[this._id] = name;
-    return this._factory.blankNode(name.substr(2));
+    return this._entityIndex.createBlankNode(suggestedName);
   }
   // ### `extractLists` finds and removes all list triples
   // and returns the items per list.
@@ -12012,6 +11251,206 @@ var N3Store = class {
       this.removeQuads(toRemove);
     return lists;
   }
+  /**
+   * Returns `true` if the current dataset is a superset of the given dataset; in other words, returns `true` if
+   * the given dataset is a subset of, i.e., is contained within, the current dataset.
+   *
+   * Blank Nodes will be normalized.
+   */
+  addAll(quads) {
+    if (quads instanceof DatasetCoreAndReadableStream)
+      quads = quads.filtered;
+    if (Array.isArray(quads))
+      this.addQuads(quads);
+    else if (quads instanceof _N3Store && quads._entityIndex === this._entityIndex) {
+      if (quads._size !== 0) {
+        this._graphs = merge(this._graphs, quads._graphs);
+        this._size = null;
+      }
+    } else {
+      for (const quad2 of quads)
+        this.add(quad2);
+    }
+    return this;
+  }
+  /**
+   * Returns `true` if the current dataset is a superset of the given dataset; in other words, returns `true` if
+   * the given dataset is a subset of, i.e., is contained within, the current dataset.
+   *
+   * Blank Nodes will be normalized.
+   */
+  contains(other) {
+    if (other instanceof DatasetCoreAndReadableStream)
+      other = other.filtered;
+    if (other === this)
+      return true;
+    if (!(other instanceof _N3Store) || this._entityIndex !== other._entityIndex)
+      return other.every((quad2) => this.has(quad2));
+    const g1 = this._graphs, g2 = other._graphs;
+    let s1, s2, p1, p2, o1;
+    for (const graph in g2) {
+      if (!(s1 = g1[graph]))
+        return false;
+      s1 = s1.subjects;
+      for (const subject in s2 = g2[graph].subjects) {
+        if (!(p1 = s1[subject]))
+          return false;
+        for (const predicate in p2 = s2[subject]) {
+          if (!(o1 = p1[predicate]))
+            return false;
+          for (const object in p2[predicate])
+            if (!(object in o1))
+              return false;
+        }
+      }
+    }
+    return true;
+  }
+  /**
+   * This method removes the quads in the current dataset that match the given arguments.
+   *
+   * The logic described in {@link https://rdf.js.org/dataset-spec/#quad-matching|Quad Matching} is applied for each
+   * quad in this dataset, to select the quads which will be deleted.
+   *
+   * @param subject   The optional exact subject to match.
+   * @param predicate The optional exact predicate to match.
+   * @param object    The optional exact object to match.
+   * @param graph     The optional exact graph to match.
+   */
+  deleteMatches(subject, predicate, object, graph) {
+    for (const quad2 of this.match(subject, predicate, object, graph))
+      this.removeQuad(quad2);
+    return this;
+  }
+  /**
+   * Returns a new dataset that contains all quads from the current dataset that are not included in the given dataset.
+   */
+  difference(other) {
+    if (other && other instanceof DatasetCoreAndReadableStream)
+      other = other.filtered;
+    if (other === this)
+      return new _N3Store({ entityIndex: this._entityIndex });
+    if (other instanceof _N3Store && other._entityIndex === this._entityIndex) {
+      const store = new _N3Store({ entityIndex: this._entityIndex });
+      const graphs = difference(this._graphs, other._graphs);
+      if (graphs) {
+        store._graphs = graphs;
+        store._size = null;
+      }
+      return store;
+    }
+    return this.filter((quad2) => !other.has(quad2));
+  }
+  /**
+   * Returns true if the current dataset contains the same graph structure as the given dataset.
+   *
+   * Blank Nodes will be normalized.
+   */
+  equals(other) {
+    if (other instanceof DatasetCoreAndReadableStream)
+      other = other.filtered;
+    return other === this || this.size === other.size && this.contains(other);
+  }
+  /**
+   * Creates a new dataset with all the quads that pass the test implemented by the provided `iteratee`.
+   *
+   * This method is aligned with Array.prototype.filter() in ECMAScript-262.
+   */
+  filter(iteratee) {
+    const store = new _N3Store({ entityIndex: this._entityIndex });
+    for (const quad2 of this)
+      if (iteratee(quad2, this))
+        store.add(quad2);
+    return store;
+  }
+  /**
+   * Returns a new dataset containing all quads from the current dataset that are also included in the given dataset.
+   */
+  intersection(other) {
+    if (other instanceof DatasetCoreAndReadableStream)
+      other = other.filtered;
+    if (other === this) {
+      const store = new _N3Store({ entityIndex: this._entityIndex });
+      store._graphs = merge(/* @__PURE__ */ Object.create(null), this._graphs);
+      store._size = this._size;
+      return store;
+    } else if (other instanceof _N3Store && this._entityIndex === other._entityIndex) {
+      const store = new _N3Store({ entityIndex: this._entityIndex });
+      const graphs = intersect(other._graphs, this._graphs);
+      if (graphs) {
+        store._graphs = graphs;
+        store._size = null;
+      }
+      return store;
+    }
+    return this.filter((quad2) => other.has(quad2));
+  }
+  /**
+   * Returns a new dataset containing all quads returned by applying `iteratee` to each quad in the current dataset.
+   */
+  map(iteratee) {
+    const store = new _N3Store({ entityIndex: this._entityIndex });
+    for (const quad2 of this)
+      store.add(iteratee(quad2, this));
+    return store;
+  }
+  /**
+   * This method calls the `iteratee` method on each `quad` of the `Dataset`. The first time the `iteratee` method
+   * is called, the `accumulator` value is the `initialValue`, or, if not given, equals the first quad of the `Dataset`.
+   * The return value of each call to the `iteratee` method is used as the `accumulator` value for the next call.
+   *
+   * This method returns the return value of the last `iteratee` call.
+   *
+   * This method is aligned with `Array.prototype.reduce()` in ECMAScript-262.
+   */
+  reduce(callback, initialValue) {
+    const iter = this.readQuads();
+    let accumulator = initialValue === void 0 ? iter.next().value : initialValue;
+    for (const quad2 of iter)
+      accumulator = callback(accumulator, quad2, this);
+    return accumulator;
+  }
+  /**
+   * Returns the set of quads within the dataset as a host-language-native sequence, for example an `Array` in
+   * ECMAScript-262.
+   *
+   * Since a `Dataset` is an unordered set, the order of the quads within the returned sequence is arbitrary.
+   */
+  toArray() {
+    return this.getQuads();
+  }
+  /**
+   * Returns an N-Quads string representation of the dataset, preprocessed with the
+   * {@link https://json-ld.github.io/normalization/spec/|RDF Dataset Normalization} algorithm.
+   */
+  toCanonical() {
+    throw new Error("not implemented");
+  }
+  /**
+   * Returns a stream that contains all quads of the dataset.
+   */
+  toStream() {
+    return this.match();
+  }
+  /**
+   * Returns an N-Quads string representation of the dataset.
+   *
+   * No prior normalization is required, therefore the results for the same quads may vary depending on the `Dataset`
+   * implementation.
+   */
+  toString() {
+    return new N3Writer().quadsToString(this);
+  }
+  /**
+   * Returns a new `Dataset` that is a concatenation of this dataset and the quads given as an argument.
+   */
+  union(quads) {
+    const store = new _N3Store({ entityIndex: this._entityIndex });
+    store._graphs = merge(/* @__PURE__ */ Object.create(null), this._graphs);
+    store._size = this._size;
+    store.addAll(quads);
+    return store;
+  }
   // ### Store is an iterable.
   // Can be used where iterables are expected: for...of loops, array spread operator,
   // `yield*`, and destructuring assignment (order is not guaranteed).
@@ -12019,30 +11458,125 @@ var N3Store = class {
     yield* this.readQuads();
   }
 };
-function isString(s) {
-  return typeof s === "string" || s instanceof String;
+function indexMatch(index, ids, depth = 0) {
+  const ind = ids[depth];
+  if (ind && !(ind in index))
+    return false;
+  let target = false;
+  for (const key in ind ? { [ind]: index[ind] } : index) {
+    const result2 = depth === 2 ? null : indexMatch(index[key], ids, depth + 1);
+    if (result2 !== false) {
+      target = target || /* @__PURE__ */ Object.create(null);
+      target[key] = result2;
+    }
+  }
+  return target;
 }
 var DatasetCoreAndReadableStream = class _DatasetCoreAndReadableStream extends import_readable_stream.Readable {
-  constructor(n3Store, subject, predicate, object, graph) {
+  constructor(n3Store, subject, predicate, object, graph, options) {
     super({ objectMode: true });
-    Object.assign(this, { n3Store, subject, predicate, object, graph });
+    Object.assign(this, { n3Store, subject, predicate, object, graph, options });
   }
   get filtered() {
     if (!this._filtered) {
       const { n3Store, graph, object, predicate, subject } = this;
-      const newStore = this._filtered = new N3Store({ factory: n3Store._factory });
-      for (const quad2 of n3Store.readQuads(subject, predicate, object, graph))
-        newStore.addQuad(quad2);
+      const newStore = this._filtered = new N3Store({ factory: n3Store._factory, entityIndex: this.options.entityIndex });
+      let subjectId, predicateId, objectId;
+      if (subject && !(subjectId = newStore._termToNumericId(subject)) || predicate && !(predicateId = newStore._termToNumericId(predicate)) || object && !(objectId = newStore._termToNumericId(object)))
+        return newStore;
+      const graphs = n3Store._getGraphs(graph);
+      for (const graphKey in graphs) {
+        let subjects, predicates, objects;
+        if (!subjectId && predicateId) {
+          if (predicates = indexMatch(graphs[graphKey].predicates, [predicateId, objectId, subjectId])) {
+            subjects = indexMatch(graphs[graphKey].subjects, [subjectId, predicateId, objectId]);
+            objects = indexMatch(graphs[graphKey].objects, [objectId, subjectId, predicateId]);
+          }
+        } else if (objectId) {
+          if (objects = indexMatch(graphs[graphKey].objects, [objectId, subjectId, predicateId])) {
+            subjects = indexMatch(graphs[graphKey].subjects, [subjectId, predicateId, objectId]);
+            predicates = indexMatch(graphs[graphKey].predicates, [predicateId, objectId, subjectId]);
+          }
+        } else if (subjects = indexMatch(graphs[graphKey].subjects, [subjectId, predicateId, objectId])) {
+          predicates = indexMatch(graphs[graphKey].predicates, [predicateId, objectId, subjectId]);
+          objects = indexMatch(graphs[graphKey].objects, [objectId, subjectId, predicateId]);
+        }
+        if (subjects)
+          newStore._graphs[graphKey] = { subjects, predicates, objects };
+      }
+      newStore._size = null;
     }
     return this._filtered;
   }
   get size() {
     return this.filtered.size;
   }
-  _read() {
-    for (const quad2 of this)
-      this.push(quad2);
-    this.push(null);
+  _read(size) {
+    if (size > 0 && !this[ITERATOR])
+      this[ITERATOR] = this[Symbol.iterator]();
+    const iterable = this[ITERATOR];
+    while (--size >= 0) {
+      const { done, value } = iterable.next();
+      if (done) {
+        this.push(null);
+        return;
+      }
+      this.push(value);
+    }
+  }
+  addAll(quads) {
+    return this.filtered.addAll(quads);
+  }
+  contains(other) {
+    return this.filtered.contains(other);
+  }
+  deleteMatches(subject, predicate, object, graph) {
+    return this.filtered.deleteMatches(subject, predicate, object, graph);
+  }
+  difference(other) {
+    return this.filtered.difference(other);
+  }
+  equals(other) {
+    return this.filtered.equals(other);
+  }
+  every(callback, subject, predicate, object, graph) {
+    return this.filtered.every(callback, subject, predicate, object, graph);
+  }
+  filter(iteratee) {
+    return this.filtered.filter(iteratee);
+  }
+  forEach(callback, subject, predicate, object, graph) {
+    return this.filtered.forEach(callback, subject, predicate, object, graph);
+  }
+  import(stream) {
+    return this.filtered.import(stream);
+  }
+  intersection(other) {
+    return this.filtered.intersection(other);
+  }
+  map(iteratee) {
+    return this.filtered.map(iteratee);
+  }
+  some(callback, subject, predicate, object, graph) {
+    return this.filtered.some(callback, subject, predicate, object, graph);
+  }
+  toCanonical() {
+    return this.filtered.toCanonical();
+  }
+  toStream() {
+    return this._filtered ? this._filtered.toStream() : this.n3Store.match(this.subject, this.predicate, this.object, this.graph);
+  }
+  union(quads) {
+    return this._filtered ? this._filtered.union(quads) : this.n3Store.match(this.subject, this.predicate, this.object, this.graph).addAll(quads);
+  }
+  toArray() {
+    return this._filtered ? this._filtered.toArray() : this.n3Store.getQuads(this.subject, this.predicate, this.object, this.graph);
+  }
+  reduce(callback, initialValue) {
+    return this.filtered.reduce(callback, initialValue);
+  }
+  toString() {
+    return new N3Writer().quadsToString(this);
   }
   add(quad2) {
     return this.filtered.add(quad2);
@@ -12054,12 +11588,202 @@ var DatasetCoreAndReadableStream = class _DatasetCoreAndReadableStream extends i
     return this.filtered.has(quad2);
   }
   match(subject, predicate, object, graph) {
-    return new _DatasetCoreAndReadableStream(this.filtered, subject, predicate, object, graph);
+    return new _DatasetCoreAndReadableStream(this.filtered, subject, predicate, object, graph, this.options);
   }
   *[Symbol.iterator]() {
     yield* this._filtered || this.n3Store.readQuads(this.subject, this.predicate, this.object, this.graph);
   }
 };
+
+// node_modules/n3/src/N3StoreFactory.js
+var N3DatasetCoreFactory = class {
+  dataset(quads) {
+    return new N3Store(quads);
+  }
+};
+
+// node_modules/n3/src/N3Reasoner.js
+function getRulesFromDataset(dataset) {
+  const rules = [];
+  for (const { subject, object } of dataset.match(null, N3DataFactory_default.namedNode("http://www.w3.org/2000/10/swap/log#implies"), null, N3DataFactory_default.defaultGraph())) {
+    const premise = [...dataset.match(null, null, null, subject)];
+    const conclusion = [...dataset.match(null, null, null, object)];
+    rules.push({ premise, conclusion });
+  }
+  return rules;
+}
+var N3Reasoner = class {
+  constructor(store) {
+    this._store = store;
+  }
+  _add(subject, predicate, object, graphItem, cb) {
+    if (!this._store._addToIndex(graphItem.subjects, subject, predicate, object))
+      return;
+    this._store._addToIndex(graphItem.predicates, predicate, object, subject);
+    this._store._addToIndex(graphItem.objects, object, subject, predicate);
+    cb();
+  }
+  // eslint-disable-next-line no-warning-comments
+  _evaluatePremise(rule, content, cb, i = 0) {
+    let v1, v2, value, index1, index2;
+    const [val0, val1, val2] = rule.premise[i].value, index = content[rule.premise[i].content];
+    const v0 = !(value = val0.value);
+    for (value in v0 ? index : { [value]: index[value] }) {
+      if (index1 = index[value]) {
+        if (v0)
+          val0.value = Number(value);
+        v1 = !(value = val1.value);
+        for (value in v1 ? index1 : { [value]: index1[value] }) {
+          if (index2 = index1[value]) {
+            if (v1)
+              val1.value = Number(value);
+            v2 = !(value = val2.value);
+            for (value in v2 ? index2 : { [value]: index2[value] }) {
+              if (v2)
+                val2.value = Number(value);
+              if (i === rule.premise.length - 1)
+                rule.conclusion.forEach((c) => {
+                  this._add(c.subject.value, c.predicate.value, c.object.value, content, () => {
+                    cb(c);
+                  });
+                });
+              else
+                this._evaluatePremise(rule, content, cb, i + 1);
+            }
+            if (v2)
+              val2.value = null;
+          }
+        }
+        if (v1)
+          val1.value = null;
+      }
+    }
+    if (v0)
+      val0.value = null;
+  }
+  _evaluateRules(rules, content, cb) {
+    for (let i = 0; i < rules.length; i++) {
+      this._evaluatePremise(rules[i], content, cb);
+    }
+  }
+  // A naive reasoning algorithm where rules are just applied by repeatedly applying rules
+  // until no more evaluations are made
+  _reasonGraphNaive(rules, content) {
+    const newRules = [];
+    function addRule(conclusion) {
+      if (conclusion.next)
+        conclusion.next.forEach((rule) => {
+          newRules.push([conclusion.subject.value, conclusion.predicate.value, conclusion.object.value, rule]);
+        });
+    }
+    const addConclusions = (conclusion) => {
+      conclusion.forEach((c) => {
+        this._add(c.subject.value, c.predicate.value, c.object.value, content, () => {
+          addRule(c);
+        });
+      });
+    };
+    this._evaluateRules(rules, content, addRule);
+    let r;
+    while ((r = newRules.pop()) !== void 0) {
+      const [subject, predicate, object, rule] = r;
+      const v1 = rule.basePremise.subject.value;
+      if (!v1)
+        rule.basePremise.subject.value = subject;
+      const v2 = rule.basePremise.predicate.value;
+      if (!v2)
+        rule.basePremise.predicate.value = predicate;
+      const v3 = rule.basePremise.object.value;
+      if (!v3)
+        rule.basePremise.object.value = object;
+      if (rule.premise.length === 0) {
+        addConclusions(rule.conclusion);
+      } else {
+        this._evaluatePremise(rule, content, addRule);
+      }
+      if (!v1)
+        rule.basePremise.subject.value = null;
+      if (!v2)
+        rule.basePremise.predicate.value = null;
+      if (!v3)
+        rule.basePremise.object.value = null;
+    }
+  }
+  _createRule({ premise, conclusion }) {
+    const varMapping = {};
+    const toId = (value) => value.termType === "Variable" ? (
+      // If the term is a variable, then create an empty object that values can be placed into
+      varMapping[value.value] = varMapping[value.value] || {}
+    ) : (
+      // If the term is not a variable, then set the ID value
+      { value: this._store._termToNewNumericId(value) }
+    );
+    const t = (term) => ({ subject: toId(term.subject), predicate: toId(term.predicate), object: toId(term.object) });
+    return {
+      premise: premise.map((p) => t(p)),
+      conclusion: conclusion.map((p) => t(p)),
+      variables: Object.values(varMapping)
+    };
+  }
+  reason(rules) {
+    if (!Array.isArray(rules)) {
+      rules = getRulesFromDataset(rules);
+    }
+    rules = rules.map((rule) => this._createRule(rule));
+    for (const r1 of rules) {
+      for (const r2 of rules) {
+        for (let i = 0; i < r2.premise.length; i++) {
+          const p = r2.premise[i];
+          for (const c of r1.conclusion) {
+            if (termEq(p.subject, c.subject) && termEq(p.predicate, c.predicate) && termEq(p.object, c.object)) {
+              const set = /* @__PURE__ */ new Set();
+              const premise = [];
+              p.subject.value = p.subject.value || 1;
+              p.object.value = p.object.value || 1;
+              p.predicate.value = p.predicate.value || 1;
+              for (let j = 0; j < r2.premise.length; j++) {
+                if (j !== i) {
+                  premise.push(getIndex(r2.premise[j], set));
+                }
+              }
+              (c.next = c.next || []).push({
+                premise,
+                conclusion: r2.conclusion,
+                // This is a single premise of the form { subject, predicate, object },
+                // which we can use to instantiate the rule using the new data that was emitted
+                basePremise: p
+              });
+            }
+            r2.variables.forEach((v) => {
+              v.value = null;
+            });
+          }
+        }
+      }
+    }
+    for (const rule of rules) {
+      const set = /* @__PURE__ */ new Set();
+      rule.premise = rule.premise.map((p) => getIndex(p, set));
+    }
+    const graphs = this._store._getGraphs();
+    for (const graphId in graphs) {
+      this._reasonGraphNaive(rules, graphs[graphId]);
+    }
+    this._store._size = null;
+  }
+};
+function getIndex({ subject, predicate, object }, set) {
+  const s = subject.value || set.has(subject) || (set.add(subject), false);
+  const p = predicate.value || set.has(predicate) || (set.add(predicate), false);
+  const o = object.value || set.has(object) || (set.add(object), false);
+  return !s && p ? { content: "predicates", value: [predicate, object, subject] } : o ? { content: "objects", value: [object, subject, predicate] } : { content: "subjects", value: [subject, predicate, object] };
+}
+function termEq(t1, t2) {
+  if (t1.value === null) {
+    t1.value = t2.value;
+  }
+  return t1.value === t2.value;
+}
 
 // node_modules/n3/src/N3StreamParser.js
 var import_readable_stream2 = __toESM(require_browser3());
@@ -12067,30 +11791,34 @@ var N3StreamParser = class extends import_readable_stream2.Transform {
   constructor(options) {
     super({ decodeStrings: true });
     this._readableState.objectMode = true;
-    const parser2 = new N3Parser(options);
+    const parser = new N3Parser(options);
     let onData, onEnd;
-    parser2.parse(
-      {
-        on: (event, callback) => {
-          switch (event) {
-            case "data":
-              onData = callback;
-              break;
-            case "end":
-              onEnd = callback;
-              break;
-          }
-        }
-      },
+    const callbacks = {
       // Handle quads by pushing them down the pipeline
-      (error, quad2) => {
+      onQuad: (error, quad2) => {
         error && this.emit("error", error) || quad2 && this.push(quad2);
       },
       // Emit prefixes through the `prefix` event
-      (prefix2, uri) => {
+      onPrefix: (prefix2, uri) => {
         this.emit("prefix", prefix2, uri);
       }
-    );
+    };
+    if (options && options.comments)
+      callbacks.onComment = (comment) => {
+        this.emit("comment", comment);
+      };
+    parser.parse({
+      on: (event, callback) => {
+        switch (event) {
+          case "data":
+            onData = callback;
+            break;
+          case "end":
+            onEnd = callback;
+            break;
+        }
+      }
+    }, callbacks);
     this._transform = (chunk, encoding, done) => {
       onData(chunk);
       done();
@@ -12161,9 +11889,12 @@ var src_default = {
   Parser: N3Parser,
   Writer: N3Writer,
   Store: N3Store,
+  StoreFactory: N3DatasetCoreFactory,
+  EntityIndex: N3EntityIndex,
   StreamParser: N3StreamParser,
   StreamWriter: N3StreamWriter,
   Util: N3Util_exports,
+  Reasoner: N3Reasoner,
   DataFactory: N3DataFactory_default,
   Term,
   NamedNode,
@@ -12177,316 +11908,117 @@ var src_default = {
   termToId
 };
 
-// src/oldm.mjs
-var xsdTypes = {
-  xsd$dateTime: "<datetime>",
-  xsd$time: "<time>",
-  xsd$date: "<date>",
-  xsd$duration: "<duration>",
-  xsd$string: "<string>",
-  xsd$float: "<float>",
-  xsd$decimal: "<decimal>",
-  xsd$double: "<float64>",
-  xsd$anyURI: "<url>",
-  xsd$integer: "<int>",
-  xsd$int: "<int>",
-  xsd$long: "<int64>",
-  xsd$short: "<int16>",
-  xsd$byte: "<int8>",
-  // yes really: http://www.datypic.com/sc/xsd/t-xsd_byte.html
-  xsd$nonNegativeInteger: "<uint>",
-  xsd$unsignedLong: "<uint64>",
-  xsd$unsignedInt: "<uint>",
-  xsd$unsignedShort: "<uint16>",
-  xsd$unsignedByte: "<uint8>",
-  xsd$base64Binary: '<blob class="base64">'
-  //TODO: check that this list is complete enough (missing types will be encoded with <object class="xsd$Type">)
+// src/oldm-n3.mjs
+var n3Parser = (input, uri, type) => {
+  const parser = new src_default.Parser({
+    blankNodePrefix: "",
+    format: type
+  });
+  let prefixes3 = /* @__PURE__ */ Object.create(null);
+  const quads = parser.parse(input, null, (prefix2, url) => {
+    prefixes3[prefix2] = url.id;
+  });
+  return { quads, prefixes: prefixes3, factory: src_default.DataFactory };
 };
-var rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-var source = Symbol("source");
-var Parser = class {
-  prefixes = {};
-  index = /* @__PURE__ */ new Map();
-  unresolved = /* @__PURE__ */ new Map();
-  types = {};
-  constructor(options = {}) {
-    this.prefixes = options?.prefixes ?? {};
-    this.separator = options?.separator ?? "$";
-    if (!this.prefixes["xsd"]) {
-      this.prefixes["xsd"] = "http://www.w3.org/2001/XMLSchema#";
-    }
-    this.types = {};
-    Object.entries(xsdTypes).forEach(([t, v]) => {
-      const ts = t.split("$").join(this.separator);
-      this.types[ts] = v;
+var n3Writer = (source) => {
+  return new Promise((resolve, reject) => {
+    const writer = new src_default.Writer({
+      format: source.type,
+      prefixes: { ...source.prefixes }
     });
-  }
-  parse(text, baseURI) {
-    const graph = this.graph(baseURI);
-    const parser2 = new src_default.Parser({ blankNodePrefix: "", baseIRI: baseURI });
-    const data = parser2.parse(text);
-    graph[source] = data;
-    for (let quad2 of data) {
-      let subject;
-      if (quad2.subject.termType == "BlankNode") {
-        subject = graph.addBlankNode(quad2.subject.id);
-      } else {
-        subject = graph.addSubject(quad2.subject.id);
+    const { quad: quad2, namedNode: namedNode2, literal: literal2, blankNode: blankNode2 } = src_default.DataFactory;
+    Object.entries(source.subjects).forEach(([id, subject]) => {
+      id = source.shortURI(id, ":");
+      let classNames = subject.type;
+      if (!Array.isArray(classNames)) {
+        classNames = [classNames];
       }
-      subject.addPredicate(quad2.predicate.id, quad2.object, graph);
-    }
-    if (this.index.has(baseURI)) {
-      return this.index.get(baseURI);
-    }
-    return graph;
-  }
-  short(uri, baseURI) {
-    if (baseURI && uri.startsWith(baseURI)) {
-      return new JSONTag.Link(uri.substring(baseURI.length));
-    }
-    let prefixes2 = this.prefixes;
-    for (let prefix2 in prefixes2) {
-      if (uri.startsWith(prefixes2[prefix2])) {
-        return new JSONTag.Link(prefix2 + this.separator + uri.substring(prefixes2[prefix2].length));
+      if (classNames?.length) {
+        for (let name of classNames) {
+          name = source.fullURI(name);
+          writer.addQuad(quad2(
+            namedNode2(id),
+            namedNode2(source.fullURI(rdfType)),
+            namedNode2(name)
+          ));
+        }
       }
-    }
-    return uri;
-  }
-  long(uri) {
-    if (uri instanceof JSONTag.Link) {
-      uri = uri.value;
-      let [prefix2, short] = uri.split(this.separator);
-      if (this.prefixes[prefix2]) {
-        uri = this.prefixes[prefix2] + short;
-      }
-      return uri;
-    }
-    return uri;
-  }
-  graph(baseURI) {
-    return new Graph(this, baseURI);
-  }
-};
-var Graph = class extends Array {
-  constructor(parser2, baseURI) {
-    super();
-    let uri = new URL(baseURI);
-    uri.hash = "";
-    Object.defineProperty(this, "baseURI", {
-      value: uri.href,
-      writable: true,
-      configurable: false,
-      enumerable: false
-    });
-    Object.defineProperty(this, "parser", {
-      value: parser2,
-      writable: false,
-      configurable: false,
-      enumerable: false
-    });
-    Object.defineProperty(this, "blankNodes", {
-      value: /* @__PURE__ */ new Map(),
-      writable: true,
-      configurable: false,
-      enumerable: false
-    });
-    if (parser2.prefixes) {
-      let prefixAttr = [];
-      for (let [prefix2, url] of Object.entries(parser2.prefixes)) {
-        prefixAttr.push(prefix2 + ":" + url);
-      }
-      JSONTag.setAttribute(this, "prefix", prefixAttr.join(" "));
-    }
-    if (baseURI) {
-      JSONTag.setAttribute(this, "baseURI", baseURI);
-    }
-  }
-  static get [Symbol.species]() {
-    return Array;
-  }
-  resolveLinks(subject, subjectID) {
-    if (this.parser.unresolved.has(subjectID)) {
-      let u = this.parser.unresolved.get(subjectID);
-      let shortID = this.parser.short(subjectID, this.baseURI);
-      for (let parentID in u) {
-        let parent = this.parser.index.get(parentID);
-        for (let key of u[parentID]) {
-          let prop = parent[key];
-          if (Array.isArray(prop)) {
-            prop = prop.map((e) => {
-              if (!(e instanceof JSONTag.Link)) {
-                return e;
-              } else if (e.value == shortID) {
-                return subject;
+      Object.entries(subject).forEach((entry) => {
+        const predicate = entry[0];
+        let object = entry[1];
+        const fullPred = source.fullURI(predicate);
+        if (Array.isArray(object)) {
+          for (const o of object) {
+            if (o && typeof o == "object") {
+              if (o.id) {
+                writer.addQuad(quad2(
+                  namedNode2(id),
+                  namedNode2(fullPred),
+                  namedNode2(o.id)
+                ));
+              } else {
+                let type = source.getType(o) || null;
+                if (type) {
+                  type = source.fullURI(type);
+                }
+                if (object instanceof String) {
+                  object = "" + object;
+                } else if (object instanceof Number) {
+                  object = +object;
+                }
+                writer.addQuad(quad2(
+                  namedNode2(id),
+                  namedNode2(fullPred),
+                  literal2(object, type ? namedNode2(type) : null)
+                ));
               }
-            });
-          } else {
-            if (prop instanceof JSONTag.Link && prop.value == shortID) {
-              parent[key] = subject;
             }
           }
-        }
-      }
-      this.parser.unresolved.remove(subjectID);
-    }
-  }
-  addSubject(subjectID) {
-    let subject;
-    if (!this.parser.index.has(subjectID)) {
-      subject = new Subject(this, subjectID);
-      this.push(subject);
-      this.resolveLinks(subject, subjectID);
-    } else {
-      subject = this.parser.index.get(subjectID);
-      if (!this.includes(subject)) {
-        this.push(subject);
-      }
-    }
-    return subject;
-  }
-  addBlankNode(tempID) {
-    let node;
-    if (this.blankNodes.has(tempID)) {
-      node = this.blankNodes.get(tempID);
-    } else {
-      node = new Subject(this);
-      this.blankNodes.set(tempID, node);
-    }
-    return node;
-  }
-  setType(value, type) {
-    let result;
-    switch (typeof value) {
-      case "string":
-        result = new String(value);
-        JSONTag.setType(result, "string");
-        break;
-      case "number":
-        result = new Number(value);
-        JSONTag.setType(result, "number");
-        break;
-      default:
-        throw new Error("missing type implementation for " + typeof value);
-        break;
-    }
-    let shortType = this.parser.short(type, this.baseURI);
-    if (shortType instanceof JSONTag.Link && this.parser.types[shortType.value]) {
-      this.#setTypeString(result, this.parser.types[shortType.value]);
-    } else {
-      JSONTag.setAttribute(result, "class", type);
-    }
-    return result;
-  }
-  #setTypeString(obj, typeString) {
-    let type = typeString.substring(1, typeString.length - 1).split(" ").pop();
-    JSONTag.setType(obj, type);
-  }
-  addUnresolved(linkID, key, parentID) {
-    let unresolved = this.parser.unresolved;
-    if (!unresolved.has(linkID)) {
-      unresolved.set(linkID, {
-        parentID: [key]
-      });
-    } else {
-      let unresolvedEntries = unresolved.get(linkID);
-      if (!unresolvedEntries[parentID]) {
-        unresolvedEntries[parentID] = [key];
-      } else {
-        unresolvedEntries[parentID].push(key);
-      }
-    }
-  }
-};
-var Subject = class {
-  #graphs;
-  constructor(graph, id) {
-    this.#graphs = [graph];
-    if (id) {
-      JSONTag.setAttribute(this, "id", id);
-      graph.parser.index.set(id, this);
-    }
-  }
-  get id() {
-    return JSONTag.getAttribute(this, "id");
-  }
-  addPredicate(predicateId, object, graph) {
-    if (!this.#graphs.includes(graph)) {
-      this.#graphs.push(graph);
-    }
-    if (predicateId == rdfType) {
-      this.addType(graph.parser.short(object.id, graph.baseURI), graph);
-    } else {
-      let shortPred = graph.parser.short(predicateId, graph.baseURI);
-      if (shortPred instanceof JSONTag.Link) {
-        shortPred = shortPred.value;
-      }
-      let value = this.#getValue(object);
-      if (value instanceof JSONTag.Link) {
-        graph.addUnresolved(value.value, shortPred, this.id);
-      }
-      if (!this[shortPred]) {
-        this[shortPred] = value;
-      } else if (Array.isArray(this[shortPred])) {
-        this[shortPred].push(value);
-      } else {
-        this[shortPred] = [this[shortPred], value];
-      }
-    }
-  }
-  addType(shortType) {
-    if (shortType instanceof JSONTag.Link) {
-      shortType = shortType.value;
-    }
-    let classNames = JSONTag.getAttribute(this, "class");
-    if (!classNames) {
-      classNames = [];
-    }
-    if (!Array.isArray(classNames)) {
-      classNames = classNames.split(" ");
-    }
-    if (!classNames.indexOf(shortType)) {
-      classNames.push(shortType);
-      JSONTag.setAttribute(this, "class", classNames);
-    }
-  }
-  #getValue(object) {
-    if (object.termType == "Literal") {
-      let graph = this.#graphs[this.#graphs.length - 1];
-      object = graph.setType(object.value, object.datatype.id);
-    } else {
-      let parser2, graph;
-      let found = (() => {
-        for (graph of this.#graphs) {
-          parser2 = graph.parser;
-          if (object.id.startsWith(graph.baseURI)) {
-            object = graph.addSubject(object.id);
-            return true;
-          } else if (parser2.index.has(object.id)) {
-            object = parser2.index.get(object.id);
-            return true;
-          } else if (graph.blankNodes.has(object.id)) {
-            object = graph.blankNodes.get(object.id);
-            return true;
+        } else if (object && typeof object == "object" && object.id) {
+          writer.addQuad(quad2(
+            namedNode2(id),
+            namedNode2(fullPred),
+            namedNode2(object.id)
+          ));
+        } else if (object) {
+          let type = source.getType(object) || null;
+          if (type) {
+            type = source.fullURI(type);
           }
+          if (object instanceof String) {
+            object = "" + object;
+          } else if (object instanceof Number) {
+            object = +object;
+          }
+          writer.addQuad(quad2(
+            namedNode2(id),
+            namedNode2(fullPred),
+            literal2(object, type ? namedNode2(type) : null)
+          ));
+        } else {
+          console.log("weird object", object, id, predicate);
         }
-      })();
-      if (!found) {
-        object = parser2.short(object.id, graph.baseURI);
+      });
+    });
+    writer.end((error, result2) => {
+      if (result2) {
+        resolve(result2);
+      } else {
+        reject(error);
       }
-    }
-    return object;
-  }
+    });
+  });
 };
-function parser(prefixes2 = [], n3 = null) {
-  return new Parser(prefixes2, n3);
-}
+
+// src/index.mjs
+var oldm2 = oldm;
+oldm2.n3Parser = n3Parser;
+oldm2.n3Writer = n3Writer;
+window.oldm = oldm2;
 export {
-  parser as default
+  oldm2 as oldm
 };
 /*! Bundled license information:
-
-queue-microtask/index.js:
-  (*! queue-microtask. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
 
 ieee754/index.js:
   (*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> *)
@@ -12498,6 +12030,9 @@ buffer/index.js:
    * @author   Feross Aboukhadijeh <https://feross.org>
    * @license  MIT
    *)
+
+queue-microtask/index.js:
+  (*! queue-microtask. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
 
 safe-buffer/index.js:
   (*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
