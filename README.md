@@ -3,8 +3,7 @@
 OLDM has the same role as an ORM for SQL data, but for Linked Data instead. It turns triples into an object graph that you can just use
 in your javascript code.
 
-It uses [JSONTag](https://github.com/muze-nl/jsontag/) to represent the meta data needed to support all features of linked data
-triples.
+It uses [JSONTag](https://github.com/muze-nl/jsontag/) to represent the meta data needed to support all features of linked data triples.
 
 The parse() method returns either the full graph or the specific subject requested:
 
