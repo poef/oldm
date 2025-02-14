@@ -4,13 +4,14 @@ export default function oldm(options) {
 
 export const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 
-const prefixes = {
+export const prefixes = {
+	rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
 	solid: 'http://www.w3.org/ns/solid/terms#',
 	schema: 'http://schema.org/',
     vcard: 'http://www.w3.org/2006/vcard/ns#'
 }
 
-class Context {
+export class Context {
 	constructor(options) {
 		this.prefixes = {...prefixes, ...options?.prefixes}
 		if (!this.prefixes['xsd']) {
@@ -24,7 +25,7 @@ class Context {
 	}
 
 	parse(input, url, type) {
-		const {quads, prefixes, factory} = this.parser(input, url, type)
+		const {quads, prefixes} = this.parser(input, url, type)
 		if (prefixes) {
 			for (let prefix in prefixes) {
 				let prefixURL = new URL(prefixes[prefix], url).href
@@ -53,21 +54,19 @@ class Context {
 		return literal
 	}
 
-	getType(object) {
-		if (object && typeof object == 'object') {
-			return object.type
+	getType(literal) {
+		if (literal && typeof literal == 'object') {
+			return literal.type
 		}
-		console.error('getType: not an object', object)
 		return null
 	}
 }
 
-
-class Graph {
+export class Graph {
 	#blankNodes = Object.create(null)
 
-	constructor(quads, url, type, prefixes, context) {
-		this.type     = type
+	constructor(quads, url, mimetype, prefixes, context) {
+		this.mimetype = mimetype
 		this.url      = url
 		this.prefixes = prefixes
 		this.context  = context
@@ -75,9 +74,29 @@ class Graph {
 		for (let quad of quads) {
 			let subject
 			if (quad.subject.termType=='BlankNode') {
-				subject = this.addBlankNode(quad.subject.id)
+				let shortPred = this.shortURI(quad.predicate.id,':')
+				switch(shortPred) {
+					case 'rdf:first':
+						subject = this.addCollection(quad.subject.id)
+						let shortObj = this.shortURI(quad.object.id, ':')
+						if (shortObj!='rdf:nil') {
+							const value = this.getValue(quad.object)
+							if (value) {
+								subject.push(value)
+							}
+						}
+						continue
+					break
+					case 'rdf:rest':
+						this.#blankNodes[quad.object.id] = this.#blankNodes[quad.subject.id]
+						continue
+					break
+					default:
+						subject = this.addBlankNode(quad.subject.id)
+					break
+				}
 			} else {
-				subject = this.addSubject(quad.subject.id)
+				subject = this.addNamedNode(quad.subject.id)
 			}
 			subject.addPredicate(quad.predicate.id, quad.object)
 		}
@@ -93,18 +112,25 @@ class Graph {
 		})
 	}
 
-	addSubject(url) {
+	addNamedNode(uri) {
 		// make sure any relative uri subject ids are fully qualified
-		let absURI = new URL(url, this.url).href
+		let absURI = new URL(uri, this.url).href
 		if (!this.subjects[absURI]) {
-			this.subjects[absURI] = new Subject(absURI, this)
+			this.subjects[absURI] = new NamedNode(absURI, this)
 		}
 		return this.subjects[absURI]
 	}
 
 	addBlankNode(id) {
 		if (!this.#blankNodes[id]) {
-			this.#blankNodes[id] = new Subject(id, this)
+			this.#blankNodes[id] = new BlankNode(this)
+		}
+		return this.#blankNodes[id]
+	}
+
+	addCollection(id) {
+		if (!this.#blankNodes[id]) {
+			this.#blankNodes[id] = new Collection(this)
 		}
 		return this.#blankNodes[id]
 	}
@@ -117,8 +143,11 @@ class Graph {
 		return this.subjects[this.fullURI(shortID)]
 	}
 
-	fullURI(shortURI) {
-		const [prefix, path] = shortURI.split(this.context.separator)
+	fullURI(shortURI, separator=null) {
+		if (!separator) {
+			separator = this.context.separator
+		}
+		const [prefix, path] = shortURI.split(separator)
 		if (path) {
 			return this.prefixes[prefix]+path 
 		}
@@ -155,27 +184,39 @@ class Graph {
 		return this.context.getType(literal)
 	}
 
+	getValue(object) {
+		let result
+		if (object.termType=='Literal') {
+			result = object.value
+			let datatype = object.datatype?.id
+			if (datatype) {
+				result = this.setType(result, datatype)
+			}
+			// let language = object.language()
+			// if (language) {
+			// 	result = this.graph.setLanguage(result, language)
+			// }
+		} else if (object.termType=='BlankNode') {
+			result = this.addBlankNode(object.id)
+		} else {
+			result = this.addNamedNode(object.id)
+		}
+		return result
+	}
+
+
 }
 
 /**
  * Represents a set of predicates on a signle subject.
  * TODO: make a separate class for blankNodes, without an id?
  */
-class Subject {
+export class BlankNode {
 
-	constructor(uri, graph) {
+	constructor(graph) {
 		Object.defineProperty(this, 'graph', {
 			value: graph,
 			writable: false,
-			enumerable: false
-		})
-		Object.defineProperty(this, 'id', {
-			value: uri,
-			writable: false,
-			enumerable: false
-		})
-		Object.defineProperty(this, 'type', {
-			writable: true,
 			enumerable: false
 		})
 	}
@@ -188,7 +229,7 @@ class Subject {
 			let type = this.graph.shortURI(object.id)
 			this.addType(type)
 		} else {
-			const value = this.getValue(object)
+			const value = this.graph.getValue(object)
 			predicate = this.graph.shortURI(predicate)
 			if (!this[predicate]) {
 				this[predicate] = value
@@ -201,40 +242,46 @@ class Subject {
 	}
 
 	/**
-	 * Adds a rdfType value, stored in this.type
+	 * Adds a rdfType value, stored in this.a
 	 * Subjects can have more than one type (or class), unlike literals
 	 * The type value can be any URI, xsdTypes are unexpected here
 	 */
-	addType(extraType) {
-		let type = this.type
-		if (!type) {
-			this.type = extraType
+	addType(type) {
+		if (!this.a) {
+			this.a = type
 		} else {
-			if (!Array.isArray(this.type)) {
-				this.type = [ this.type ]
+			if (!Array.isArray(this.a)) {
+				this.a = [ this.a ]
 			}
-			this.type.push(extraType)
+			this.a.push(type)
 		}
 	}
+}
 
-	getValue(object) {
-		let result
-		if (object.termType=='Literal') {
-			result = object.value
-			let datatype = object.datatype?.id
-			if (datatype) {
-				result = this.graph.setType(result, datatype)
-			}
-			// let language = object.language()
-			// if (language) {
-			// 	result = this.graph.setLanguage(result, language)
-			// }
-		} else if (object.termType=='BlankNode') {
-			result = this.graph.addBlankNode(object.id)
-		} else {
-			result = this.graph.addSubject(object.id)
-		}
-		return result
+export class NamedNode extends BlankNode {
+	constructor(id, graph) {
+		super(graph)
+		Object.defineProperty(this, 'a', {
+			writable: true,
+			enumerable: false
+		})
+		Object.defineProperty(this, 'id', {
+			value: id,
+			writable: false,
+			enumerable: false
+		})
+	}
+}
+
+export class Collection extends Array {
+
+	constructor(id, graph) {
+		super()
+		Object.defineProperty(this, 'graph', {
+			value: graph,
+			writable: false,
+			enumerable: false
+		})
 	}
 
 }
