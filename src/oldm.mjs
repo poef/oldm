@@ -184,6 +184,19 @@ export class Graph {
 		return this.context.getType(literal)
 	}
 
+	setLanguage(literal, language) {
+		if (typeof literal == 'string') {
+			literal = new String(literal)
+		} else if (typeof result == 'number') {
+			literal = new Number(literal)
+		}
+		if (typeof literal !== 'object') {
+			throw new Error('cannot set language on ',literal)
+		}
+		literal.language = language
+		return literal
+	}
+
 	getValue(object) {
 		let result
 		if (object.termType=='Literal') {
@@ -192,10 +205,10 @@ export class Graph {
 			if (datatype) {
 				result = this.setType(result, datatype)
 			}
-			// let language = object.language()
-			// if (language) {
-			// 	result = this.graph.setLanguage(result, language)
-			// }
+			let language = object.language
+			if (language) {
+				result = this.setLanguage(result, language)
+			}
 		} else if (object.termType=='BlankNode') {
 			result = this.addBlankNode(object.id)
 		} else {

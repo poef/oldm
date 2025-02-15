@@ -104,13 +104,19 @@ export const n3Writer = (source) => {
 				} else {
 					type = source.fullURI(type)
 				}
+				type = namedNode(type)
+			} else {
+				let language = object?.language
+				if (language) {
+					type = language // is automatically detected as language by literal()
+				}
 			}
 			if (object instanceof String) {
 				object = ''+object
 			} else if (object instanceof Number) {
 				object = +object
 			}
-			return literal(object, type ? namedNode(type) : null)
+			return literal(object, type)
 		}
 
 		const isLiteral = (value) => {

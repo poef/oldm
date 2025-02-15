@@ -8368,6 +8368,7 @@ function oldm(options) {
 }
 var rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 var prefixes = {
+  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   solid: "http://www.w3.org/ns/solid/terms#",
   schema: "http://schema.org/",
   vcard: "http://www.w3.org/2006/vcard/ns#"
@@ -8384,7 +8385,7 @@ var Context = class {
     this.separator = options?.separator ?? "$";
   }
   parse(input, url, type) {
-    const { quads, prefixes: prefixes3, factory } = this.parser(input, url, type);
+    const { quads, prefixes: prefixes3 } = this.parser(input, url, type);
     if (prefixes3) {
       for (let prefix2 in prefixes3) {
         let prefixURL = new URL(prefixes3[prefix2], url).href;
@@ -8411,18 +8412,17 @@ var Context = class {
     literal2.type = shortType;
     return literal2;
   }
-  getType(object) {
-    if (object && typeof object == "object") {
-      return object.type;
+  getType(literal2) {
+    if (literal2 && typeof literal2 == "object") {
+      return literal2.type;
     }
-    console.error("getType: not an object", object);
     return null;
   }
 };
 var Graph = class {
   #blankNodes = /* @__PURE__ */ Object.create(null);
-  constructor(quads, url, type, prefixes3, context) {
-    this.type = type;
+  constructor(quads, url, mimetype, prefixes3, context) {
+    this.mimetype = mimetype;
     this.url = url;
     this.prefixes = prefixes3;
     this.context = context;
@@ -8430,9 +8430,29 @@ var Graph = class {
     for (let quad2 of quads) {
       let subject;
       if (quad2.subject.termType == "BlankNode") {
-        subject = this.addBlankNode(quad2.subject.id);
+        let shortPred = this.shortURI(quad2.predicate.id, ":");
+        switch (shortPred) {
+          case "rdf:first":
+            subject = this.addCollection(quad2.subject.id);
+            let shortObj = this.shortURI(quad2.object.id, ":");
+            if (shortObj != "rdf:nil") {
+              const value = this.getValue(quad2.object);
+              if (value) {
+                subject.push(value);
+              }
+            }
+            continue;
+            break;
+          case "rdf:rest":
+            this.#blankNodes[quad2.object.id] = this.#blankNodes[quad2.subject.id];
+            continue;
+            break;
+          default:
+            subject = this.addBlankNode(quad2.subject.id);
+            break;
+        }
       } else {
-        subject = this.addSubject(quad2.subject.id);
+        subject = this.addNamedNode(quad2.subject.id);
       }
       subject.addPredicate(quad2.predicate.id, quad2.object);
     }
@@ -8447,18 +8467,24 @@ var Graph = class {
       }
     });
   }
-  addSubject(url) {
-    let absURI = new URL(url, this.url).href;
+  addNamedNode(uri) {
+    let absURI = new URL(uri, this.url).href;
     if (!this.subjects[absURI]) {
-      this.subjects[absURI] = new Subject(absURI, this);
+      this.subjects[absURI] = new NamedNode(absURI, this);
     }
     return this.subjects[absURI];
   }
-  addBlankNode(id) {
-    if (!this.#blankNodes[id]) {
-      this.#blankNodes[id] = new Subject(id, this);
+  addBlankNode(id2) {
+    if (!this.#blankNodes[id2]) {
+      this.#blankNodes[id2] = new BlankNode(this);
     }
-    return this.#blankNodes[id];
+    return this.#blankNodes[id2];
+  }
+  addCollection(id2) {
+    if (!this.#blankNodes[id2]) {
+      this.#blankNodes[id2] = new Collection(this);
+    }
+    return this.#blankNodes[id2];
   }
   write() {
     return this.context.writer(this);
@@ -8466,8 +8492,11 @@ var Graph = class {
   get(shortID) {
     return this.subjects[this.fullURI(shortID)];
   }
-  fullURI(shortURI) {
-    const [prefix2, path] = shortURI.split(this.context.separator);
+  fullURI(shortURI, separator = null) {
+    if (!separator) {
+      separator = this.context.separator;
+    }
+    const [prefix2, path] = shortURI.split(separator);
     if (path) {
       return this.prefixes[prefix2] + path;
     }
@@ -8500,21 +8529,43 @@ var Graph = class {
   getType(literal2) {
     return this.context.getType(literal2);
   }
+  setLanguage(literal2, language) {
+    if (typeof literal2 == "string") {
+      literal2 = new String(literal2);
+    } else if (typeof result == "number") {
+      literal2 = new Number(literal2);
+    }
+    if (typeof literal2 !== "object") {
+      throw new Error("cannot set language on ", literal2);
+    }
+    literal2.language = language;
+    return literal2;
+  }
+  getValue(object) {
+    let result2;
+    if (object.termType == "Literal") {
+      result2 = object.value;
+      let datatype = object.datatype?.id;
+      if (datatype) {
+        result2 = this.setType(result2, datatype);
+      }
+      let language = object.language;
+      if (language) {
+        result2 = this.setLanguage(result2, language);
+      }
+    } else if (object.termType == "BlankNode") {
+      result2 = this.addBlankNode(object.id);
+    } else {
+      result2 = this.addNamedNode(object.id);
+    }
+    return result2;
+  }
 };
-var Subject = class {
-  constructor(uri, graph) {
+var BlankNode = class {
+  constructor(graph) {
     Object.defineProperty(this, "graph", {
       value: graph,
       writable: false,
-      enumerable: false
-    });
-    Object.defineProperty(this, "id", {
-      value: uri,
-      writable: false,
-      enumerable: false
-    });
-    Object.defineProperty(this, "type", {
-      writable: true,
       enumerable: false
     });
   }
@@ -8526,7 +8577,7 @@ var Subject = class {
       let type = this.graph.shortURI(object.id);
       this.addType(type);
     } else {
-      const value = this.getValue(object);
+      const value = this.graph.getValue(object);
       predicate = this.graph.shortURI(predicate);
       if (!this[predicate]) {
         this[predicate] = value;
@@ -8538,35 +8589,43 @@ var Subject = class {
     }
   }
   /**
-   * Adds a rdfType value, stored in this.type
+   * Adds a rdfType value, stored in this.a
    * Subjects can have more than one type (or class), unlike literals
    * The type value can be any URI, xsdTypes are unexpected here
    */
-  addType(extraType) {
-    let type = this.type;
-    if (!type) {
-      this.type = extraType;
+  addType(type) {
+    if (!this.a) {
+      this.a = type;
     } else {
-      if (!Array.isArray(this.type)) {
-        this.type = [this.type];
+      if (!Array.isArray(this.a)) {
+        this.a = [this.a];
       }
-      this.type.push(extraType);
+      this.a.push(type);
     }
   }
-  getValue(object) {
-    let result2;
-    if (object.termType == "Literal") {
-      result2 = object.value;
-      let datatype = object.datatype?.id;
-      if (datatype) {
-        result2 = this.graph.setType(result2, datatype);
-      }
-    } else if (object.termType == "BlankNode") {
-      result2 = this.graph.addBlankNode(object.id);
-    } else {
-      result2 = this.graph.addSubject(object.id);
-    }
-    return result2;
+};
+var NamedNode = class extends BlankNode {
+  constructor(id2, graph) {
+    super(graph);
+    Object.defineProperty(this, "a", {
+      writable: true,
+      enumerable: false
+    });
+    Object.defineProperty(this, "id", {
+      value: id2,
+      writable: false,
+      enumerable: false
+    });
+  }
+};
+var Collection = class extends Array {
+  constructor(id2, graph) {
+    super();
+    Object.defineProperty(this, "graph", {
+      value: graph,
+      writable: false,
+      enumerable: false
+    });
   }
 };
 
@@ -9035,8 +9094,8 @@ var DataFactory = {
 };
 var N3DataFactory_default = DataFactory;
 var Term = class _Term {
-  constructor(id) {
-    this.id = id;
+  constructor(id2) {
+    this.id = id2;
   }
   // ### The value of this term
   get value() {
@@ -9061,7 +9120,7 @@ var Term = class _Term {
     };
   }
 };
-var NamedNode = class extends Term {
+var NamedNode2 = class extends Term {
   // ### The term type of this term
   get termType() {
     return "NamedNode";
@@ -9078,19 +9137,19 @@ var Literal = class _Literal extends Term {
   }
   // ### The language of this literal
   get language() {
-    const id = this.id;
-    let atPos = id.lastIndexOf('"') + 1;
-    return atPos < id.length && id[atPos++] === "@" ? id.substr(atPos).toLowerCase() : "";
+    const id2 = this.id;
+    let atPos = id2.lastIndexOf('"') + 1;
+    return atPos < id2.length && id2[atPos++] === "@" ? id2.substr(atPos).toLowerCase() : "";
   }
   // ### The datatype IRI of this literal
   get datatype() {
-    return new NamedNode(this.datatypeString);
+    return new NamedNode2(this.datatypeString);
   }
   // ### The datatype string of this literal
   get datatypeString() {
-    const id = this.id, dtPos = id.lastIndexOf('"') + 1;
-    const char = dtPos < id.length ? id[dtPos] : "";
-    return char === "^" ? id.substr(dtPos + 2) : (
+    const id2 = this.id, dtPos = id2.lastIndexOf('"') + 1;
+    const char = dtPos < id2.length ? id2[dtPos] : "";
+    return char === "^" ? id2.substr(dtPos + 2) : (
       // If "@" follows, return rdf:langString; xsd:string otherwise
       char !== "@" ? xsd2.string : rdf.langString
     );
@@ -9110,7 +9169,7 @@ var Literal = class _Literal extends Term {
     };
   }
 };
-var BlankNode = class extends Term {
+var BlankNode2 = class extends Term {
   constructor(name) {
     super(`_:${name}`);
   }
@@ -9151,38 +9210,38 @@ var DefaultGraph = class extends Term {
   }
 };
 DEFAULTGRAPH = new DefaultGraph();
-function termFromId(id, factory, nested) {
+function termFromId(id2, factory, nested) {
   factory = factory || DataFactory;
-  if (!id)
+  if (!id2)
     return factory.defaultGraph();
-  switch (id[0]) {
+  switch (id2[0]) {
     case "?":
-      return factory.variable(id.substr(1));
+      return factory.variable(id2.substr(1));
     case "_":
-      return factory.blankNode(id.substr(2));
+      return factory.blankNode(id2.substr(2));
     case '"':
       if (factory === DataFactory)
-        return new Literal(id);
-      if (id[id.length - 1] === '"')
-        return factory.literal(id.substr(1, id.length - 2));
-      const endPos = id.lastIndexOf('"', id.length - 1);
+        return new Literal(id2);
+      if (id2[id2.length - 1] === '"')
+        return factory.literal(id2.substr(1, id2.length - 2));
+      const endPos = id2.lastIndexOf('"', id2.length - 1);
       return factory.literal(
-        id.substr(1, endPos - 1),
-        id[endPos + 1] === "@" ? id.substr(endPos + 2) : factory.namedNode(id.substr(endPos + 3))
+        id2.substr(1, endPos - 1),
+        id2[endPos + 1] === "@" ? id2.substr(endPos + 2) : factory.namedNode(id2.substr(endPos + 3))
       );
     case "[":
-      id = JSON.parse(id);
+      id2 = JSON.parse(id2);
       break;
     default:
-      if (!nested || !Array.isArray(id)) {
-        return factory.namedNode(id);
+      if (!nested || !Array.isArray(id2)) {
+        return factory.namedNode(id2);
       }
   }
   return factory.quad(
-    termFromId(id[0], factory, true),
-    termFromId(id[1], factory, true),
-    termFromId(id[2], factory, true),
-    id[3] && termFromId(id[3], factory, true)
+    termFromId(id2[0], factory, true),
+    termFromId(id2[1], factory, true),
+    termFromId(id2[2], factory, true),
+    id2[3] && termFromId(id2[3], factory, true)
   );
 }
 function termToId(term, nested) {
@@ -9257,10 +9316,10 @@ var Quad = class extends Term {
   }
 };
 function namedNode(iri) {
-  return new NamedNode(iri);
+  return new NamedNode2(iri);
 }
 function blankNode(name) {
-  return new BlankNode(name || `n3-${_blankNodeCounter++}`);
+  return new BlankNode2(name || `n3-${_blankNodeCounter++}`);
 }
 function literal(value, languageOrDataType) {
   if (typeof languageOrDataType === "string")
@@ -10630,10 +10689,10 @@ var N3EntityIndex = class {
     this._blankNodeIndex = 0;
     this._factory = options.factory || N3DataFactory_default;
   }
-  _termFromId(id) {
-    if (id[0] === ".") {
+  _termFromId(id2) {
+    if (id2[0] === ".") {
       const entities = this._entities;
-      const terms = id.split(".");
+      const terms = id2.split(".");
       const q = this._factory.quad(
         this._termFromId(entities[terms[1]]),
         this._termFromId(entities[terms[2]]),
@@ -10642,7 +10701,7 @@ var N3EntityIndex = class {
       );
       return q;
     }
-    return termFromId(id, this._factory);
+    return termFromId(id2, this._factory);
   }
   _termToNumericId(term) {
     if (term.termType === "Quad") {
@@ -10820,10 +10879,10 @@ var N3Store = class _N3Store {
   // and passes the corresponding entity to callback if it hasn't occurred before.
   _uniqueEntities(callback) {
     const uniqueIds = /* @__PURE__ */ Object.create(null);
-    return (id) => {
-      if (!(id in uniqueIds)) {
-        uniqueIds[id] = true;
-        callback(this._termFromId(this._entities[id], this._factory));
+    return (id2) => {
+      if (!(id2 in uniqueIds)) {
+        uniqueIds[id2] = true;
+        callback(this._termFromId(this._entities[id2], this._factory));
       }
     };
   }
@@ -11897,9 +11956,9 @@ var src_default = {
   Reasoner: N3Reasoner,
   DataFactory: N3DataFactory_default,
   Term,
-  NamedNode,
+  NamedNode: NamedNode2,
   Literal,
-  BlankNode,
+  BlankNode: BlankNode2,
   Variable,
   DefaultGraph,
   Quad,
@@ -11918,7 +11977,7 @@ var n3Parser = (input, uri, type) => {
   const quads = parser.parse(input, null, (prefix2, url) => {
     prefixes3[prefix2] = url.id;
   });
-  return { quads, prefixes: prefixes3, factory: src_default.DataFactory };
+  return { quads, prefixes: prefixes3 };
 };
 var n3Writer = (source) => {
   return new Promise((resolve, reject) => {
@@ -11926,10 +11985,11 @@ var n3Writer = (source) => {
       format: source.type,
       prefixes: { ...source.prefixes }
     });
+    const rdf3 = source.context.prefixes.rdf;
+    const xsd4 = source.prefixes.xsd;
     const { quad: quad2, namedNode: namedNode2, literal: literal2, blankNode: blankNode2 } = src_default.DataFactory;
-    Object.entries(source.subjects).forEach(([id, subject]) => {
-      id = source.shortURI(id, ":");
-      let classNames = subject.type;
+    const writeClassNames = (id2, subject) => {
+      let classNames = subject.a;
       if (!Array.isArray(classNames)) {
         classNames = [classNames];
       }
@@ -11937,68 +11997,117 @@ var n3Writer = (source) => {
         for (let name of classNames) {
           name = source.fullURI(name);
           writer.addQuad(quad2(
-            namedNode2(id),
-            namedNode2(source.fullURI(rdfType)),
+            namedNode2(id2),
+            namedNode2(rdfType),
             namedNode2(name)
           ));
         }
       }
-      Object.entries(subject).forEach((entry) => {
-        const predicate = entry[0];
-        let object = entry[1];
-        const fullPred = source.fullURI(predicate);
-        if (Array.isArray(object)) {
-          for (const o of object) {
-            if (o && typeof o == "object") {
-              if (o.id) {
-                writer.addQuad(quad2(
-                  namedNode2(id),
-                  namedNode2(fullPred),
-                  namedNode2(o.id)
-                ));
-              } else {
-                let type = source.getType(o) || null;
-                if (type) {
-                  type = source.fullURI(type);
-                }
-                if (object instanceof String) {
-                  object = "" + object;
-                } else if (object instanceof Number) {
-                  object = +object;
-                }
-                writer.addQuad(quad2(
-                  namedNode2(id),
-                  namedNode2(fullPred),
-                  literal2(object, type ? namedNode2(type) : null)
-                ));
-              }
-            }
-          }
-        } else if (object && typeof object == "object" && object.id) {
-          writer.addQuad(quad2(
-            namedNode2(id),
-            namedNode2(fullPred),
-            namedNode2(object.id)
-          ));
-        } else if (object) {
-          let type = source.getType(object) || null;
-          if (type) {
-            type = source.fullURI(type);
-          }
-          if (object instanceof String) {
-            object = "" + object;
-          } else if (object instanceof Number) {
-            object = +object;
-          }
-          writer.addQuad(quad2(
-            namedNode2(id),
-            namedNode2(fullPred),
-            literal2(object, type ? namedNode2(type) : null)
-          ));
-        } else {
-          console.log("weird object", object, id, predicate);
+    };
+    const writeProperties = (id2, subject) => {
+      if (!subject) {
+        return;
+      }
+      let preds = getPredicates(subject);
+      for (let pred of preds) {
+        if (!Array.isArray(pred.object)) {
+          pred.object = [pred.object];
         }
+        for (let o of pred.object) {
+          writer.addQuad(quad2(
+            namedNode2(id2),
+            pred.predicate,
+            o
+          ));
+        }
+      }
+    };
+    const getPredicates = (object) => {
+      let preds = [];
+      Object.entries(object).forEach((entry) => {
+        const predicate = entry[0];
+        let object2 = entry[1];
+        const fullPred = source.fullURI(predicate);
+        let pred = {
+          predicate: namedNode2(fullPred)
+        };
+        if (object2 instanceof Collection) {
+          pred.object = getCollection(object2);
+        } else if (Array.isArray(object2)) {
+          pred.object = getArray(object2);
+        } else if (object2 instanceof NamedNode) {
+          pred.object = namedNode2(object2.id);
+        } else if (object2 instanceof BlankNode) {
+          pred.object = getBlankNode(object2);
+        } else if (isLiteral2(object2)) {
+          pred.object = getLiteral(object2);
+        } else {
+          console.log("weird object", object2, id, predicate);
+        }
+        preds.push(pred);
       });
+      return preds;
+    };
+    const getLiteral = (object) => {
+      let type = source.getType(object) || null;
+      if (type) {
+        if (type == xsd4 + source.context.separator + "string" || type == xsd4 + source.context.separator + "number") {
+          type = null;
+        } else {
+          type = source.fullURI(type);
+        }
+        type = namedNode2(type);
+      } else {
+        let language = object?.language;
+        if (language) {
+          type = language;
+        }
+      }
+      if (object instanceof String) {
+        object = "" + object;
+      } else if (object instanceof Number) {
+        object = +object;
+      }
+      return literal2(object, type);
+    };
+    const isLiteral2 = (value) => {
+      return value instanceof String || value instanceof Number || typeof value == "boolean" || typeof value == "string" || typeof value == "number";
+    };
+    const getCollection = (object) => {
+      let list = [];
+      for (let value of object) {
+        if (isLiteral2(value)) {
+          list.push(getLiteral(value));
+        } else if (value.id) {
+          list.push(namedNode2(value.id));
+        } else {
+          list.push(getBlankNode(value));
+        }
+      }
+      return writer.list(list);
+    };
+    const getBlankNode = (object) => {
+      return writer.blank(getPredicates(object));
+    };
+    const getArray = (id2, object) => {
+      let list = [];
+      for (const o of object) {
+        if (isLiteral2(o)) {
+          list.push(getLiteral(o));
+        } else if (o instanceof NamedNode) {
+          list.push(namedNode2(o.id));
+        } else if (o instanceof BlankNode) {
+          list.push(getBlankNode(o));
+        } else if (o instanceof Collection) {
+          list.push(getCollection(o));
+        }
+      }
+      return list;
+    };
+    Object.entries(source.subjects).forEach(([id2, subject]) => {
+      id2 = source.shortURI(id2, ":");
+      writeClassNames(id2, subject);
+      writeProperties(id2, subject);
     });
     writer.end((error, result2) => {
       if (result2) {
