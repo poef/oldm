@@ -1,343 +1,300 @@
-import JSONTag from '@muze-nl/jsontag'
-import N3 from 'n3'
-
-const xsdTypes = {
-	xsd$dateTime: '<datetime>',
-	xsd$time: '<time>',
-	xsd$date: '<date>',
-	xsd$duration: '<duration>',
-	xsd$string: '<string>',
-	xsd$float: '<float>',
-	xsd$decimal: '<decimal>',
-	xsd$double: '<float64>',
-	xsd$anyURI: '<url>',
-	xsd$integer: '<int>',
-	xsd$int: '<int>',
-	xsd$long: '<int64>',
-	xsd$short: '<int16>',
-	xsd$byte: '<int8>', // yes really: http://www.datypic.com/sc/xsd/t-xsd_byte.html
-	xsd$nonNegativeInteger: '<uint>',
-	xsd$unsignedLong: '<uint64>',
-	xsd$unsignedInt: '<uint>',
-	xsd$unsignedShort: '<uint16>',
-	xsd$unsignedByte: '<uint8>',
-	xsd$base64Binary: '<blob class="base64">',
-	//TODO: check that this list is complete enough (missing types will be encoded with <object class="xsd$Type">)
+export default function oldm(options) {
+	return new Context(options)
 }
 
-const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+export const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 
-const source = Symbol('source')
+export const prefixes = {
+	rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+	solid: 'http://www.w3.org/ns/solid/terms#',
+	schema: 'http://schema.org/',
+    vcard: 'http://www.w3.org/2006/vcard/ns#'
+}
 
-//TODO: build a datamapper on top of this, that can hydrate specific
-//object types (classes) to specific javascript classes
-
-class Parser {
-	prefixes = {}
-	index = new Map()
-	unresolved = new Map()
-	types = {}
-
-	constructor(options = {}) {
-		this.prefixes = options?.prefixes ?? {}
-		this.separator = options?.separator ?? '$' //TODO: do I really want to allow different separators? least surprise etc.
+export class Context {
+	constructor(options) {
+		this.prefixes = {...prefixes, ...options?.prefixes}
 		if (!this.prefixes['xsd']) {
 			this.prefixes['xsd'] = 'http://www.w3.org/2001/XMLSchema#'
 		}
-		this.types = {}
-		Object.entries(xsdTypes).forEach(([t,v]) => {
-			const ts = t
-				.split('$')
-				.join(this.separator)
-			this.types[ts] = v
-		})
+		this.parser = options?.parser
+		this.writer = options?.writer
+		this.sources = Object.create(null)
+//		this.subjects = Object.create(null) // or use a proxy here? should contain all subjects from all sources, merged, readonly
+		this.separator = options?.separator ?? '$'
 	}
 
-	parse(text, baseURI) {
-		const graph = this.graph(baseURI)
-		const parser = new N3.Parser({ blankNodePrefix: '', baseIRI: baseURI})
-		const data = parser.parse(text)
-		graph[source] = data
-		for (let quad of data) {
-      let subject
-      if (quad.subject.termType=='BlankNode') {
-        subject = graph.addBlankNode(quad.subject.id)
-      } else {
-        subject = graph.addSubject(quad.subject.id)
-      }
-      subject.addPredicate(quad.predicate.id, quad.object, graph)
-		}
-		if (this.index.has(baseURI)) {
-			return this.index.get(baseURI)
-		}
-    return graph
-	}
-
-  
-	short(uri, baseURI) {
-		//TODO: why handle baseURI different from prefixes?
-		if (baseURI && uri.startsWith(baseURI)) {
-			return new JSONTag.Link(uri.substring(baseURI.length))
-		}
-		let prefixes = this.prefixes
-		for (let prefix in prefixes) {
-			if (uri.startsWith(prefixes[prefix])) {
-				return new JSONTag.Link(prefix+this.separator+uri.substring(prefixes[prefix].length))
-			}
-		}
-		return uri
-	}
-
-	long(uri) {
-		if (uri instanceof JSONTag.Link) {
-			uri = uri.value
-			let [prefix,short] = uri.split(this.separator)
-			if (this.prefixes[prefix]) {
-				uri = this.prefixes[prefix]+short
-			}
-			return uri
-		}
-		return uri
-	}
-
-	graph(baseURI) {
-		return new Graph(this, baseURI,)
-	}
-}
-
-//TODO: add method/property to return the N3 source data of a specific graph
-//with all updates to the data
-class Graph extends Array {
- 
-  constructor(parser, baseURI) {
-		super()
-		let uri = new URL(baseURI)
-		uri.hash = ''
-		Object.defineProperty(this, 'baseURI', {
-			value: uri.href,
-			writable: true,
-			configurable: false,
-			enumerable: false
-		})
-		Object.defineProperty(this, 'parser', {
-			value: parser,
-			writable: false,
-			configurable: false,
-			enumerable: false
-		})
-    Object.defineProperty(this, 'blankNodes', {
-      value: new Map(),
-      writable: true,
-      configurable: false,
-      enumerable: false
-    })
-    if (parser.prefixes) {
-      let prefixAttr = []
-      for (let [prefix,url] of Object.entries(parser.prefixes)) {
-        prefixAttr.push(prefix+':'+url)
-      }
-      JSONTag.setAttribute(this, 'prefix', prefixAttr.join(' '))
-    }
-    if (baseURI) {
-  		JSONTag.setAttribute(this, 'baseURI', baseURI)
-    }
-	}
-
-	static get [Symbol.species]() {
-		return Array
-	}
-
-	resolveLinks(subject, subjectID) {
-    if (this.parser.unresolved.has(subjectID)) {
-	  	let u = this.parser.unresolved.get(subjectID)
-	  	let shortID = this.parser.short(subjectID, this.baseURI)
-	  	for (let parentID in u) {
-	  		let parent = this.parser.index.get(parentID)
-	  		for (let key of u[parentID]) {
-	  			let prop = parent[key]
-	  			if (Array.isArray(prop)) {
-	  				prop = prop.map(e => {
-	  					if (!(e instanceof JSONTag.Link)) {
-	  						return e
-	  					} else if (e.value==shortID) {
-	  						return subject
-	  					}
-	  				})
-	  			} else {
-	  				if (prop instanceof JSONTag.Link && prop.value==shortID) {
-	  					parent[key] = subject
-	  				}
-	  			}
-	  		}
-	  	}
-	  	this.parser.unresolved.remove(subjectID)
-	  }
-	}
-
-	addSubject(subjectID) {
-		let subject
-		if (!this.parser.index.has(subjectID)) {
-			subject = new Subject(this, subjectID) // link back to its containing graph
-      this.push(subject)
-      this.resolveLinks(subject, subjectID)
-		} else {
-			subject = this.parser.index.get(subjectID)
-			if (!this.includes(subject)) {
-				this.push(subject)
-			}
-		}
-		return subject
-	}
-
-  addBlankNode(tempID) {
-    let node
-    if (this.blankNodes.has(tempID)) {
-      node = this.blankNodes.get(tempID)
-    } else {
-      node = new Subject(this)
-      this.blankNodes.set(tempID, node)
-    }
-    return node
-  }
-  
-  setType(value, type) {
-    let result
-    switch(typeof value) {
-      case 'string':
-        result = new String(value)
-        JSONTag.setType(result, 'string')
-      break
-      case 'number':
-        result = new Number(value)
-        JSONTag.setType(result, 'number')
-      break
-      default:
-        throw new Error('missing type implementation for '+(typeof value))
-      break
-    }
-    let shortType = this.parser.short(type, this.baseURI)
-    if (shortType instanceof JSONTag.Link && this.parser.types[shortType.value]) {
-      this.#setTypeString(result, this.parser.types[shortType.value])    		
-  	} else {
-      JSONTag.setAttribute(result, 'class', type)    
-    }
-    return result
-  }
-  
-  #setTypeString(obj, typeString) {
-    let type = typeString.substring(1, typeString.length-1).split(' ').pop()
-    //TODO: parse and set attributes as well
-    JSONTag.setType(obj, type)
-  }
-
-  addUnresolved(linkID, key, parentID) {
-  	let unresolved = this.parser.unresolved
-		if (!unresolved.has(linkID)) {
-			unresolved.set(linkID, {
-				parentID: [key]
-			})
-	  } else {
-	  	let unresolvedEntries = unresolved.get(linkID)
-	  	if (!unresolvedEntries[parentID]) {
-	  		unresolvedEntries[parentID]=[key]
-	  	} else {
-	  		unresolvedEntries[parentID].push(key)
-	  	}
-	  }
-  }
-}
-
-class Subject {
-	#graphs
-	
-  constructor(graph, id) {
-		this.#graphs = [graph]
-    if (id) {
-      JSONTag.setAttribute(this, 'id', id)
-      graph.parser.index.set(id, this)
-    }
-	}
-
-	get id() {
-		return JSONTag.getAttribute(this, 'id')
-	}
-
-	addPredicate(predicateId, object, graph) {
-		if (!this.#graphs.includes(graph)) {
-			this.#graphs.push(graph)
-		}
-		if (predicateId==rdfType) {
-			this.addType(graph.parser.short(object.id, graph.baseURI), graph)
-		} else {
-			let shortPred = graph.parser.short(predicateId, graph.baseURI)
-			if (shortPred instanceof JSONTag.Link) {
-				shortPred = shortPred.value
-			}
-			let value = this.#getValue(object)
-			if (value instanceof JSONTag.Link) {
-				graph.addUnresolved(value.value, shortPred, this.id)
-			}
-			if (!this[shortPred]) {
-				this[shortPred] = value
-			} else if (Array.isArray(this[shortPred])) {
-				this[shortPred].push(value)
-			} else {
-				this[shortPred] = [ this[shortPred], value]
-			}
-			//TODO: also update source when deleting properties
-			//FIXME: make this work:
-//			if (!graph[source].has(this.id, predicateId, object)) {
-//				graph[source].set(this.id, predicateId, object)
-//			}
-		}
-	}
-
-	addType(shortType) {
-		if (shortType instanceof JSONTag.Link) {
-			shortType = shortType.value
-		}
-		let classNames = JSONTag.getAttribute(this, 'class')
-		if (!classNames) {
-			classNames = []
-		}
-		if (!Array.isArray(classNames)) {
-			classNames = classNames.split(' ')
-		}
-		if (!classNames.indexOf(shortType)) {
-			classNames.push(shortType)
-			JSONTag.setAttribute(this, 'class', classNames)
-		}
-	}
-
-	#getValue(object) {
-		if (object.termType=='Literal') {
-			let graph = this.#graphs[this.#graphs.length-1]
-      object = graph.setType(object.value, object.datatype.id)
-		} else { // URI
-			let parser, graph
-			let found = (() => {
-				for (graph of this.#graphs) {
-					parser = graph.parser
-					if (object.id.startsWith(graph.baseURI)) {
-						object = graph.addSubject(object.id)
-						return true
-					} else if (parser.index.has(object.id)) {
-						object = parser.index.get(object.id)
-						return true
-		      } else if (graph.blankNodes.has(object.id)) {
-		        object = graph.blankNodes.get(object.id)
-		        return true
-		      }
+	parse(input, url, type) {
+		const {quads, prefixes} = this.parser(input, url, type)
+		if (prefixes) {
+			for (let prefix in prefixes) {
+				let prefixURL = new URL(prefixes[prefix], url).href
+				if (!this.prefixes[prefix]) {
+					this.prefixes[prefix] = prefixURL
 				}
-			})()
-			if (!found) {
-				object = parser.short(object.id, graph.baseURI)
 			}
 		}
-		return object
+		this.sources[url] = new Graph(quads, url, type, prefixes, this)
+		return this.sources[url]
+	}
+
+	setType(literal, shortType) {
+		if (!shortType) {
+			return literal
+		}
+		if (typeof literal == 'string') {
+			literal = new String(literal)
+		} else if (typeof result == 'number') {
+			literal = new Number(literal)
+		}
+		if (typeof literal !== 'object') {
+			throw new Error('cannot set type on ',literal,shortType)
+		}
+		literal.type = shortType
+		return literal
+	}
+
+	getType(literal) {
+		if (literal && typeof literal == 'object') {
+			return literal.type
+		}
+		return null
 	}
 }
 
-export default function parser(prefixes=[], n3=null) {
-	return new Parser(prefixes, n3)
+export class Graph {
+	#blankNodes = Object.create(null)
+
+	constructor(quads, url, mimetype, prefixes, context) {
+		this.mimetype = mimetype
+		this.url      = url
+		this.prefixes = prefixes
+		this.context  = context
+		this.subjects = Object.create(null)
+		for (let quad of quads) {
+			let subject
+			if (quad.subject.termType=='BlankNode') {
+				let shortPred = this.shortURI(quad.predicate.id,':')
+				switch(shortPred) {
+					case 'rdf:first':
+						subject = this.addCollection(quad.subject.id)
+						let shortObj = this.shortURI(quad.object.id, ':')
+						if (shortObj!='rdf:nil') {
+							const value = this.getValue(quad.object)
+							if (value) {
+								subject.push(value)
+							}
+						}
+						continue
+					break
+					case 'rdf:rest':
+						this.#blankNodes[quad.object.id] = this.#blankNodes[quad.subject.id]
+						continue
+					break
+					default:
+						subject = this.addBlankNode(quad.subject.id)
+					break
+				}
+			} else {
+				subject = this.addNamedNode(quad.subject.id)
+			}
+			subject.addPredicate(quad.predicate.id, quad.object)
+		}
+		if (this.subjects[url]) {
+			this.primary = this.subjects[url]
+		} else {
+			this.primary = null
+		}
+		Object.defineProperty(this, 'data', {
+			get() {
+				return Object.values(this.subjects)
+			}
+		})
+	}
+
+	addNamedNode(uri) {
+		// make sure any relative uri subject ids are fully qualified
+		let absURI = new URL(uri, this.url).href
+		if (!this.subjects[absURI]) {
+			this.subjects[absURI] = new NamedNode(absURI, this)
+		}
+		return this.subjects[absURI]
+	}
+
+	addBlankNode(id) {
+		if (!this.#blankNodes[id]) {
+			this.#blankNodes[id] = new BlankNode(this)
+		}
+		return this.#blankNodes[id]
+	}
+
+	addCollection(id) {
+		if (!this.#blankNodes[id]) {
+			this.#blankNodes[id] = new Collection(this)
+		}
+		return this.#blankNodes[id]
+	}
+
+	write() {
+		return this.context.writer(this)
+	}
+
+	get(shortID) {
+		return this.subjects[this.fullURI(shortID)]
+	}
+
+	fullURI(shortURI, separator=null) {
+		if (!separator) {
+			separator = this.context.separator
+		}
+		const [prefix, path] = shortURI.split(separator)
+		if (path) {
+			return this.prefixes[prefix]+path 
+		}
+		return shortURI
+	}
+
+	shortURI(fullURI, separator=null) {
+		if (!separator) {
+			separator = this.context.separator
+		}
+		for (let prefix in this.context.prefixes) {
+			if (fullURI.startsWith(this.context.prefixes[prefix])) {
+				return prefix + separator + fullURI.substring(this.context.prefixes[prefix].length)
+			}
+		}
+		if (this.url && fullURI.startsWith(this.url)) {
+			return fullURI.substring(this.url.length)
+		}
+		return fullURI
+	}
+
+	/**
+	 * This sets the type of a literal, usually one of the xsd types
+	 */
+	setType(literal, type) {
+		const shortType = this.shortURI(type)
+		return this.context.setType(literal, shortType)
+	}
+
+	/**
+	 * This returns the type of a literal, or null
+	 */
+	getType(literal) {
+		return this.context.getType(literal)
+	}
+
+	setLanguage(literal, language) {
+		if (typeof literal == 'string') {
+			literal = new String(literal)
+		} else if (typeof result == 'number') {
+			literal = new Number(literal)
+		}
+		if (typeof literal !== 'object') {
+			throw new Error('cannot set language on ',literal)
+		}
+		literal.language = language
+		return literal
+	}
+
+	getValue(object) {
+		let result
+		if (object.termType=='Literal') {
+			result = object.value
+			let datatype = object.datatype?.id
+			if (datatype) {
+				result = this.setType(result, datatype)
+			}
+			let language = object.language
+			if (language) {
+				result = this.setLanguage(result, language)
+			}
+		} else if (object.termType=='BlankNode') {
+			result = this.addBlankNode(object.id)
+		} else {
+			result = this.addNamedNode(object.id)
+		}
+		return result
+	}
+
+
+}
+
+/**
+ * Represents a set of predicates on a signle subject.
+ * TODO: make a separate class for blankNodes, without an id?
+ */
+export class BlankNode {
+
+	constructor(graph) {
+		Object.defineProperty(this, 'graph', {
+			value: graph,
+			writable: false,
+			enumerable: false
+		})
+	}
+
+	addPredicate(predicate, object) {
+		if (predicate.id) {
+			predicate = predicate.id
+		}
+		if (predicate==rdfType) {
+			let type = this.graph.shortURI(object.id)
+			this.addType(type)
+		} else {
+			const value = this.graph.getValue(object)
+			predicate = this.graph.shortURI(predicate)
+			if (!this[predicate]) {
+				this[predicate] = value
+			} else if (Array.isArray(this[predicate])) {
+				this[predicate].push(value)
+			} else {
+				this[predicate] = [ this[predicate], value]
+			}
+		}
+	}
+
+	/**
+	 * Adds a rdfType value, stored in this.a
+	 * Subjects can have more than one type (or class), unlike literals
+	 * The type value can be any URI, xsdTypes are unexpected here
+	 */
+	addType(type) {
+		if (!this.a) {
+			this.a = type
+		} else {
+			if (!Array.isArray(this.a)) {
+				this.a = [ this.a ]
+			}
+			this.a.push(type)
+		}
+	}
+}
+
+export class NamedNode extends BlankNode {
+	constructor(id, graph) {
+		super(graph)
+		Object.defineProperty(this, 'a', {
+			writable: true,
+			enumerable: false
+		})
+		Object.defineProperty(this, 'id', {
+			value: id,
+			writable: false,
+			enumerable: false
+		})
+	}
+}
+
+export class Collection extends Array {
+
+	constructor(id, graph) {
+		super()
+		Object.defineProperty(this, 'graph', {
+			value: graph,
+			writable: false,
+			enumerable: false
+		})
+	}
+
 }

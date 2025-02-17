@@ -1,6 +1,6 @@
 {
   "name": "@muze-nl/oldm",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Object - Linked Data Mapper",
   "type": "module",
   "source": [
@@ -13,7 +13,8 @@
   "scripts": {
     "test": "tap test/*.mjs",
     "tap": "tap",
-    "build": "./node_modules/.bin/esbuild src/oldm.mjs --bundle --format=esm --minify --sourcemap --outfile=dist/oldm.mjs"
+    "build-dev": "./node_modules/.bin/esbuild src/index.mjs --bundle --format=esm --sourcemap --outfile=dist/oldm.mjs",
+    "build": "./node_modules/.bin/esbuild src/index.mjs --bundle --format=esm --sourcemap --outfile=dist/oldm.min.mjs --minify"
   },
   "repository": {
     "type": "git",
@@ -34,8 +35,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@muze-nl/jsontag": "^0.9.5",
-    "n3": "^1.17.2"
+    "n3": "^1.23.1"
   },
   "files": [
     "dist/",
