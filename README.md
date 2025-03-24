@@ -8,27 +8,27 @@ The parse() method returns either the full graph or the specific subject request
 import oldm from '@muze-nl/oldm'
 
 const context = oldm.context({
-	prefixes: {
-		'ldp':    'http://www.w3.org/ns/ldp#',
-	    'rdf':    'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-	    'dct':    'http://purl.org/dc/terms/',
-	    'stat':   'http://www.w3.org/ns/posix/stat#',
-	    'turtle': 'http://www.w3.org/ns/iana/media-types/text/turtle#',
-	    'schem':  'https://schema.org/',
-	    'solid':  'http://www.w3.org/ns/solid/terms#',
-	    'acl':    'http://www.w3.org/ns/auth/acl#',
-	    'pims':   'http://www.w3.org/ns/pim/space#',
-	    'vcard':  'http://www.w3.org/2006/vcard/ns#',
-	    'foaf':   'http://xmlns.com/foaf/0.1/'
-	},
-	parser: oldm.n3Parser,
-	writer: oldm.n3Writer
+    prefixes: {
+        'ldp':    'http://www.w3.org/ns/ldp#',
+        'rdf':    'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+        'dct':    'http://purl.org/dc/terms/',
+        'stat':   'http://www.w3.org/ns/posix/stat#',
+        'turtle': 'http://www.w3.org/ns/iana/media-types/text/turtle#',
+        'schem':  'https://schema.org/',
+        'solid':  'http://www.w3.org/ns/solid/terms#',
+        'acl':    'http://www.w3.org/ns/auth/acl#',
+        'pims':   'http://www.w3.org/ns/pim/space#',
+        'vcard':  'http://www.w3.org/2006/vcard/ns#',
+        'foaf':   'http://xmlns.com/foaf/0.1/'
+    },
+    parser: oldm.n3Parser,
+    writer: oldm.n3Writer
 })
 
 const url = 'https://auke.solidcommunity.net/profile/card#me'
 const response = await fetch(url)
 if (!response.ok) {
-	throw new Error(response.status+':'+response.statusText)
+    throw new Error(response.status+':'+response.statusText)
 }
 const text = await response.text()
 const source = context.parse(text, url)
@@ -63,8 +63,8 @@ Predicate URI's are shortened by using the prefixes you defined in the options f
 Literal string and number values are converted into String and Number objects. If an xsd type is set on the literal, this is set as a `type` property on those objects. If a language is set on a string literal, this is set as a `language` property on the String object.
 
 ```javascript
-	const type = profile.vcard$bday.type
-	// returns 'xsd$date'
+const type = profile.vcard$bday.type
+// returns 'xsd$date'
 ```
 
 ## Lists (Collections)
