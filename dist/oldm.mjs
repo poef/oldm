@@ -8629,6 +8629,13 @@ var Collection = class extends Array {
   }
 };
 
+// src/oldm-n3.mjs
+var oldm_n3_exports = {};
+__export(oldm_n3_exports, {
+  n3Parser: () => n3Parser,
+  n3Writer: () => n3Writer
+});
+
 // node_modules/n3/src/N3Lexer.js
 var import_buffer = __toESM(require_buffer());
 var import_queue_microtask = __toESM(require_queue_microtask());
@@ -12120,12 +12127,14 @@ var n3Writer = (source) => {
 };
 
 // src/index.mjs
-var oldm2 = oldm;
-oldm2.n3Parser = n3Parser;
-oldm2.n3Writer = n3Writer;
-window.oldm = oldm2;
+var oldm2 = {
+  context: oldm,
+  ...oldm_n3_exports
+};
+globalThis.oldm = oldm2;
+var src_default2 = oldm2;
 export {
-  oldm2 as oldm
+  src_default2 as default
 };
 /*! Bundled license information:
 
