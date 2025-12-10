@@ -15,4 +15,5 @@
 <main>
   <pre id="output"></pre>
 </main>
+<script src="https://unpkg.com/n3/browser/n3.min.js"></script>
 <script src="script.js" type="module"></script>
