@@ -1,8 +1,11 @@
 import oldmCore from './oldm.mjs'
 import * as oldmN3 from './oldm-n3.mjs'
 
-export const oldm = oldmCore
-oldm.n3Parser = oldmN3.n3Parser
-oldm.n3Writer = oldmN3.n3Writer
+const oldm = {
+	context: oldmCore,
+	...oldmN3
+}
 
-window.oldm = oldm
+globalThis.oldm = oldm
+
+export default oldm
