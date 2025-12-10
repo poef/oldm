@@ -28,7 +28,15 @@ export class Context {
 		const {quads, prefixes} = this.parser(input, url, type)
 		if (prefixes) {
 			for (let prefix in prefixes) {
-				let prefixURL = new URL(prefixes[prefix], url).href
+				let prefixURL = prefixes[prefix]
+				if (prefixURL.match(/^http(s?)\:\/\/$/i)) {
+					prefixURL += url.substring(prefixURL.length)
+				} else try {
+					prefixURL = new URL(prefixes[prefix], url).href
+				} catch(err) {
+					console.error('Could not parse prefix', prefixes[prefix], err.message)
+				}
+
 				if (!this.prefixes[prefix]) {
 					this.prefixes[prefix] = prefixURL
 				}

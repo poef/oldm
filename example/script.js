@@ -1,4 +1,4 @@
-import oldm from './oldm.js'
+import oldm from '../dist/oldm.js'
 import JSONTag from 'https://cdn.jsdelivr.net/npm/@muze-nl/jsontag@0.9.3/src/JSONTag.mjs'
 import * as metro from 'https://cdn.jsdelivr.net/npm/@muze-nl/metro@0.3.3/src/metro.mjs'
 
@@ -9,7 +9,8 @@ form.addEventListener('submit', (e) => {
   load(form.url.value)
 })
 
-const parser = oldm.parser({
+const context = oldm.context({
+  prefixes: {
     'ldp': 'http://www.w3.org/ns/ldp#',
     'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
     'dct': 'http://purl.org/dc/terms/',
@@ -21,7 +22,9 @@ const parser = oldm.parser({
     'pims': 'http://www.w3.org/ns/pim/space#',
     'vcard':'http://www.w3.org/2006/vcard/ns#',
     'foaf': 'http://xmlns.com/foaf/0.1/'
-  },window.N3)
+  },
+  parser: oldm.n3Parser
+})
 
 const client = metro.client({
     headers: {
@@ -34,8 +37,9 @@ const client = metro.client({
       throw new Error(res.status+': '+res.statusMessage)
     }
     let text = await res.text()
+    output.innerText = text
     //TODO: check if format is supported by N3
-    return parser.parse(text, req.url)
+    return context.parse(text, req.url, 'text/turtle')
   })
 
 async function load(url) {
@@ -43,12 +47,12 @@ async function load(url) {
   let data
   try {
     data = await client.get(url)
+    output.innerText = JSON.stringify(data.primary, null, 4)
   } catch(e) {
     data = e.message
     console.error(e)
   }
-  output.innerText = JSONTag.stringify(data, null, 4)
   console.log(data)
 }
 
-load('https://auke.solidcommunity.net/profile/card')
+load('https://auke.solidcommunity.net/profile/card#me')
