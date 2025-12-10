@@ -31,7 +31,7 @@ if (!response.ok) {
     throw new Error(response.status+':'+response.statusText)
 }
 const text = await response.text()
-const source = context.parse(text, url)
+const source = context.parse(text, url, 'text/turtle')
 const myProfile = source.primary
 ```
 
