@@ -220,10 +220,6 @@ export class Graph {
 
 }
 
-/**
- * Represents a set of predicates on a signle subject.
- * TODO: make a separate class for blankNodes, without an id?
- */
 export class BlankNode {
 
 	constructor(graph) {
