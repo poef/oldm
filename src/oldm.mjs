@@ -277,14 +277,10 @@ export class BlankNode {
 export class NamedNode extends BlankNode {
 	constructor(id, graph) {
 		super(graph)
-		Object.defineProperty(this, 'a', {
-			writable: true,
-			enumerable: false
-		})
 		Object.defineProperty(this, 'id', {
 			value: id,
 			writable: false,
-			enumerable: false
+			enumerable: true
 		})
 	}
 }
