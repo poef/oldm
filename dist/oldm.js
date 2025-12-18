@@ -8389,7 +8389,7 @@ var Context = class {
     if (prefixes3) {
       for (let prefix2 in prefixes3) {
         let prefixURL = prefixes3[prefix2];
-        if (prefixURL.match(/^http(s?)\:\/\/$/i)) {
+        if (prefixURL.match(/^http(s?):\/\/$/i)) {
           prefixURL += url.substring(prefixURL.length);
         } else
           try {
@@ -8439,10 +8439,11 @@ var Graph = class {
       let subject;
       if (quad2.subject.termType == "BlankNode") {
         let shortPred = this.shortURI(quad2.predicate.id, ":");
+        let shortObj;
         switch (shortPred) {
           case "rdf:first":
             subject = this.addCollection(quad2.subject.id);
-            let shortObj = this.shortURI(quad2.object.id, ":");
+            shortObj = this.shortURI(quad2.object.id, ":");
             if (shortObj != "rdf:nil") {
               const value = this.getValue(quad2.object);
               if (value) {
@@ -8450,11 +8451,9 @@ var Graph = class {
               }
             }
             continue;
-            break;
           case "rdf:rest":
             this.#blankNodes[quad2.object.id] = this.#blankNodes[quad2.subject.id];
             continue;
-            break;
           default:
             subject = this.addBlankNode(quad2.subject.id);
             break;
@@ -8482,17 +8481,17 @@ var Graph = class {
     }
     return this.subjects[absURI];
   }
-  addBlankNode(id2) {
-    if (!this.#blankNodes[id2]) {
-      this.#blankNodes[id2] = new BlankNode(this);
+  addBlankNode(id) {
+    if (!this.#blankNodes[id]) {
+      this.#blankNodes[id] = new BlankNode(this);
     }
-    return this.#blankNodes[id2];
+    return this.#blankNodes[id];
   }
-  addCollection(id2) {
-    if (!this.#blankNodes[id2]) {
-      this.#blankNodes[id2] = new Collection(this);
+  addCollection(id) {
+    if (!this.#blankNodes[id]) {
+      this.#blankNodes[id] = new Collection(this);
     }
-    return this.#blankNodes[id2];
+    return this.#blankNodes[id];
   }
   write() {
     return this.context.writer(this);
@@ -8613,21 +8612,21 @@ var BlankNode = class {
   }
 };
 var NamedNode = class extends BlankNode {
-  constructor(id2, graph) {
+  constructor(id, graph) {
     super(graph);
     Object.defineProperty(this, "a", {
       writable: true,
       enumerable: false
     });
     Object.defineProperty(this, "id", {
-      value: id2,
+      value: id,
       writable: false,
       enumerable: false
     });
   }
 };
 var Collection = class extends Array {
-  constructor(id2, graph) {
+  constructor(id, graph) {
     super();
     Object.defineProperty(this, "graph", {
       value: graph,
@@ -9109,8 +9108,8 @@ var DataFactory = {
 };
 var N3DataFactory_default = DataFactory;
 var Term = class _Term {
-  constructor(id2) {
-    this.id = id2;
+  constructor(id) {
+    this.id = id;
   }
   // ### The value of this term
   get value() {
@@ -9152,9 +9151,9 @@ var Literal = class _Literal extends Term {
   }
   // ### The language of this literal
   get language() {
-    const id2 = this.id;
-    let atPos = id2.lastIndexOf('"') + 1;
-    return atPos < id2.length && id2[atPos++] === "@" ? id2.substr(atPos).toLowerCase() : "";
+    const id = this.id;
+    let atPos = id.lastIndexOf('"') + 1;
+    return atPos < id.length && id[atPos++] === "@" ? id.substr(atPos).toLowerCase() : "";
   }
   // ### The datatype IRI of this literal
   get datatype() {
@@ -9162,9 +9161,9 @@ var Literal = class _Literal extends Term {
   }
   // ### The datatype string of this literal
   get datatypeString() {
-    const id2 = this.id, dtPos = id2.lastIndexOf('"') + 1;
-    const char = dtPos < id2.length ? id2[dtPos] : "";
-    return char === "^" ? id2.substr(dtPos + 2) : (
+    const id = this.id, dtPos = id.lastIndexOf('"') + 1;
+    const char = dtPos < id.length ? id[dtPos] : "";
+    return char === "^" ? id.substr(dtPos + 2) : (
       // If "@" follows, return rdf:langString; xsd:string otherwise
       char !== "@" ? xsd2.string : rdf.langString
     );
@@ -9225,38 +9224,38 @@ var DefaultGraph = class extends Term {
   }
 };
 DEFAULTGRAPH = new DefaultGraph();
-function termFromId(id2, factory, nested) {
+function termFromId(id, factory, nested) {
   factory = factory || DataFactory;
-  if (!id2)
+  if (!id)
     return factory.defaultGraph();
-  switch (id2[0]) {
+  switch (id[0]) {
     case "?":
-      return factory.variable(id2.substr(1));
+      return factory.variable(id.substr(1));
     case "_":
-      return factory.blankNode(id2.substr(2));
+      return factory.blankNode(id.substr(2));
     case '"':
       if (factory === DataFactory)
-        return new Literal(id2);
-      if (id2[id2.length - 1] === '"')
-        return factory.literal(id2.substr(1, id2.length - 2));
-      const endPos = id2.lastIndexOf('"', id2.length - 1);
+        return new Literal(id);
+      if (id[id.length - 1] === '"')
+        return factory.literal(id.substr(1, id.length - 2));
+      const endPos = id.lastIndexOf('"', id.length - 1);
       return factory.literal(
-        id2.substr(1, endPos - 1),
-        id2[endPos + 1] === "@" ? id2.substr(endPos + 2) : factory.namedNode(id2.substr(endPos + 3))
+        id.substr(1, endPos - 1),
+        id[endPos + 1] === "@" ? id.substr(endPos + 2) : factory.namedNode(id.substr(endPos + 3))
       );
     case "[":
-      id2 = JSON.parse(id2);
+      id = JSON.parse(id);
       break;
     default:
-      if (!nested || !Array.isArray(id2)) {
-        return factory.namedNode(id2);
+      if (!nested || !Array.isArray(id)) {
+        return factory.namedNode(id);
       }
   }
   return factory.quad(
-    termFromId(id2[0], factory, true),
-    termFromId(id2[1], factory, true),
-    termFromId(id2[2], factory, true),
-    id2[3] && termFromId(id2[3], factory, true)
+    termFromId(id[0], factory, true),
+    termFromId(id[1], factory, true),
+    termFromId(id[2], factory, true),
+    id[3] && termFromId(id[3], factory, true)
   );
 }
 function termToId(term, nested) {
@@ -10704,10 +10703,10 @@ var N3EntityIndex = class {
     this._blankNodeIndex = 0;
     this._factory = options.factory || N3DataFactory_default;
   }
-  _termFromId(id2) {
-    if (id2[0] === ".") {
+  _termFromId(id) {
+    if (id[0] === ".") {
       const entities = this._entities;
-      const terms = id2.split(".");
+      const terms = id.split(".");
       const q = this._factory.quad(
         this._termFromId(entities[terms[1]]),
         this._termFromId(entities[terms[2]]),
@@ -10716,7 +10715,7 @@ var N3EntityIndex = class {
       );
       return q;
     }
-    return termFromId(id2, this._factory);
+    return termFromId(id, this._factory);
   }
   _termToNumericId(term) {
     if (term.termType === "Quad") {
@@ -10894,10 +10893,10 @@ var N3Store = class _N3Store {
   // and passes the corresponding entity to callback if it hasn't occurred before.
   _uniqueEntities(callback) {
     const uniqueIds = /* @__PURE__ */ Object.create(null);
-    return (id2) => {
-      if (!(id2 in uniqueIds)) {
-        uniqueIds[id2] = true;
-        callback(this._termFromId(this._entities[id2], this._factory));
+    return (id) => {
+      if (!(id in uniqueIds)) {
+        uniqueIds[id] = true;
+        callback(this._termFromId(this._entities[id], this._factory));
       }
     };
   }
@@ -12000,10 +11999,9 @@ var n3Writer = (source) => {
       format: source.type,
       prefixes: { ...source.prefixes }
     });
-    const rdf3 = source.context.prefixes.rdf;
     const xsd4 = source.prefixes.xsd;
     const { quad: quad2, namedNode: namedNode2, literal: literal2, blankNode: blankNode2 } = src_default.DataFactory;
-    const writeClassNames = (id2, subject) => {
+    const writeClassNames = (id, subject) => {
       let classNames = subject.a;
       if (!Array.isArray(classNames)) {
         classNames = [classNames];
@@ -12012,14 +12010,14 @@ var n3Writer = (source) => {
         for (let name of classNames) {
           name = source.fullURI(name);
           writer.addQuad(quad2(
-            namedNode2(id2),
+            namedNode2(id),
             namedNode2(rdfType),
             namedNode2(name)
           ));
         }
       }
     };
-    const writeProperties = (id2, subject) => {
+    const writeProperties = (id, subject) => {
       if (!subject) {
         return;
       }
@@ -12030,7 +12028,7 @@ var n3Writer = (source) => {
         }
         for (let o of pred.object) {
           writer.addQuad(quad2(
-            namedNode2(id2),
+            namedNode2(id),
             pred.predicate,
             o
           ));
@@ -12057,7 +12055,7 @@ var n3Writer = (source) => {
         } else if (isLiteral2(object2)) {
           pred.object = getLiteral(object2);
         } else {
-          console.log("weird object", object2, id, predicate);
+          console.log("weird object", object2, predicate);
         }
         preds.push(pred);
       });
@@ -12104,7 +12102,7 @@ var n3Writer = (source) => {
     const getBlankNode = (object) => {
       return writer.blank(getPredicates(object));
     };
-    const getArray = (id2, object) => {
+    const getArray = (id, object) => {
       let list = [];
       for (const o of object) {
         if (isLiteral2(o)) {
@@ -12119,10 +12117,10 @@ var n3Writer = (source) => {
       }
       return list;
     };
-    Object.entries(source.subjects).forEach(([id2, subject]) => {
-      id2 = source.shortURI(id2, ":");
-      writeClassNames(id2, subject);
-      writeProperties(id2, subject);
+    Object.entries(source.subjects).forEach(([id, subject]) => {
+      id = source.shortURI(id, ":");
+      writeClassNames(id, subject);
+      writeProperties(id, subject);
     });
     writer.end((error, result2) => {
       if (result2) {
