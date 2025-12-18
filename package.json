@@ -1,12 +1,12 @@
 {
   "name": "@muze-nl/oldm",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Object - Linked Data Mapper",
   "type": "module",
   "source": [
     "src/oldm.mjs"
   ],
-  "main": "src/oldm.mjs",
+  "main": "src/index.mjs",
   "directories": {
     "test": "test"
   },
