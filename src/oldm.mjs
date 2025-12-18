@@ -29,7 +29,7 @@ export class Context {
 		if (prefixes) {
 			for (let prefix in prefixes) {
 				let prefixURL = prefixes[prefix]
-				if (prefixURL.match(/^http(s?)\:\/\/$/i)) {
+				if (prefixURL.match(/^http(s?):\/\/$/i)) {
 					prefixURL += url.substring(prefixURL.length)
 				} else try {
 					prefixURL = new URL(prefixes[prefix], url).href
@@ -83,22 +83,21 @@ export class Graph {
 			let subject
 			if (quad.subject.termType=='BlankNode') {
 				let shortPred = this.shortURI(quad.predicate.id,':')
+				let shortObj
 				switch(shortPred) {
 					case 'rdf:first':
 						subject = this.addCollection(quad.subject.id)
-						let shortObj = this.shortURI(quad.object.id, ':')
+						shortObj = this.shortURI(quad.object.id, ':')
 						if (shortObj!='rdf:nil') {
 							const value = this.getValue(quad.object)
 							if (value) {
 								subject.push(value)
 							}
 						}
-						continue
-					break
+					continue
 					case 'rdf:rest':
 						this.#blankNodes[quad.object.id] = this.#blankNodes[quad.subject.id]
-						continue
-					break
+					continue
 					default:
 						subject = this.addBlankNode(quad.subject.id)
 					break

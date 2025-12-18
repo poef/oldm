@@ -1,4 +1,4 @@
-import oldm, {prefixes, rdfType, NamedNode, BlankNode, Collection} from './oldm.mjs'
+import {rdfType, NamedNode, BlankNode, Collection} from './oldm.mjs'
 import n3 from 'n3'
 
 export const n3Parser = (input, uri, type) => {
@@ -28,7 +28,6 @@ export const n3Writer = (source) => {
 			format: source.type,
 			prefixes: {...source.prefixes}
 		})
-		const rdf = source.context.prefixes.rdf
 		const xsd = source.prefixes.xsd
 		const {quad, namedNode, literal, blankNode} = n3.DataFactory
 
@@ -88,7 +87,7 @@ export const n3Writer = (source) => {
 				} else if (isLiteral(object)) {
 					pred.object = getLiteral(object)
 				} else {
-					console.log('weird object',object, id, predicate)
+					console.log('weird object',object, predicate)
 				}
 				preds.push(pred)
 			})
